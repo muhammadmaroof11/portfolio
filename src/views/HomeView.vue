@@ -254,11 +254,15 @@ const services = [
                     <h3 class="text-2xl md:text-4xl xl:text-5xl font-headline font-black tracking-tighter text-white uppercase leading-none truncate">{{ project.title }}</h3>
                     <p class="text-white/80 text-[10px] md:text-sm mt-2 md:mt-4 font-body leading-relaxed line-clamp-2">{{ project.description }}</p>
                   </div>
-                  <a :href="project.link" class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-on-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl shrink-0"
+                  <a v-if="project.link && project.link !== '#'" :href="project.link" target="_blank" class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-on-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl shrink-0"
                     :style="{ borderRadius: 'calc(var(--app-radius) / 3)' }"
                     :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }">
                     <ArrowRight class="w-5 h-5 md:w-7 md:h-7 -rotate-45" />
                   </a>
+                  <div v-else-if="project.hoverText" class="px-4 py-2 rounded-xl bg-primary text-on-primary font-black uppercase text-[10px] md:text-xs flex items-center justify-center shrink-0 border border-primary/20 whitespace-nowrap transition-all shadow-2xl"
+                    :style="{ borderRadius: 'calc(var(--app-radius) / 3)' }">
+                    {{ project.hoverText }}
+                  </div>
                 </div>
               </div>
             </div>

@@ -29,11 +29,21 @@ export const portfolioData = {
   ],
   projects: [
     {
+      id: 'foodlink',
+      title: 'FOODLINK',
+      description: 'Gourmet logistics platform with multi-portal ecosystem (Capacitor/Vue 3) and real-time Supabase architecture.',
+      tech: ['Vue 3', 'Supabase', 'Capacitor', 'Tailwind'],
+      image: '/projects/foodlink.png',
+      link: 'https://foodlinkglobal.netlify.app/',
+      featured: true
+    },
+    {
       id: 'bytelyai',
       title: 'BYTELYAI',
-      description: 'AI-driven platform with enterprise-grade secure coding practices.',
-      tech: ['Vue.js', 'Ionic', 'Tailwind'],
+      description: 'SaaS AI Platform with enterprise-grade secure coding practices.',
+      tech: ['React', 'Vite', 'GSAP', 'Framer Motion', 'Zustand', 'Axios'],
       image: '/projects/bytely.png',
+      link: 'https://bytely.ai/',
       featured: true
     },
     {
@@ -42,14 +52,7 @@ export const portfolioData = {
       description: 'Real-time DeFi dashboard integrating CoinGecko API with Matplotlib-inspired asset tracking.',
       tech: ['MERN Stack', 'Python', 'CoinGecko API', 'Matplotlib'],
       image: '/projects/crypto.png',
-      featured: true
-    },
-    {
-      id: 'silent-turns',
-      title: 'SILENT TURNS',
-      description: 'Atmospheric 3D Horror multiplayer experience engineered with Unity Engine.',
-      tech: ['Unity', 'C#', 'Multiplayer'],
-      image: '/projects/silentturns.png',
+      link: 'https://crypto-analyze-proj.netlify.app/',
       featured: true
     },
     {
@@ -57,7 +60,9 @@ export const portfolioData = {
       title: 'MENTAIRO',
       description: 'Mental health platform with Agora SDK for secure real-time video consultations.',
       tech: ['Flutter', 'Firebase', 'Agora SDK'],
-      image: '/projects/mentairo.png',
+      image: '/projects/mentairo.jpeg',
+      link: '#',
+      hoverText: 'Coming Soon',
       featured: true
     },
     {
@@ -81,6 +86,8 @@ export const portfolioData = {
     { name: 'MongoDB', category: 'Backend', level: 'Advanced', color: '#00684A', slug: 'mongodb' },
     { name: 'Supabase', category: 'Backend', level: 'Advanced', color: '#3ECF8E', slug: 'supabase' },
     { name: 'Firebase', category: 'Backend', level: 'Advanced', color: '#FFCA28', slug: 'firebase' },
+    { name: 'Capacitor', category: 'Mobile', level: 'Advanced', color: '#119EFF', slug: 'capacitor' },
+    { name: 'GSAP', category: 'Frontend', level: 'Advanced', color: '#88CE02', slug: 'gsap' },
     { name: 'Agentic AI', category: 'AI & Data', level: 'Specialist', color: '#FF5722', faIcon: 'fa-solid fa-robot' },
     { name: 'n8n Automation', category: 'AI & Data', level: 'Advanced', color: '#ea4b71', iconUrl: '/src/assets/n8n.svg' },
     { name: 'Generative AI', category: 'AI & Data', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' }
