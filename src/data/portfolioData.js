@@ -89,7 +89,7 @@ export const portfolioData = {
     { name: 'Capacitor', category: 'Mobile', level: 'Advanced', color: '#119EFF', slug: 'capacitor' },
     { name: 'GSAP', category: 'Frontend', level: 'Advanced', color: '#88CE02', slug: 'gsap' },
     { name: 'Agentic AI', category: 'AI & Data', level: 'Specialist', color: '#FF5722', faIcon: 'fa-solid fa-robot' },
-    { name: 'n8n Automation', category: 'AI & Data', level: 'Advanced', color: '#ea4b71', iconUrl: '/src/assets/n8n.svg' },
+    { name: 'n8n Automation', category: 'AI & Data', level: 'Advanced', color: '#ea4b71', iconUrl: '/n8n.svg' },
     { name: 'Generative AI', category: 'AI & Data', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' }
   ],
 

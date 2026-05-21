@@ -171,9 +171,9 @@ const services = [
       </div>
     </header>
 
-    <section id="strategy" ref="servicesRef" class="mt-24 md:mt-48 mb-24 md:mb-48 relative layer-base scroll-mt-32">
+    <section id="strategy" ref="servicesRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 mb-24 md:mb-32 lg:mb-40 xl:mb-48 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
-        <h2 class="font-headline text-4xl md:text-6xl xl:text-7xl font-black tracking-[calc(-0.06em)] mb-4 md:mb-6 uppercase leading-none text-on-surface"
+        <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-[calc(-0.06em)] mb-4 md:mb-6 uppercase leading-none text-on-surface"
           :class="{ 'street-fx-glow text-surface': themeStore.currentStyle === 'street' }">STRATEGIC <span class="text-primary italic" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">PILLARS</span></h2>
         <p class="text-on-surface-variant max-w-xl mx-auto text-base md:text-lg leading-relaxed font-body font-medium px-4 opacity-80">
           Architecting resilient digital ecosystems that transform complex requirements into seamless experiences.
@@ -199,7 +199,7 @@ const services = [
       </div>
     </section>
 
-    <section class="mt-24 md:mt-48 -mx-6 md:-mx-12 overflow-hidden border-y border-primary/20 relative"
+    <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 overflow-hidden border-y border-primary/20 relative"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'bg-surface border-y-4 border-on-surface' : 
         themeStore.currentStyle === 'street' ? 'bg-primary/30' : 'bg-surface-container-lowest/80 backdrop-blur-md'
@@ -219,10 +219,10 @@ const services = [
     </section>
 
     <!-- FEATURED PROJECTS -->
-    <section ref="projectsRef" class="mt-24 md:mt-48 scroll-mt-32 relative layer-base" id="work">
+    <section ref="projectsRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 scroll-mt-32 relative layer-base" id="work">
       <div class="flex flex-col md:flex-row items-end justify-between mb-12 md:mb-20 px-4 gap-12">
         <div class="max-w-3xl">
-          <h2 class="font-headline text-4xl md:text-7xl xl:text-8xl font-black tracking-[calc(-0.05em)] mb-4 md:mb-6 uppercase leading-[0.85] text-on-surface"
+          <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-black tracking-[calc(-0.05em)] mb-4 md:mb-6 uppercase leading-[0.85] text-on-surface"
             :class="{ 'street-fx-outline': themeStore.currentStyle === 'street' }">SELECTED <span class="text-primary italic">LEGACIES.</span></h2>
           <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full"></div>
         </div>
@@ -272,7 +272,7 @@ const services = [
     </section>
 
     <!-- CORE PHILOSOPHY -->
-    <section class="mt-24 md:mt-48 -mx-6 md:-mx-12 px-8 md:px-12 py-20 md:py-32 relative overflow-hidden layer-base"
+    <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 px-8 md:px-12 py-20 md:py-32 relative overflow-hidden layer-base"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'bg-primary border-y-8 border-on-surface' : 
         themeStore.currentStyle === 'street' ? 'bg-on-surface-variant/20 border-y-4 border-primary' : 
@@ -281,7 +281,7 @@ const services = [
        <div v-if="themeStore.currentStyle !== 'brutal'" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[1000px] h-[600px] md:h-[1000px] bg-primary/20 blur-[150px] md:blur-[250px] rounded-full pointer-events-none opacity-20"></div>
        
        <div class="max-w-5xl mx-auto text-center relative z-10">
-         <h2 class="font-headline text-4xl md:text-7xl xl:text-8xl font-black mb-10 md:mb-16 tracking-tighter leading-[0.9] md:leading-[0.8] uppercase"
+         <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-black mb-10 md:mb-16 tracking-tighter leading-[0.9] md:leading-[0.8] uppercase"
            :class="[
              themeStore.currentStyle === 'brutal' ? 'text-on-surface' : 'text-on-surface',
              themeStore.currentStyle === 'street' ? 'street-fx-radiant' : ''
@@ -309,14 +309,14 @@ const services = [
     </section>
 
     <!-- CALL TO ACTION -->
-    <section class="mt-24 md:mt-48 text-center pb-16 md:pb-24 layer-base">
+    <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 text-center pb-16 md:pb-24 layer-base">
         <div class="p-10 md:p-20 relative overflow-hidden group shadow-3xl transition-all duration-1000"
           :class="[
             themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
             themeStore.currentStyle === 'street' ? 'street-card bg-surface rotate-1' : 'bg-surface-container-low border border-primary/20 rounded-[2.5rem] md:rounded-[4rem]'
           ]">
            <div class="relative z-10">
-             <h3 class="font-headline text-3xl md:text-7xl xl:text-8xl font-black mb-8 md:mb-12 tracking-tighter uppercase leading-[0.9] md:leading-[0.85] text-on-surface text-balance"
+             <h3 class="font-headline text-3xl md:text-5xl lg:text-6xl xl:text-8xl font-black mb-8 md:mb-12 tracking-tighter uppercase leading-[0.9] md:leading-[0.85] text-on-surface text-balance"
                :class="{ 'street-fx-glow text-surface': themeStore.currentStyle === 'street' }">
                READY TO ARCHITECT<br/>YOUR <span class="text-primary italic underline decoration-wavy underline-offset-8" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">NEXT MILESTONE?</span>
              </h3>

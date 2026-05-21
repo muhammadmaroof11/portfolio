@@ -1,0 +1,162 @@
+--- OLD CV ---
+CONTACT
+📧 mmaroof341@gmail.com
+📞 +92 305 1526463
+🔗 linkedin.com/in/mmaroof11
+💻 github.com/muhammadmaroof11
+📍 Lahore, Pakistan
+TECHNICAL STACK
+React.js  Vue 3  Flutter  Ionic
+Node.js  Python (Flask)  Supabase
+MongoDB  Firebase  n8n
+Docker  Tailwind v4
+EDUCATION
+BS Computer Science
+University of Education
+2023 - Present
+Intermediate (ICS)
+Govt. Islamia College
+2021 - 2023MUHAMMAD MAROOF
+Full Stack Developer | Mobile & AI Automation Specialist
+PROFESSIONAL SUMMAR Y
+Results-driven Full Stack Developer specializing in architecting secure, scalable web and
+mobile solutions. Proven expertise in the MERN stack, Vue.js, and cross-platform mobile
+development using Flutter and Ionic. Passionate about AI automation workflows and
+maintaining high standards of code integrity and security architecture.
+EXPERIENCE
+Full S tack Dev eloper | By te For ce IT Solutions Feb 2026 — Present
+Spearheading front-end development for native mobile applications and synchronized web
+versions.
+Managing cross-platform interface consistency and performance across multiple internal
+projects.
+Full S tack Dev eloper (Contract) | Sairay .pk Nov 2025 — Feb 2026
+Architected a Flask-based REST API for dynamic inventory and category management.
+Optimized database queries and frontend logic, improving discovery speed by 40%.
+Cont ent Lead | GDGoC-UE Sep 2025 — Present
+Leading technical documentation and content strategy for the university developer
+community.
+Collaborating on hackathons and technical workshops to foster community growth.
+KEY PROJECTS
+BytelyAI (SaaS)
+Architected the responsive front-
+end using V ue 3 and T ailwind CSS
+v4. Implemented secure user
+authentication and fast state
+management.Mentairo (Mobile)
+Engineered a mentorship platform
+using Flutter & Firebase. Integrated
+Agora SDK for real-time video/audio
+consultations.
+CryptoAnalyzer
+MERN stack dashboard with live
+CoinGecko API integration. Features
+real-time price tracking and data
+visualizations.Ezi Services
+Developed a performance-
+optimized platform with a custom
+blog engine to boost SEO and user
+engagement.
+Sairay.pk E- Commerce
+Built a specialized health care
+platform using R eact and Python.Budget Tracker
+Engineered a high-performance SP A
+using custom in-memory data.
+
+--- NEW CV ---
+MUHAMMAD MAROOF
+Full Stack Developer  |  Mobile & AI Automation Specialist
+Vue 3  |  React  |  Ionic/Capacitor  |  Node.js  |  Python  |  AI Systems
+CONTACT
+mmaroof341@gmail.com
++92 305 1526463
+linkedin.com/in/mmaroof11
+github.com/muhammadmaroof11
+Lahore, Pakistan
+EDUCATION
+BS Computer Science
+University of Education
+2023 - Present
+Intermediate (ICS)
+Govt. Islamia College
+2021 - 2023
+TECH STACK
+Vue 3
+React.js
+Ionic
+Capacitor
+Node.js
+Python (Flask)
+Pinia
+Supabase
+MongoDB
+Firebase
+Docker
+Tailwind CSS
+Flutter
+GSAP
+Vite
+n8n
+SECURITY SKILLS
+JWT Auth  &  OAuth 2.0
+AES-256 Encryption
+DOMPurify XSS Guard
+Root/Jailbreak Detection
+Axios Interceptors
+IndexedDB Offline Cache
+STRENGTHS
+Full-Stack Ownership
+Composable Architecture
+Mobile-First Design
+AI Integration
+Performance OptimizationPROFESSIONAL SUMMARY
+Results-driven Full Stack Developer specializing in secure, scalable web and mobile solutions.
+Proven expertise in Vue 3, React, and cross-platform mobile development (Ionic/Capacitor).
+Built and shipped production-grade AI SaaS platforms solo ? from architecture to Android APK
+deployment. Passionate about AI automation, clean composable design, and robust security
+architecture.
+EXPERIENCE
+Full Stack Developer
+Byte Force IT Solutions  |  Feb 2026 ? Present
+-Spearheading front-end development for native mobile apps and web versions.
+-Managing cross-platform interface consistency across multiple internal products.
+Full Stack Developer (Contract)
+Sairay.pk  |  Nov 2025 ? Feb 2026
+-Architected a Flask-based REST API for dynamic inventory and category management.
+-Optimized database queries and frontend logic, improving discovery speed by 40%.
+Content Lead
+GDGoC-UE  |  Sep 2025 ? Present
+-Leading technical documentation and content strategy for the developer community.
+-Organizing hackathons and technical workshops to foster community growth.
+KEY PROJECTS
+Bytely Personal Assistant  (SaaS AI Platform)
+Vue 3 · Ionic/Capacitor · Pinia · Axios · AES-256 · Stripe · Firebase · GSAP
+-Architected solo full-stack hybrid app (web + Android APK) with 7 specialized AI agents.
+-Designed 4-layer architecture: Presentation ? Pinia State ? Service (Axios) ? Platform
+(Capacitor).
+-Refactored 111 KB / 2,963-line HelperChat.vue into 7 domain composables (~52 KB) ?
+improving testability and maintainability.
+-Implemented AES-256 encrypted IndexedDB offline cache with proactive SyncService
+background warmer (30s idle, top 25 chats).
+-Built dual credit pool billing (subscription + top-up) with Stripe, plus router-level credit gate
+blocking access on exhaustion.
+-Security: JWT via Axios interceptors, 401 auto-logout, DOMPurify XSS prevention, prompt
+injection detection, root/jailbreak detection.
+-Hydration-first auth (await authStore.loadFromStorage() before app.mount) eliminates
+flash-of-unauthenticated state.Bytely Product Website  (Marketing SPA)
+React · Vite · GSAP · Framer Motion · React Router · Swiper · Axios · Tailwind CSS
+-Built marketing SPA with lazy-loaded routes, per-route meta/OG tags, canonical links, and
+FAQ JSON-LD for SEO.
+-Integrated GSAP ScrollTrigger for scroll-driven animations and Framer Motion for page
+transitions.
+-Centralized API calls via Axios service wrappers; debounce/throttle utilities for performance.
+-Implemented Swiper carousels, SweetAlert2 feedback dialogs, and Font Awesome icon
+system.
+Mentairo  (Mobile Mentorship Platform)
+Flutter · Firebase · Agora SDK · Supabase
+-Engineered mentorship platform with real-time video/audio consultations via Agora SDK.
+-Migrated backend from Firebase to Supabase PostgreSQL for scalable data management.
+CryptoAnalyzer  (MERN Dashboard)
+React · Node.js · MongoDB · CoinGecko API
+-Real-time crypto price tracking dashboard with live CoinGecko API integration.
+-Full-stack MERN with deployed backend on Render with health-check endpoints.
+Muhammad Maroof  |  Page 1
