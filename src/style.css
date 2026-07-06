@@ -353,4 +353,56 @@ h1, h2, h3, h4, h5, h6 {
 .dark .ripple-effect {
   background: white;
   opacity: 0.1;
-}
+}
+
+/* Blueprint Grid Background */
+.blueprint-grid {
+  background-image: 
+    linear-gradient(to right, rgba(168, 85, 247, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(168, 85, 247, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glassmorphism Panel Refined */
+.glass-panel-heavy {
+  @apply bg-surface/50 dark:bg-surface-container-lowest/30 backdrop-blur-2xl border border-primary/10 dark:border-white/5 shadow-2xl;
+}
+
+/* Splitting / Characters Reveal */
+.char-container {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-left: 0.05em;
+  padding-right: 0.12em;
+  margin-left: -0.05em;
+  margin-right: -0.12em;
+}
+
+.char-inner {
+  display: inline-block;
+  transform: translateY(105%);
+  will-change: transform;
+}
+
+/* Decorative blueprint line divider */
+.architect-divider {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.2;
+}
+
+.architect-divider::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--color-primary);
+  background: var(--color-surface);
+  border-radius: 50%;
+}
+

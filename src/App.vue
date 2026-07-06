@@ -9,10 +9,9 @@ const router = useRouter()
 const isLoading = ref(true)
 const pageProgress = ref(0)
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(() => {
   pageProgress.value = 30
   setTimeout(() => pageProgress.value = 70, 200)
-  next()
 })
 
 router.afterEach(() => {

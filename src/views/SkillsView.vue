@@ -34,17 +34,6 @@ onMounted(async () => {
       gsap.set('.gsap-reveal', { clearProps: "transform" })
     }
   })
-
-  gsap.to('.skill-bento-card', {
-    y: 0,
-    autoAlpha: 1,
-    duration: 0.8,
-    stagger: 0.05,
-    ease: 'circ.out',
-    onComplete: () => {
-      gsap.set('.skill-bento-card', { clearProps: "transform" })
-    }
-  })
 })
 
 const categories = [
@@ -56,7 +45,7 @@ const categories = [
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 md:px-12 pt-16 md:pt-24 pb-16 overflow-visible">
+  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible">
     <!-- HERO HEADER -->
     <header class="mb-16 md:mb-24 skills-header">
       <div class="max-w-3xl">

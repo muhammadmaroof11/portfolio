@@ -10,11 +10,13 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 import { Ripple } from './directives/ripple'
+import { VTilt } from './directives/vTilt'
 
 const app = createApp(App)
 const pinia = createPinia()
 
 app.directive('ripple', Ripple)
+app.directive('tilt', VTilt)
 app.use(pinia)
 app.use(router)
 

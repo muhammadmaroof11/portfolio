@@ -2,18 +2,25 @@
 import { onMounted, ref, nextTick } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap } from 'lucide-vue-next'
+import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import PolymorphicCanvas from '../components/PolymorphicCanvas.vue'
+import ThreeDCarousel from '../components/ThreeDCarousel.vue'
+import LivePortraitBackground from '../components/LivePortraitBackground.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const themeStore = useThemeStore()
 const { profile, projects } = portfolioData
 const featuredProjects = projects.filter(p => p.featured)
+const nameParts = profile.name.split(' ')
+const firstWord = nameParts[0].split('')
+const restOfName = nameParts.slice(1).join(' ').split('')
 
 const heroRef = ref(null)
 const servicesRef = ref(null)
+const offeredServicesRef = ref(null)
 const projectsRef = ref(null)
 
 onMounted(async () => {
@@ -22,44 +29,124 @@ onMounted(async () => {
   // Set initial states to avoid 'stuck hidden' elements
   gsap.set('.gsap-reveal', { autoAlpha: 0, y: 30 })
 
-  // Hero Animation
-  gsap.to('.hero-content > *', {
+  // 1. Hero Content & Split-Character Reveal
+  gsap.to('.hero-title-char', {
+    y: 0,
+    duration: 1.0,
+    stagger: 0.025,
+    ease: 'power4.out'
+  })
+
+  gsap.to('.hero-content > *:not(h1)', {
     y: 0,
     autoAlpha: 1,
-    duration: 1,
-    stagger: 0.1,
+    duration: 0.8,
+    stagger: 0.12,
     ease: 'power3.out'
   })
 
-  // Services Animation
-  gsap.to('.service-card', {
+  // 2. Strategic Pillars Cards Reveal
+  gsap.to('.strategy-card', {
     scrollTrigger: {
       trigger: servicesRef.value,
-      start: 'top 85%',
+      start: 'top 82%',
     },
     y: 0,
     autoAlpha: 1,
     duration: 0.8,
-    stagger: 0.1,
-    ease: 'power2.out',
+    stagger: 0.15,
+    ease: 'power3.out',
     onComplete: () => {
-      gsap.set('.service-card', { clearProps: "transform" })
+      gsap.set('.strategy-card', { clearProps: "all" })
     }
   })
 
-  // Projects Animation
+  // 2b. Offered Services Carousel Reveal
+  gsap.to('.offered-carousel-reveal', {
+    scrollTrigger: {
+      trigger: offeredServicesRef.value,
+      start: 'top 82%',
+    },
+    y: 0,
+    scale: 1,
+    autoAlpha: 1,
+    duration: 1.2,
+    ease: 'power4.out',
+    onComplete: () => {
+      gsap.set('.offered-carousel-reveal', { clearProps: "all" })
+    }
+  })
+
+  // 3. Dynamic Skew-on-Scroll for Marquee
+  const marqueeSec = document.querySelector('.marquee-section')
+  if (marqueeSec) {
+    let proxy = { skew: 0 }
+    let skewSetter = gsap.quickSetter(marqueeSec, "skewY", "deg")
+    let clamp = gsap.utils.clamp(-6, 6)
+
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        let skew = clamp(self.getVelocity() / -400)
+        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+          proxy.skew = skew
+          gsap.to(proxy, {
+            skew: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            overwrite: "auto",
+            onUpdate: () => skewSetter(proxy.skew)
+          })
+        }
+      }
+    })
+  }
+
+  // 4. Projects Grid Reveal (staggered 3D-like slide-up)
   gsap.to('.project-item', {
     scrollTrigger: {
       trigger: projectsRef.value,
-      start: 'top 75%',
+      start: 'top 80%',
     },
     y: 0,
     autoAlpha: 1,
-    duration: 1,
-    stagger: 0.15,
-    ease: 'expo.out',
+    duration: 1.0,
+    stagger: 0.18,
+    ease: 'power3.out',
     onComplete: () => {
-      gsap.set('.project-item', { clearProps: "transform" })
+      gsap.set('.project-item', { clearProps: "all" })
+    }
+  })
+
+  // 5. Core Philosophy Cards - Bounce slide-up entry
+  gsap.from('.philosophy-card', {
+    scrollTrigger: {
+      trigger: '.philosophy-card',
+      start: 'top 90%',
+    },
+    y: 60,
+    scale: 0.94,
+    autoAlpha: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    ease: 'back.out(1.5)',
+    onComplete: () => {
+      gsap.set('.philosophy-card', { clearProps: "all" })
+    }
+  })
+
+  // 6. Call To Action Panel - Scale up and glow activation
+  gsap.from('.cta-box', {
+    scrollTrigger: {
+      trigger: '.cta-box',
+      start: 'top 88%',
+    },
+    scale: 0.95,
+    y: 40,
+    autoAlpha: 0,
+    duration: 1.0,
+    ease: 'power3.out',
+    onComplete: () => {
+      gsap.set('.cta-box', { clearProps: "transform" })
     }
   })
 })
@@ -70,14 +157,25 @@ const services = [
   { title: 'AI & Data Integration', desc: 'Orchestrating agentic AI workflows and real-time data streaming solutions.', icon: Cpu },
   { title: 'Game Development', desc: 'Immersive multiplayer experiences built with Unity and high-fidelity rendering.', icon: Zap }
 ]
+
+const offeredServices = [
+  { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: Globe, image: '/services/web_dev.png' },
+  { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: Gamepad2, image: '/services/game_dev.png' },
+  { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: Code, image: '/services/code_audit.png' },
+  { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: Cpu, image: '/services/optimization.png' },
+  { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: Smartphone, image: '/services/automation.png' }
+]
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 md:px-12 pt-6 md:pt-16 pb-16 overflow-visible">
+  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-6 md:pt-16 pb-16 overflow-visible">
     <!-- HERO SECTION -->
     <header ref="heroRef" class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full relative overflow-visible">
-        <div class="order-2 lg:order-1 hero-content layer-content relative z-10 overflow-visible">
+      <!-- 3D Canvas Background -->
+      <PolymorphicCanvas />
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full relative overflow-visible">
+        <div class="order-2 lg:order-1 lg:col-span-7 hero-content layer-content relative z-10 overflow-visible">
           <div class="gsap-reveal inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-container/40 text-primary font-black text-[8px] md:text-[9px] tracking-[0.3em] mb-4 md:mb-6 uppercase">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -86,15 +184,26 @@ const services = [
             {{ profile.availability }}
           </div>
           
-          <h1 class="gsap-reveal app-h1 mb-6 md:mb-8 relative !overflow-visible">
-            <span class="block whitespace-nowrap !overflow-visible" 
-              :class="[
-                themeStore.currentStyle === 'street' ? 'street-fx-radiant street-fx-glitch' : ''
-              ]">{{ profile.name.split(' ')[0] }}</span>
-            <span class="text-primary italic block whitespace-nowrap !overflow-visible" 
-              :class="[
-                themeStore.currentStyle === 'street' ? 'street-fx-glitch' : ''
-              ]">{{ profile.name.split(' ').slice(1).join(' ') }}</span>
+          <h1 class="app-h1 mb-6 md:mb-8 relative !overflow-visible select-none">
+            <!-- First Name (character split) -->
+            <span class="block whitespace-nowrap !overflow-visible">
+              <span v-for="(char, idx) in firstWord" :key="'first-' + idx" class="char-container">
+                <span class="char-inner hero-title-char inline-block" 
+                  :class="[
+                    themeStore.currentStyle === 'street' ? 'street-fx-radiant street-fx-glitch' : ''
+                  ]">{{ char === ' ' ? '&nbsp;' : char }}</span>
+              </span>
+            </span>
+            
+            <!-- Rest of Name (character split) -->
+            <span class="text-primary italic block whitespace-nowrap !overflow-visible">
+              <span v-for="(char, idx) in restOfName" :key="'rest-' + idx" class="char-container">
+                <span class="char-inner hero-title-char inline-block" 
+                  :class="[
+                    themeStore.currentStyle === 'street' ? 'street-fx-glitch' : ''
+                  ]">{{ char === ' ' ? '&nbsp;' : char }}</span>
+              </span>
+            </span>
           </h1>
           
           <p class="gsap-reveal text-base md:text-xl text-on-surface-variant max-w-lg mb-8 md:mb-10 leading-relaxed font-body font-medium">
@@ -123,8 +232,8 @@ const services = [
           </div>
         </div>
 
-        <!-- Hero Visual (Optimized for Transparent Portrait) -->
-        <div class="relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible">
+        <!-- Hero Visual (Overhauled with Live Background Canvas) -->
+        <div class="lg:col-span-5 relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible w-full max-w-[320px] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[620px]">
           <!-- Stylistic Backdrop Glow -->
           <div class="absolute inset-0 scale-[1.2] blur-[80px] md:blur-[120px] opacity-40 transition-all duration-1000 z-0"
             :class="[
@@ -132,31 +241,12 @@ const services = [
               themeStore.currentStyle === 'brutal' ? 'bg-on-surface opacity-10' : 
               'bg-gradient-to-tr from-primary/30 to-primary-dim/10'
             ]"></div>
-          
-          <div class="relative w-full max-w-[220px] md:max-w-[420px] transition-all duration-1000 z-10 flex items-end justify-center pt-10 overflow-visible"
-            :class="[
-              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 
-              themeStore.currentStyle === 'street' ? 'street-card !rounded-[2rem] md:!rounded-[4rem]' : 
-              'rounded-t-full'
-            ]"
-            :style="{ 
-              backgroundColor: themeStore.currentStyle === 'minimal' ? 'rgba(168, 85, 247, 0.1)' : 
-                               themeStore.currentStyle === 'street' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.1)',
-              backdropFilter: 'blur(4px)',
-              borderRadius: themeStore.currentStyle === 'minimal' ? '100% 100% 2rem 2rem' : '',
-              borderBottom: themeStore.currentStyle === 'minimal' ? '4px solid var(--color-primary)' : ''
-            }">
-            
-            <img src="/1.png" 
-              alt="Muhammad Maroof" 
-              class="w-full h-auto object-cover transition-all duration-1000 group-hover:scale-105 z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.3)]" />
-            
-            <!-- Decorative Street Elements -->
-            <div v-if="themeStore.currentStyle === 'street'" class="absolute top-0 right-0 p-4 street-fx-radiant font-black text-xl rotate-12 -translate-y-6">ARCHITECT</div>
-            <div v-if="themeStore.currentStyle === 'street'" class="absolute bottom-10 left-0 p-2 bg-secondary text-surface font-black text-[9px] -rotate-12 translate-x-[-20%]">SYSTEM_PROTOCOL_V4</div>
-          </div>
 
-          <div class="absolute -bottom-4 md:-bottom-8 -left-2 md:-left-16 p-4 md:p-8 shadow-3xl max-w-[140px] md:max-w-[260px] transition-all duration-700 hover:-translate-y-4 z-20 !absolute"
+          <LivePortraitBackground />
+
+          <!-- Floating Counter Metric Card -->
+          <div class="absolute -bottom-4 md:-bottom-8 -left-2 md:-left-12 p-4 md:p-6 shadow-3xl max-w-[130px] md:max-w-[240px] transition-all duration-700 hover:-translate-y-4 z-20"
+            v-tilt="{ max: 15, scale: 1.05 }"
             :style="{ borderRadius: 'calc(var(--app-radius) / 1.5)' }"
             :class="[
               themeStore.currentStyle === 'street' ? 'bg-surface border-4 border-on-surface shadow-[8px_8px_0_0_var(--color-secondary)]' : 
@@ -165,7 +255,7 @@ const services = [
             ]">
             <div class="text-2xl md:text-5xl font-headline font-black text-primary mb-1 md:mb-2 leading-none italic"
               :class="{ 'street-fx-radiant !not-italic': themeStore.currentStyle === 'street' }">10+</div>
-            <div class="text-[6px] md:text-[9px] font-black uppercase tracking-[0.1em] md:tracking-[0.4em] leading-tight opacity-50 text-on-surface">Enterprise Ready Implementations</div>
+            <div class="text-[6px] md:text-[8px] font-black uppercase tracking-[0.1em] md:tracking-[0.3em] leading-tight opacity-60 text-on-surface">Enterprise Ready Implementations</div>
           </div>
         </div>
       </div>
@@ -181,25 +271,30 @@ const services = [
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-        <div v-for="service in services" :key="service.title" 
-          class="service-card gsap-reveal p-8 md:p-10 transition-all duration-700 cursor-pointer active-spring"
-          :style="{ borderRadius: 'var(--app-radius)' }"
+        <div v-for="service in services" :key="service.title"
+          class="strategy-card w-full p-8 md:p-10 transition-all duration-500 cursor-pointer active-spring hover:-translate-y-2 border border-primary/10 bg-surface-container-low/80 backdrop-blur-md relative group overflow-hidden gsap-reveal"
+          v-ripple
+          v-tilt="{ max: 15, scale: 1.03 }"
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '2rem' }"
           :class="[
-            themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
-            themeStore.currentStyle === 'street' ? 'street-card' : 
-            'bg-surface-container-low hover:bg-surface-container shadow-xl border border-primary/5'
-          ]" v-ripple>
-          <div class="w-12 h-12 md:w-14 md:h-14 bg-primary/10 flex items-center justify-center mb-6 md:mb-8 group-hover:scale-110 transition-transform"
-            :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">
+            themeStore.currentStyle === 'brutal' ? 'brutal-card' : 
+            themeStore.currentStyle === 'street' ? 'street-card border-2 border-black' : ''
+          ]"
+        >
+          <!-- Hover Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+          <div class="w-12 h-12 md:w-14 md:h-14 bg-primary/10 flex items-center justify-center mb-6 md:mb-8 transition-transform group-hover:scale-110"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 4)' }">
             <component :is="service.icon" class="w-6 h-6 md:w-7 md:h-7 text-primary" />
           </div>
           <h3 class="font-headline text-lg md:text-xl font-black mb-3 md:mb-4 uppercase tracking-tight leading-none text-on-surface">{{ service.title }}</h3>
-          <p class="text-on-surface-variant leading-relaxed text-sm md:text-base opacity-70 font-medium">{{ service.desc }}</p>
+          <p class="text-on-surface-variant leading-relaxed text-sm md:text-base opacity-75 font-medium">{{ service.desc }}</p>
         </div>
       </div>
     </section>
 
-    <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 overflow-hidden border-y border-primary/20 relative"
+    <section class="marquee-section mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 overflow-hidden border-y border-primary/20 relative"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'bg-surface border-y-4 border-on-surface' : 
         themeStore.currentStyle === 'street' ? 'bg-primary/30' : 'bg-surface-container-lowest/80 backdrop-blur-md'
@@ -218,12 +313,58 @@ const services = [
       </div>
     </section>
 
+    <!-- SPECIALIZED SERVICES (3D CAROUSEL) -->
+    <section id="services" ref="offeredServicesRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 mb-24 md:mb-32 relative layer-base scroll-mt-32">
+      <div class="mb-12 md:mb-20 text-center">
+        <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-[calc(-0.06em)] mb-4 md:mb-6 uppercase leading-none text-on-surface">
+          OFFERED <span class="text-primary italic">SERVICES</span>
+        </h2>
+        <p class="text-on-surface-variant max-w-xl mx-auto text-base md:text-lg leading-relaxed font-body font-medium px-4 opacity-80">
+          Deploying production-ready interactive configurations and automated backend workflows.
+        </p>
+      </div>
+
+      <!-- ponytail: w-full removed to let negative margins expand block width correctly on both sides -->
+      <div class="overflow-visible py-4 gsap-reveal offered-carousel-reveal -mx-6 md:-mx-12 xl:-mx-20 px-6 md:px-12 xl:px-20">
+        <ThreeDCarousel :items="offeredServices" cardWidth="480px" v-slot="{ item: service, isActive }">
+          <div 
+            class="w-full p-6 md:p-8 transition-all duration-700 cursor-pointer active-spring"
+            v-ripple
+            v-tilt="{ max: 12, scale: 1.03 }"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '2rem' }"
+            :class="[
+              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
+              themeStore.currentStyle === 'street' ? 'street-card border-2 border-black' : 
+              'shadow-2xl border border-primary/10 bg-surface-container-low/80 backdrop-blur-md',
+              isActive ? 'opacity-100 scale-100 filter-none' : 'opacity-40 scale-95 grayscale'
+            ]"
+          >
+            <!-- Futuristic Image Banner -->
+            <div v-if="service.image" class="w-full aspect-[21/9] overflow-hidden mb-6 relative rounded-xl border border-primary/10">
+              <img :src="service.image" :alt="service.title" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+              <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low/30 via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Header and Description -->
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0"
+                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 5)' }">
+                <component :is="service.icon" class="w-5 h-5 text-primary" />
+              </div>
+              <h3 class="font-headline text-lg md:text-xl font-black uppercase tracking-tight leading-none text-on-surface truncate">{{ service.title }}</h3>
+            </div>
+            <p class="text-on-surface-variant leading-relaxed text-sm md:text-base opacity-75 font-medium">{{ service.desc }}</p>
+          </div>
+        </ThreeDCarousel>
+      </div>
+    </section>
+
     <!-- FEATURED PROJECTS -->
     <section ref="projectsRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 scroll-mt-32 relative layer-base" id="work">
       <div class="flex flex-col md:flex-row items-end justify-between mb-12 md:mb-20 px-4 gap-12">
         <div class="max-w-3xl">
           <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-black tracking-[calc(-0.05em)] mb-4 md:mb-6 uppercase leading-[0.85] text-on-surface"
-            :class="{ 'street-fx-outline': themeStore.currentStyle === 'street' }">SELECTED <span class="text-primary italic">LEGACIES.</span></h2>
+            :class="{ 'street-fx-outline': themeStore.currentStyle === 'street' }">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
           <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full"></div>
         </div>
       </div>
@@ -231,8 +372,9 @@ const services = [
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
         <div v-for="(project, index) in featuredProjects" :key="project.id"
           class="project-item gsap-reveal group relative overflow-hidden transition-all duration-1000 cursor-pointer active-spring"
-          :style="{ borderRadius: 'calc(var(--app-radius) * 1.2)' }" v-ripple>
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }" v-ripple>
           <div class="aspect-[16/10] overflow-hidden relative"
+            v-tilt="{ max: 8, scale: 1.02 }"
             :class="[
               themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 'shadow-2xl border border-primary/5'
             ]">
@@ -245,7 +387,7 @@ const services = [
                 <div class="flex flex-wrap gap-2 mb-4 md:mb-6">
                    <span v-for="tag in project.tech" :key="tag" 
                     class="text-[8px] md:text-[9px] font-black text-white px-3 md:px-4 py-1.5 md:py-2 bg-white/10 backdrop-blur-md border border-white/10 uppercase tracking-[0.2em]"
-                    :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">
+                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }">
                      {{ tag }}
                    </span>
                 </div>
@@ -255,12 +397,12 @@ const services = [
                     <p class="text-white/80 text-[10px] md:text-sm mt-2 md:mt-4 font-body leading-relaxed line-clamp-2">{{ project.description }}</p>
                   </div>
                   <a v-if="project.link && project.link !== '#'" :href="project.link" target="_blank" class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-on-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl shrink-0"
-                    :style="{ borderRadius: 'calc(var(--app-radius) / 3)' }"
+                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3)' }"
                     :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }">
                     <ArrowRight class="w-5 h-5 md:w-7 md:h-7 -rotate-45" />
                   </a>
                   <div v-else-if="project.hoverText" class="px-4 py-2 rounded-xl bg-primary text-on-primary font-black uppercase text-[10px] md:text-xs flex items-center justify-center shrink-0 border border-primary/20 whitespace-nowrap transition-all shadow-2xl"
-                    :style="{ borderRadius: 'calc(var(--app-radius) / 3)' }">
+                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3)' }">
                     {{ project.hoverText }}
                   </div>
                 </div>
@@ -293,7 +435,7 @@ const services = [
          </h2>
          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mt-12 md:mt-20">
             <div v-for="val in ['SECURITY FIRST', 'ENGINEERING RIGOR', 'USER EXPERIENCE']" :key="val" 
-              class="p-6 md:p-10 transition-all duration-500 group cursor-pointer active-spring"
+              class="philosophy-card p-6 md:p-10 transition-all duration-500 group cursor-pointer active-spring"
               :class="[
                 themeStore.currentStyle === 'brutal' ? 'bg-surface border-4 border-on-surface-variant shadow-[8px_8px_0_0_#000000] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none' : 
                 themeStore.currentStyle === 'street' ? 'street-card border-secondary/40 shadow-[10px_10px_0_0_#00ffff]' : 
@@ -310,7 +452,7 @@ const services = [
 
     <!-- CALL TO ACTION -->
     <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 text-center pb-16 md:pb-24 layer-base">
-        <div class="p-10 md:p-20 relative overflow-hidden group shadow-3xl transition-all duration-1000"
+        <div class="cta-box p-10 md:p-20 relative overflow-hidden group shadow-3xl transition-all duration-1000"
           :class="[
             themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
             themeStore.currentStyle === 'street' ? 'street-card bg-surface rotate-1' : 'bg-surface-container-low border border-primary/20 rounded-[2.5rem] md:rounded-[4rem]'

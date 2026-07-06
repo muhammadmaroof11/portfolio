@@ -90,7 +90,10 @@ export const portfolioData = {
     { name: 'GSAP', category: 'Frontend', level: 'Advanced', color: '#88CE02', slug: 'gsap' },
     { name: 'Agentic AI', category: 'AI & Data', level: 'Specialist', color: '#FF5722', faIcon: 'fa-solid fa-robot' },
     { name: 'n8n Automation', category: 'AI & Data', level: 'Advanced', color: '#ea4b71', iconUrl: '/n8n.svg' },
-    { name: 'Generative AI', category: 'AI & Data', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' }
+    { name: 'Generative AI', category: 'AI & Data', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' },
+    { name: 'Docker', category: 'Backend', level: 'Advanced', color: '#2496ED', slug: 'docker' },
+    { name: 'RAG Agents', category: 'AI & Data', level: 'Specialist', color: '#4CAF50', faIcon: 'fa-solid fa-network-wired' },
+    { name: 'PyTorch', category: 'AI & Data', level: 'Advanced', color: '#EE4C2C', slug: 'pytorch' }
   ],
 
   experience: [

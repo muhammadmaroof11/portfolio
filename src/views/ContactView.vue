@@ -99,7 +99,7 @@ const socialLinks = [
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-6 md:px-12 pt-16 md:pt-22 pb-16 overflow-visible">
+  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-22 pb-16 overflow-visible">
     <!-- HERO HEADER -->
     <header class="mb-12 md:mb-16 contact-header relative z-20">
       <div class="max-w-3xl">
