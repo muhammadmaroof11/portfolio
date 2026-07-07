@@ -13,6 +13,7 @@ import DecryptedText from '../components/DecryptedText.vue'
 import TextPressure from '../components/TextPressure.vue'
 import CircularText from '../components/CircularText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
+import DnaProjectsList from '../components/DnaProjectsList.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -390,120 +391,9 @@ const offeredServices = [
       </div>
     </section>
 
-    <!-- FEATURED PROJECTS -->
+    <!-- FEATURED PROJECTS (3D DNA SYSTEM LADDER) -->
     <section ref="projectsRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 scroll-mt-32 relative layer-base" id="work">
-      <div class="w-full text-center mb-12 md:mb-20 px-4 flex flex-col items-center">
-        <div class="relative h-[60px] md:h-[100px] lg:h-[120px] xl:h-[150px] w-full flex items-center justify-center max-w-[1200px]">
-          <TextPressure
-            text="ENGINEERED PROJECTS."
-            fontFamily="Roboto Flex"
-            fontUrl="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap"
-            :flex="true"
-            :alpha="false"
-            :stroke="false"
-            :width="true"
-            :weight="true"
-            :italic="true"
-            textColor="var(--color-on-surface)"
-            :minFontSize="36"
-          />
-        </div>
-        <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full mt-6 md:mt-8"></div>
-      </div>
-
-      <div class="flex flex-col gap-12 md:gap-20">
-        <div v-for="(project, index) in featuredProjects" :key="project.id"
-          class="project-item gsap-reveal flex flex-col lg:flex-row items-stretch gap-8 lg:gap-12 p-6 md:p-8 lg:p-10 relative overflow-hidden transition-all duration-500"
-          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.5)' }"
-          :class="[
-            themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
-            themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/90' :
-            'border border-primary/5 bg-surface-container-low/40 backdrop-blur-md hover:bg-surface-container-low/60 shadow-xl'
-          ]"
-        >
-          <!-- Background Glow for Minimal/Street -->
-          <div v-if="themeStore.currentStyle !== 'brutal'"
-            class="absolute inset-0 -z-10 rounded-[inherit] transition-opacity duration-500 opacity-10 hover:opacity-20 pointer-events-none"
-            :style="{
-              background: `radial-gradient(circle at ${index % 2 === 0 ? 'top left' : 'bottom right'}, var(--color-primary-container) 0%, transparent 60%)`
-            }"
-          ></div>
-
-          <!-- Image mockup card -->
-          <div 
-            class="w-full lg:w-1/2 aspect-[16/10] overflow-hidden relative cursor-pointer group/img flex items-center justify-center bg-black/5 dark:bg-black/40"
-            v-tilt="{ max: 8, scale: 1.02 }"
-            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
-            :class="[
-              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface bg-black' : 'shadow-2xl border border-primary/10 bg-surface-container-low/50 backdrop-blur-md',
-              index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
-            ]"
-          >
-            <!-- Blurred background copy of the image to fill space gracefully -->
-            <img :src="project.image" alt="" 
-              class="absolute inset-0 w-full h-full object-cover opacity-25 dark:opacity-40 filter blur-xl scale-110 pointer-events-none" />
-              
-            <!-- Contain-fitted main image to prevent any cut off -->
-            <img :src="project.image" :alt="project.title" 
-              class="relative z-10 w-full h-full object-contain p-4 md:p-6 transition-transform duration-700 group-hover/img:scale-[1.03]" />
-              
-            <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-40 group-hover/img:opacity-0 transition-opacity duration-500 z-20"></div>
-          </div>
-
-          <!-- Project info block -->
-          <div 
-            class="w-full lg:w-1/2 flex flex-col justify-between items-start py-2 lg:py-4"
-            :class="[
-              index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'
-            ]"
-          >
-            <div class="w-full">
-              <!-- Index Number and Tech Tags -->
-              <div class="flex items-center justify-between mb-4 md:mb-6">
-                <span class="font-headline font-black text-4xl md:text-5xl lg:text-6xl text-primary/15 dark:text-primary/10 tracking-tighter select-none">
-                  0{{ index + 1 }}
-                </span>
-                <div class="flex flex-wrap gap-2">
-                  <span v-for="tag in project.tech" :key="tag" 
-                    class="text-[8px] md:text-[9px] font-black px-3 py-1.5 bg-primary/5 dark:bg-primary/10 text-primary border border-primary/10 uppercase tracking-[0.2em]"
-                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }">
-                    {{ tag }}
-                  </span>
-                </div>
-              </div>
-
-              <!-- Project Title -->
-              <h3 class="text-3xl md:text-4xl lg:text-5xl font-headline font-black tracking-tight text-on-surface uppercase mb-4 leading-none">
-                {{ project.title }}
-              </h3>
-
-              <!-- Project Description -->
-              <p class="text-on-surface-variant text-sm md:text-base leading-relaxed font-body font-medium mb-6 opacity-90 max-w-xl">
-                {{ project.description }}
-              </p>
-            </div>
-
-            <!-- Action Button / Link -->
-            <div>
-              <a v-if="project.link && project.link !== '#'" :href="project.link" target="_blank" 
-                class="inline-flex items-center gap-3 px-6 py-4 bg-primary text-on-primary font-black text-[9px] tracking-[0.3em] uppercase transition-all duration-300 hover:scale-[1.05] active-spring shadow-lg shadow-primary/10 hover:shadow-primary/20"
-                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3.5)' }"
-                :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
-                v-ripple
-              >
-                EXPLORE PROJECT
-                <ArrowRight class="w-4 h-4 -rotate-45" />
-              </a>
-              <div v-else-if="project.hoverText" 
-                class="inline-flex items-center gap-2 px-6 py-4 bg-surface-container-high border border-surface-container-high text-on-surface/50 font-black text-[9px] tracking-[0.3em] uppercase select-none cursor-default"
-                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3.5)' }"
-              >
-                {{ project.hoverText }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DnaProjectsList />
     </section>
 
     <!-- PROJECTS ARCHIVE TABLE -->
