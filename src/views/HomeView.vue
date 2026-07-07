@@ -431,17 +431,23 @@ const offeredServices = [
 
           <!-- Image mockup card -->
           <div 
-            class="w-full lg:w-1/2 aspect-[16/10] overflow-hidden relative cursor-pointer group/img"
+            class="w-full lg:w-1/2 aspect-[16/10] overflow-hidden relative cursor-pointer group/img flex items-center justify-center bg-black/5 dark:bg-black/40"
             v-tilt="{ max: 8, scale: 1.02 }"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
-              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 'shadow-2xl border border-primary/10 bg-surface-container-low/50 backdrop-blur-md',
+              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface bg-black' : 'shadow-2xl border border-primary/10 bg-surface-container-low/50 backdrop-blur-md',
               index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
             ]"
           >
+            <!-- Blurred background copy of the image to fill space gracefully -->
+            <img :src="project.image" alt="" 
+              class="absolute inset-0 w-full h-full object-cover opacity-25 dark:opacity-40 filter blur-xl scale-110 pointer-events-none" />
+              
+            <!-- Contain-fitted main image to prevent any cut off -->
             <img :src="project.image" :alt="project.title" 
-              class="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover/img:opacity-20 transition-opacity duration-500"></div>
+              class="relative z-10 w-full h-full object-contain p-4 md:p-6 transition-transform duration-700 group-hover/img:scale-[1.03]" />
+              
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-40 group-hover/img:opacity-0 transition-opacity duration-500 z-20"></div>
           </div>
 
           <!-- Project info block -->
