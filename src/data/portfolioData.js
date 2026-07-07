@@ -35,7 +35,8 @@ export const portfolioData = {
       tech: ['Vue 3', 'Supabase', 'Capacitor', 'Tailwind'],
       image: '/projects/foodlink.png',
       link: 'https://foodlinkglobal.netlify.app/',
-      featured: true
+      featured: true,
+      year: '2026'
     },
     {
       id: 'bytely-calling-agent',
@@ -45,7 +46,8 @@ export const portfolioData = {
       image: '/projects/calling-agent.webp',
       link: '#',
       hoverText: 'Active Demo',
-      featured: true
+      featured: true,
+      year: '2026'
     },
     {
       id: 'bytelyai',
@@ -54,7 +56,8 @@ export const portfolioData = {
       tech: ['React', 'Vite', 'GSAP', 'Framer Motion', 'Zustand', 'Axios'],
       image: '/projects/bytely.png',
       link: 'https://bytely.ai/',
-      featured: true
+      featured: true,
+      year: '2026'
     },
     {
       id: 'crypto-analyzer',
@@ -63,7 +66,8 @@ export const portfolioData = {
       tech: ['MERN Stack', 'Python', 'CoinGecko API', 'Matplotlib'],
       image: '/projects/crypto.png',
       link: 'https://crypto-analyze-proj.netlify.app/',
-      featured: true
+      featured: true,
+      year: '2025'
     },
     {
       id: 'mentairo',
@@ -73,7 +77,8 @@ export const portfolioData = {
       image: '/projects/mentairo.jpeg',
       link: '#',
       hoverText: 'Coming Soon',
-      featured: true
+      featured: true,
+      year: '2025'
     },
     {
       id: 'ezi-services',
@@ -81,7 +86,8 @@ export const portfolioData = {
       description: 'High-performance custom blog engine optimized for speed and SEO.',
       tech: ['Vue.js', 'Node.js', 'Express', 'SEO'],
       image: '/projects/ezi.png',
-      featured: false
+      featured: false,
+      year: '2025'
     }
   ],
   skills: [
