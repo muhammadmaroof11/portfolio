@@ -161,14 +161,21 @@ onUnmounted(() => {
         'bg-surface-container-high/90 backdrop-blur-lg'
       ]"
     >
-      <div v-if="hoveredProject" class="relative w-full h-full">
+      <div v-if="hoveredProject" class="relative w-full h-full flex items-center justify-center bg-black/10 dark:bg-black/50">
+        <!-- Blurred background copy of the image to fill space gracefully -->
+        <img 
+          :src="hoveredProject.image" 
+          alt="" 
+          class="absolute inset-0 w-full h-full object-cover opacity-30 dark:opacity-50 filter blur-lg scale-110 pointer-events-none" 
+        />
+        <!-- Contain-fitted main image -->
         <img 
           :src="hoveredProject.image" 
           :alt="hoveredProject.title" 
-          class="w-full h-full object-cover scale-[1.03] transition-transform duration-500" 
+          class="relative z-10 w-full h-full object-contain p-3 scale-[1.03] transition-transform duration-500" 
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent"></div>
-        <div class="absolute bottom-4 left-4 right-4">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent z-20"></div>
+        <div class="absolute bottom-4 left-4 right-4 z-30">
           <div class="flex items-center gap-2">
             <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
             <span class="text-[8px] font-bold text-white/50 tracking-widest uppercase">PREVIEWING ENGINE</span>
