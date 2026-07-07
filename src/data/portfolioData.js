@@ -38,6 +38,16 @@ export const portfolioData = {
       featured: true
     },
     {
+      id: 'bytely-calling-agent',
+      title: 'BYTELY CALLING AGENT',
+      description: 'Voice AI conversational calling agent featuring low-latency response processing, call logs dashboard, and agent orchestration.',
+      tech: ['Vue.js', 'Pinia', 'JavaScript', 'Tailwind CSS'],
+      image: '/projects/calling-agent.webp',
+      link: '#',
+      hoverText: 'Active Demo',
+      featured: true
+    },
+    {
       id: 'bytelyai',
       title: 'BYTELYAI',
       description: 'SaaS AI Platform with enterprise-grade secure coding practices.',
