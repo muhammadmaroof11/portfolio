@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, useSlots } from 'vue'
+import { useThemeStore } from '../stores/themeStore'
 
 const props = defineProps({
   fontSize: {
@@ -82,6 +83,7 @@ const props = defineProps({
 
 const canvasRef = ref(null)
 const slots = useSlots()
+const themeStore = useThemeStore()
 
 const getSlotText = () => {
   if (!slots.default) return ''
@@ -111,6 +113,9 @@ const initFuzzyText = async () => {
     cleanupFn()
     cleanupFn = null
   }
+
+  // Brief delay to allow stylesheet classes to propagate and CSS custom variables to update
+  await new Promise(resolve => setTimeout(resolve, 30))
 
   const canvas = canvasRef.value
   if (!canvas) return
@@ -399,6 +404,7 @@ watch([
   () => props.fontFamily,
   () => props.fontStyle,
   () => props.color,
+  () => themeStore.currentStyle,
   () => props.enableHover,
   () => props.baseIntensity,
   () => props.hoverIntensity,
