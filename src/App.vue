@@ -2,6 +2,7 @@
 import { RouterView, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import Navbar from './components/Navbar.vue'
+import ClickSpark from './components/ClickSpark.vue'
 import { useThemeStore } from './stores/themeStore'
 
 const themeStore = useThemeStore()
@@ -36,6 +37,8 @@ onMounted(() => {
       themeStore.currentStyle === 'brutal' ? 'bg-surface font-headline' : 
       'bg-surface'
     ]">
+    
+    <ClickSpark />
     
     <!-- Top Progress Bar -->
     <div 
