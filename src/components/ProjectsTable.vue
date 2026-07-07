@@ -8,7 +8,8 @@ const themeStore = useThemeStore()
 const allProjects = ref(
   portfolioData.projects.map(p => ({
     ...p,
-    year: p.id === 'foodlink' ? '2024' :
+    year: p.id === 'bytely-calling-agent' ? '2025' :
+          p.id === 'foodlink' ? '2024' :
           p.id === 'bytelyai' ? '2024' :
           p.id === 'crypto-analyzer' ? '2023' :
           p.id === 'mentairo' ? '2024' : '2023'
