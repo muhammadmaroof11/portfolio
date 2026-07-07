@@ -1,7 +1,7 @@
 <script setup>
 import { useThemeStore } from '../stores/themeStore'
 import { ref } from 'vue'
-import { Menu, X, Sun, Moon } from 'lucide-vue-next'
+import { Menu, X } from 'lucide-vue-next'
 
 const themeStore = useThemeStore()
 const isMenuOpen = ref(false)
@@ -11,6 +11,12 @@ const navLinks = [
   { name: 'Skills', path: '/skills' },
   { name: 'Experience', path: '/experience' },
   { name: 'Contact', path: '/contact' }
+]
+
+const styles = [
+  { key: 'minimal', label: 'MINIMAL' },
+  { key: 'brutal', label: 'BRUTAL' },
+  { key: 'street', label: 'STREET' }
 ]
 
 const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
@@ -39,6 +45,23 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
           active-class="text-primary !opacity-100" v-ripple>
           {{ link.name }}
         </router-link>
+
+        <!-- STYLE SWITCHER (Highly Prominent Glow/Gradient Wrapper) -->
+        <div class="bg-gradient-to-r from-primary/40 via-secondary/20 to-primary/40 p-[1.5px] rounded-xl ml-4 shadow-lg shadow-primary/5 hover:shadow-primary/10 transition-all duration-300">
+          <div class="flex items-center gap-1.5 p-1 rounded-[10px] bg-black/90 backdrop-blur-md">
+            <button
+              v-for="s in styles"
+              :key="s.key"
+              @click="themeStore.setStyle(s.key)"
+              class="text-[9px] font-black tracking-[0.2em] rounded-lg transition-all duration-300 active-spring"
+              :class="themeStore.currentStyle === s.key
+                ? 'bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-lg shadow-primary/20 scale-[1.04] px-4 py-2'
+                : 'text-on-surface/50 hover:text-on-surface hover:bg-white/5 px-3.5 py-2'"
+            >
+              {{ s.label }}
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- MOBILE TOGGLE -->
@@ -58,6 +81,24 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
           class="font-headline text-2xl font-black uppercase tracking-tighter hover:text-primary transition-colors py-2 px-4 rounded-xl active-spring" v-ripple>
           {{ link.name }}
         </router-link>
+
+        <!-- MOBILE STYLE SWITCHER -->
+        <div class="flex flex-col gap-3 pt-4 border-t border-surface-container-high">
+          <span class="text-[9px] font-black tracking-[0.25em] uppercase text-on-surface/40">THEME STYLE</span>
+          <div class="grid grid-cols-3 gap-2 bg-surface-container-high/65 p-1 rounded-xl border border-surface-container-high/80">
+            <button
+              v-for="s in styles"
+              :key="s.key"
+              @click="themeStore.setStyle(s.key); isMenuOpen = false"
+              class="text-[9px] font-black tracking-[0.2em] rounded-lg transition-all duration-300 py-3 text-center"
+              :class="themeStore.currentStyle === s.key
+                ? 'bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-lg shadow-primary/15 scale-[1.02]'
+                : 'bg-surface-container text-on-surface/60 hover:text-on-surface'"
+            >
+              {{ s.label }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
