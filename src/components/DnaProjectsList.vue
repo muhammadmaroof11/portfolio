@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Cpu, Sparkles, AlertCircle, Shield } from 'lucide-vue-next'
+import { ArrowRight, Cpu, Sparkles, Shield, ChevronRight } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -27,13 +27,13 @@ let targetMouseY = 0
 
 // DNA Geometry
 let currentRadius = 160
-const frequency = 0.006 // Wider wavelength
+const frequency = 0.006
 let baseFontSize = 26
 
-// Background matrix/dust particles
+// Background particles
 const bgParticles = []
 
-// Telemetry state values for HUD feel
+// Telemetry state values
 const activeTitle = ref('')
 const scramblerInterval = ref(null)
 const activeSubtitle = ref('')
@@ -83,10 +83,10 @@ watch(activeIndex, (newVal) => {
   }
 }, { immediate: true })
 
-// Initialize floating cyber particles
+// Initialize floating particles
 const initParticles = (width, height) => {
   bgParticles.length = 0
-  const count = window.innerWidth < 1024 ? 20 : 50
+  const count = window.innerWidth < 1024 ? 15 : 45
   for (let i = 0; i < count; i++) {
     bgParticles.push({
       x: Math.random() * width,
@@ -137,8 +137,8 @@ const drawDna = () => {
   const points2 = []
   
   // 3D Wide-angle Camera / Perspective math
-  const distance = 250 // Camera distance
-  const fov = 160 // Field of View projection
+  const distance = 250 
+  const fov = 160 
   
   const yStep = window.innerWidth < 1024 ? 24 : 16
   for (let y = 0; y < height; y += yStep) {
@@ -199,7 +199,7 @@ const drawDna = () => {
   allPoints.sort((a, b) => a.z - b.z)
   
   allPoints.forEach(p => {
-    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.75 + 0.25 // Depth opacity mapping
+    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.75 + 0.25 
     const fontSize = baseFontSize * p.scale
     
     ctx.font = `bold ${Math.round(fontSize)}px Courier New, monospace`
@@ -210,7 +210,6 @@ const drawDna = () => {
                      
     ctx.fillStyle = `rgba(${colorStr}, ${opacity})`
     
-    // Add real shadow glow for characters closest to "camera"
     if (p.z > currentRadius * 0.3) {
       ctx.shadowColor = `rgb(${colorStr})`
       ctx.shadowBlur = window.innerWidth < 1024 ? 6 : 14
@@ -235,13 +234,13 @@ const updateDimensions = () => {
   // Set helix scaling to fit viewport sizes
   if (window.innerWidth < 768) {
     currentRadius = 55
-    baseFontSize = 14
+    baseFontSize = 13
   } else if (window.innerWidth < 1024) {
     currentRadius = 90
-    baseFontSize = 18
+    baseFontSize = 17
   } else {
-    currentRadius = 170 // Massive 3d radius
-    baseFontSize = 28 // Big cinematic symbols
+    currentRadius = 170 
+    baseFontSize = 28 
   }
   
   initParticles(canvas.width, canvas.height)
@@ -254,6 +253,20 @@ const handleMouseMove = (e) => {
   targetMouseY = (e.clientY / window.innerHeight - 0.5) * -70
 }
 
+// Precise scroll jump trigger mapping to active segment progress zones
+const scrollToProject = (index) => {
+  if (!scrollTriggerInstance) return
+  const start = scrollTriggerInstance.start
+  const end = scrollTriggerInstance.end
+  const step = (end - start) / projects.value.length
+  // Navigate to middle of scroll trigger zone
+  const target = start + index * step + step * 0.5
+  window.scrollTo({
+    top: target,
+    behavior: 'smooth'
+  })
+}
+
 onMounted(async () => {
   await nextTick()
   updateDimensions()
@@ -264,7 +277,7 @@ onMounted(async () => {
   scrollTriggerInstance = ScrollTrigger.create({
     trigger: containerRef.value,
     start: 'top top',
-    end: `+=${projects.value.length * 150}%`, // Longer scroll duration for cinema pacing
+    end: `+=${projects.value.length * 150}%`, // Cinema pacing
     pin: pinnedRef.value,
     scrub: true,
     onUpdate: (self) => {
@@ -322,7 +335,7 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- LEFT SIDEBAR TRACKER (Desktop HUD specs) -->
+      <!-- LEFT SIDEBAR TRACKER (Desktop HUD specs) - Stays static & fully readable -->
       <div class="hidden lg:flex absolute left-12 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-5 z-40 max-w-[280px] pointer-events-none">
         <div>
           <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] block mb-2">SYSTEM DECK STATUS</span>
@@ -335,13 +348,13 @@ onUnmounted(() => {
           DNA strand rotation linked directly to scroll scrub telemetry. Nodes represent repository deployment records.
         </p>
 
-        <!-- Staggered progression list -->
+        <!-- Interactive progression navigation elements -->
         <div class="flex flex-col gap-2.5 mt-2 pointer-events-auto">
-          <div 
+          <button 
             v-for="(p, index) in projects" 
             :key="'hud-i-' + p.id"
-            class="flex items-center gap-3.5 group cursor-pointer"
-            @click="gsap.to(window, { duration: 0.8, scrollTo: scrollTriggerInstance.start + (index * (scrollTriggerInstance.end - scrollTriggerInstance.start) / projects.length) })"
+            class="flex items-center gap-3.5 group cursor-pointer border-none bg-transparent p-0 text-left outline-none"
+            @click="scrollToProject(index)"
           >
             <div 
               class="h-[3px] transition-all duration-500 rounded-full"
@@ -350,14 +363,15 @@ onUnmounted(() => {
               ]"
             ></div>
             <span 
-              class="text-[9px] font-mono font-black uppercase tracking-[0.2em] transition-colors duration-500"
+              class="text-[9px] font-mono font-black uppercase tracking-[0.2em] transition-colors duration-500 flex items-center gap-1"
               :class="[
                 index === activeIndex ? 'text-primary' : 'text-on-surface/40 group-hover:text-on-surface/70'
               ]"
             >
               0{{ index + 1 }}. {{ p.title }}
+              <ChevronRight v-if="index === activeIndex" class="w-3 h-3 text-primary animate-pulse" />
             </span>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -382,42 +396,36 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Project Cards Stack - Cinematic entry/exit sliding blur transformations -->
-      <div class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 md:px-12">
+      <!-- Project Cards Stack - Positioned on right column for desktop, bottom for mobile -->
+      <div class="absolute inset-0 z-30 flex items-end lg:items-center justify-center lg:justify-end pointer-events-none px-6 pb-10 md:pb-14 lg:pb-0 lg:pr-24 xl:pr-32">
         <div 
           v-for="(project, index) in projects" 
           :key="project.id"
-          class="absolute w-full max-w-[500px] lg:max-w-[420px] transition-all duration-750 ease-out flex flex-col pointer-events-none"
+          class="absolute w-full max-w-[500px] lg:max-w-[430px] xl:max-w-[460px] transition-all duration-750 ease-out flex flex-col pointer-events-none"
           :class="[
             index === activeIndex 
               ? 'opacity-100 scale-100 translate-y-0 blur-0 pointer-events-auto z-40' 
               : index < activeIndex 
                 ? 'opacity-0 scale-95 -translate-y-36 blur-[10px] pointer-events-none z-10' 
-                : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10',
-            // Alternating layouts
-            index % 2 === 0 ? 'lg:translate-x-[-250px] xl:translate-x-[-340px]' : 'lg:translate-x-[250px] xl:translate-x-[340px]'
+                : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10'
           ]"
         >
           <!-- Cinematic HUD styled Card Box -->
           <div 
-            class="group relative flex flex-col items-stretch p-6 md:p-8 overflow-hidden"
+            class="group relative flex flex-col items-stretch p-5 md:p-7 xl:p-8 overflow-hidden"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
-              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
+              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface shadow-[8px_8px_0_0_rgba(0,0,0,0.15)]' :
               themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/95' :
-              'border border-primary/10 bg-surface-container-low/75 backdrop-blur-3xl shadow-2xl'
+              'border border-primary/10 bg-surface-container-low/85 backdrop-blur-3xl shadow-2xl'
             ]"
           >
-            <!-- High-tech HUD Corner Brackets (for non-brutal themes) -->
+            <!-- High-tech HUD Corner Brackets -->
             <div v-if="themeStore.currentStyle !== 'brutal'" class="absolute inset-0 pointer-events-none">
-              <!-- Top Left Bracket -->
-              <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary/20 group-hover:border-primary/60 transition-colors duration-500"></div>
-              <!-- Top Right Bracket -->
-              <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-primary/20 group-hover:border-primary/60 transition-colors duration-500"></div>
-              <!-- Bottom Left Bracket -->
-              <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-primary/20 group-hover:border-primary/60 transition-colors duration-500"></div>
-              <!-- Bottom Right Bracket -->
-              <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary/20 group-hover:border-primary/60 transition-colors duration-500"></div>
+              <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-primary/25 group-hover:border-primary/60 transition-colors duration-500"></div>
+              <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-primary/25 group-hover:border-primary/60 transition-colors duration-500"></div>
+              <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-primary/25 group-hover:border-primary/60 transition-colors duration-500"></div>
+              <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-primary/25 group-hover:border-primary/60 transition-colors duration-500"></div>
             </div>
 
             <!-- Decorative Scanning Beam Effect -->
@@ -430,7 +438,7 @@ onUnmounted(() => {
 
             <!-- Image preview box -->
             <div 
-              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[170px] md:max-h-[230px]"
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[150px] md:max-h-[200px]"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
               <img 
@@ -442,12 +450,12 @@ onUnmounted(() => {
               <img 
                 :src="project.image" 
                 :alt="project.title" 
-                class="relative z-10 max-h-[150px] md:max-h-[210px] w-auto h-auto object-contain rounded-lg p-2.5 transition-transform duration-700 group-hover:scale-[1.03]" 
+                class="relative z-10 max-h-[130px] md:max-h-[180px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
             </div>
 
             <!-- Content spec sheet -->
-            <div class="mt-6">
+            <div class="mt-5">
               <!-- HUD System Headers -->
               <div class="flex items-center justify-between text-[7px] md:text-[8px] font-mono text-on-surface/30 mb-2">
                 <span>[DECK_REF: #0{{ index + 1 }}/PORTFOLIO_NODE]</span>
@@ -455,13 +463,13 @@ onUnmounted(() => {
               </div>
 
               <!-- Cinematic Scrambled Title -->
-              <h3 class="text-2xl md:text-3xl font-headline font-black uppercase tracking-tight text-on-surface mb-2 leading-none">
+              <h3 class="text-xl md:text-2xl font-headline font-black uppercase tracking-tight text-on-surface mb-2.5 leading-none">
                 <span v-if="index === activeIndex">{{ activeTitle }}</span>
                 <span v-else>{{ project.title }}</span>
               </h3>
 
-              <!-- Tech tags horizontal specs -->
-              <div class="flex flex-wrap gap-1.5 mb-4">
+              <!-- Tech tags -->
+              <div class="flex flex-wrap gap-1.5 mb-3.5">
                 <span 
                   v-for="tag in project.tech" 
                   :key="tag"
@@ -473,12 +481,12 @@ onUnmounted(() => {
               </div>
 
               <!-- Description -->
-              <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-5 opacity-90 max-w-sm">
+              <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-4.5 opacity-90 max-w-sm">
                 {{ project.description }}
               </p>
 
               <!-- Footer with explore actions -->
-              <div class="flex items-center justify-between mt-auto border-t border-on-surface/5 pt-4">
+              <div class="flex items-center justify-between mt-auto border-t border-on-surface/5 pt-3.5">
                 <div class="flex flex-col">
                   <span class="font-mono text-[8px] font-bold text-on-surface/30 uppercase tracking-wider">
                     COMPILED YEAR
@@ -492,7 +500,7 @@ onUnmounted(() => {
                   v-if="project.link && project.link !== '#'" 
                   :href="project.link" 
                   target="_blank"
-                  class="inline-flex items-center gap-1.5 px-4.5 py-3 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10"
+                  class="inline-flex items-center gap-1.5 px-4.5 py-3 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
                   :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
                   :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
                   v-ripple
@@ -523,7 +531,7 @@ onUnmounted(() => {
     transform: translateY(-100%);
   }
   50% {
-    transform: translateY(350px);
+    transform: translateY(300px);
   }
   100% {
     transform: translateY(-100%);
