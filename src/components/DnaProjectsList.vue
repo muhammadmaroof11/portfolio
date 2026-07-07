@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Cpu, Sparkles, Shield, ChevronRight } from 'lucide-vue-next'
+import { ArrowRight, Cpu, Shield, ChevronRight, Zap } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -26,9 +26,9 @@ let targetMouseX = 0
 let targetMouseY = 0
 
 // DNA Geometry
-let currentRadius = 160
-const frequency = 0.006
-let baseFontSize = 26
+let currentRadius = 240 // Colossal radius for 70vw center presentation
+const frequency = 0.0055 // Smooth wave frequency
+let baseFontSize = 28
 
 // Background particles
 const bgParticles = []
@@ -86,15 +86,15 @@ watch(activeIndex, (newVal) => {
 // Initialize floating particles
 const initParticles = (width, height) => {
   bgParticles.length = 0
-  const count = window.innerWidth < 1024 ? 15 : 45
+  const count = window.innerWidth < 1024 ? 15 : 40
   for (let i = 0; i < count; i++) {
     bgParticles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      speed: 0.3 + Math.random() * 0.9,
+      speed: 0.2 + Math.random() * 0.8,
       char: Math.random() > 0.5 ? '0' : '1',
       size: 9 + Math.random() * 6,
-      opacity: 0.03 + Math.random() * 0.12
+      opacity: 0.02 + Math.random() * 0.1
     })
   }
 }
@@ -112,11 +112,14 @@ const drawDna = () => {
   const centerX = width / 2
   
   // Interpolate mouse movement for smooth parallax
-  mouseX += (targetMouseX - mouseX) * 0.06
-  mouseY += (targetMouseY - mouseY) * 0.06
+  mouseX += (targetMouseX - mouseX) * 0.05
+  mouseY += (targetMouseY - mouseY) * 0.05
   
   const time = Date.now() * 0.001
   const rotation = scrollProgress.value * Math.PI * 6 + time * 0.4
+  
+  // Calculate neuron message pulse position along the vertical height
+  const pulseY = scrollProgress.value * height
   
   // Render floating cyber dust in background
   ctx.textAlign = 'center'
@@ -138,9 +141,9 @@ const drawDna = () => {
   
   // 3D Wide-angle Camera / Perspective math
   const distance = 250 
-  const fov = 160 
+  const fov = 170 
   
-  const yStep = window.innerWidth < 1024 ? 24 : 16
+  const yStep = window.innerWidth < 1024 ? 22 : 14
   for (let y = 0; y < height; y += yStep) {
     const angle = y * frequency + rotation
     
@@ -179,10 +182,19 @@ const drawDna = () => {
       const p2 = points2[i]
       
       const avgZ = (p1.z + p2.z) / 2
-      const opacity = ((avgZ + currentRadius) / (2 * currentRadius)) * 0.4 + 0.05
+      const distToPulse = Math.abs(p1.y - pulseY)
+      const isPulseActive = distToPulse < 120
+      const pulseGlow = isPulseActive ? Math.cos((distToPulse / 120) * Math.PI / 2) : 0
       
-      const colorVal = themeStore.currentStyle === 'street' ? '0, 255, 255' : '34, 197, 94'
+      const opacity = ((avgZ + currentRadius) / (2 * currentRadius)) * 0.35 + 0.05 + pulseGlow * 0.4
+      
+      // Cyber colors: pulse is white/cyan
+      let colorVal = themeStore.currentStyle === 'street' ? '0, 255, 255' : '34, 197, 94'
+      if (isPulseActive) {
+        colorVal = themeStore.currentStyle === 'street' ? '255, 255, 255' : '230, 255, 240'
+      }
       ctx.strokeStyle = `rgba(${colorVal}, ${opacity})`
+      ctx.lineWidth = window.innerWidth < 1024 ? (1 + pulseGlow * 1.5) : (2 + pulseGlow * 2.5)
       
       ctx.beginPath()
       ctx.moveTo(p1.x, p1.y)
@@ -193,26 +205,38 @@ const drawDna = () => {
   
   // Collect all points, sort by depth (Z-index back to front sorting)
   const allPoints = []
-  points1.forEach((p, idx) => allPoints.push({ ...p, index: idx }))
-  points2.forEach((p, idx) => allPoints.push({ ...p, index: idx + 0.5 }))
+  points1.forEach((p, idx) => allPoints.push({ ...p, index: idx, isStrand1: true }))
+  points2.forEach((p, idx) => allPoints.push({ ...p, index: idx + 0.5, isStrand1: false }))
   
   allPoints.sort((a, b) => a.z - b.z)
   
   allPoints.forEach(p => {
-    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.75 + 0.25 
-    const fontSize = baseFontSize * p.scale
+    const distToPulse = Math.abs(p.y - pulseY)
+    const isPulseActive = distToPulse < 120
+    const pulseGlow = isPulseActive ? Math.cos((distToPulse / 120) * Math.PI / 2) : 0
+    
+    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.7 + 0.3 + pulseGlow * 0.2
+    // Scale up binary digits at the pulse coordinate to show neuron message traveling
+    const fontSize = baseFontSize * p.scale * (1 + pulseGlow * 0.3)
     
     ctx.font = `bold ${Math.round(fontSize)}px Courier New, monospace`
     
-    const isCyan = themeStore.currentStyle === 'street' && p.index % 2 === 0
-    const colorStr = isCyan ? '0, 255, 255' : 
-                     themeStore.currentStyle === 'street' ? '255, 0, 255' : '34, 197, 94'
+    let colorStr = ''
+    if (isPulseActive) {
+      // Blinding white/cyan or white/green pulse node
+      colorStr = themeStore.currentStyle === 'street' ? '255, 255, 255' : '255, 255, 255'
+    } else {
+      const isCyan = themeStore.currentStyle === 'street' && p.index % 2 === 0
+      colorStr = isCyan ? '0, 255, 255' : 
+                 themeStore.currentStyle === 'street' ? '255, 0, 255' : '34, 197, 94'
+    }
                      
     ctx.fillStyle = `rgba(${colorStr}, ${opacity})`
     
-    if (p.z > currentRadius * 0.3) {
+    // Add real shadow glow
+    if (isPulseActive || p.z > currentRadius * 0.3) {
       ctx.shadowColor = `rgb(${colorStr})`
-      ctx.shadowBlur = window.innerWidth < 1024 ? 6 : 14
+      ctx.shadowBlur = (window.innerWidth < 1024 ? 6 : 14) + pulseGlow * 15
     } else {
       ctx.shadowBlur = 0
     }
@@ -222,6 +246,38 @@ const drawDna = () => {
   })
   
   ctx.shadowBlur = 0
+  
+  // DRAW HOLOGRAM LASER LINK (Desktop only, connects active DNA strand coordinate to project card)
+  if (window.innerWidth >= 1024 && scrollProgress.value > 0.01 && scrollProgress.value < 0.99) {
+    const angle = pulseY * frequency + rotation
+    const activeScale = fov / (fov + Math.sin(angle) * currentRadius)
+    // Projected X coordinate of active strand point
+    const activeNodeX = centerX + Math.cos(angle) * currentRadius * activeScale
+    
+    const colorStr = themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'
+    ctx.strokeStyle = colorStr
+    ctx.lineWidth = 1.5
+    ctx.shadowColor = colorStr
+    ctx.shadowBlur = 10
+    ctx.setLineDash([4, 4])
+    
+    ctx.beginPath()
+    ctx.moveTo(activeNodeX + mouseX, pulseY)
+    
+    // Pointing to left border center of project card (Desktop card floats on right column)
+    const cardLeftX = width - (window.innerWidth < 1280 ? 440 : 490)
+    ctx.lineTo(cardLeftX, height / 2)
+    ctx.stroke()
+    ctx.setLineDash([])
+    
+    // Draw glowing node bead at connection point
+    ctx.beginPath()
+    ctx.arc(activeNodeX + mouseX, pulseY, 5, 0, Math.PI * 2)
+    ctx.fillStyle = '#ffffff'
+    ctx.fill()
+    ctx.shadowBlur = 0
+  }
+  
   animationId = requestAnimationFrame(drawDna)
 }
 
@@ -231,7 +287,7 @@ const updateDimensions = () => {
   canvas.width = canvas.parentElement.clientWidth
   canvas.height = canvas.parentElement.clientHeight
   
-  // Set helix scaling to fit viewport sizes
+  // Set helix scaling - Colossal widths!
   if (window.innerWidth < 768) {
     currentRadius = 55
     baseFontSize = 13
@@ -239,7 +295,7 @@ const updateDimensions = () => {
     currentRadius = 90
     baseFontSize = 17
   } else {
-    currentRadius = 170 
+    currentRadius = Math.min(canvas.width * 0.28, 250) // Colossal 28% of canvas width!
     baseFontSize = 28 
   }
   
@@ -253,13 +309,11 @@ const handleMouseMove = (e) => {
   targetMouseY = (e.clientY / window.innerHeight - 0.5) * -70
 }
 
-// Precise scroll jump trigger mapping to active segment progress zones
 const scrollToProject = (index) => {
   if (!scrollTriggerInstance) return
   const start = scrollTriggerInstance.start
   const end = scrollTriggerInstance.end
   const step = (end - start) / projects.value.length
-  // Navigate to middle of scroll trigger zone
   const target = start + index * step + step * 0.5
   window.scrollTo({
     top: target,
@@ -273,11 +327,11 @@ onMounted(async () => {
   window.addEventListener('resize', updateDimensions)
   window.addEventListener('mousemove', handleMouseMove)
   
-  // Lock container during scrolling sequences
+  // Lock container during scrolling sequences (GSAP Pinned ScrollTrigger)
   scrollTriggerInstance = ScrollTrigger.create({
     trigger: containerRef.value,
     start: 'top top',
-    end: `+=${projects.value.length * 150}%`, // Cinema pacing
+    end: `+=${projects.value.length * 150}%`, // Story mode scrolling pacing
     pin: pinnedRef.value,
     scrub: true,
     onUpdate: (self) => {
@@ -335,11 +389,11 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- LEFT SIDEBAR TRACKER (Desktop HUD specs) - Stays static & fully readable -->
-      <div class="hidden lg:flex absolute left-12 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-5 z-40 max-w-[280px] pointer-events-none">
+      <!-- LEFT SIDEBAR TRACKER (Desktop HUD specs) - Floats cleanly on left -->
+      <div class="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-4 z-40 max-w-[240px] pointer-events-none bg-surface-container-lowest/10 backdrop-blur-md p-4 rounded-xl border border-primary/5 shadow-lg">
         <div>
           <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] block mb-2">SYSTEM DECK STATUS</span>
-          <h3 class="font-headline text-3xl font-black text-on-surface uppercase leading-[0.9]">
+          <h3 class="font-headline text-2xl font-black text-on-surface uppercase leading-[0.9]">
             GENETIC<br/><span class="text-primary italic">REGISTRY.</span>
           </h3>
         </div>
@@ -349,11 +403,11 @@ onUnmounted(() => {
         </p>
 
         <!-- Interactive progression navigation elements -->
-        <div class="flex flex-col gap-2.5 mt-2 pointer-events-auto">
+        <div class="flex flex-col gap-2 mt-2 pointer-events-auto w-full">
           <button 
             v-for="(p, index) in projects" 
             :key="'hud-i-' + p.id"
-            class="flex items-center gap-3.5 group cursor-pointer border-none bg-transparent p-0 text-left outline-none"
+            class="flex items-center gap-3.5 group cursor-pointer border-none bg-transparent p-0 text-left outline-none w-full"
             @click="scrollToProject(index)"
           >
             <div 
@@ -375,8 +429,8 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Centered 3D DNA Canvas Viewport -->
-      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[600px] pointer-events-none z-20">
+      <!-- Centered 3D DNA Canvas Viewport (Takes up massive space in the center, 70vw equivalent) -->
+      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[70vw] lg:max-w-[1200px] pointer-events-none z-20">
         <canvas ref="canvasRef" class="w-full h-full opacity-70 dark:opacity-85"></canvas>
       </div>
 
@@ -396,12 +450,12 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Project Cards Stack - Positioned on right column for desktop, bottom for mobile -->
-      <div class="absolute inset-0 z-30 flex items-end lg:items-center justify-center lg:justify-end pointer-events-none px-6 pb-10 md:pb-14 lg:pb-0 lg:pr-24 xl:pr-32">
+      <!-- Project Cards Stack - Positioned on far right column for desktop, bottom for mobile -->
+      <div class="absolute inset-0 z-30 flex items-end lg:items-center justify-center lg:justify-end pointer-events-none px-6 pb-10 md:pb-14 lg:pb-0 lg:pr-8 xl:pr-12">
         <div 
           v-for="(project, index) in projects" 
           :key="project.id"
-          class="absolute w-full max-w-[500px] lg:max-w-[430px] xl:max-w-[460px] transition-all duration-750 ease-out flex flex-col pointer-events-none"
+          class="absolute w-full max-w-[500px] lg:max-w-[400px] xl:max-w-[440px] transition-all duration-750 ease-out flex flex-col pointer-events-none"
           :class="[
             index === activeIndex 
               ? 'opacity-100 scale-100 translate-y-0 blur-0 pointer-events-auto z-40' 
@@ -412,7 +466,7 @@ onUnmounted(() => {
         >
           <!-- Cinematic HUD styled Card Box -->
           <div 
-            class="group relative flex flex-col items-stretch p-5 md:p-7 xl:p-8 overflow-hidden"
+            class="group relative flex flex-col items-stretch p-5 md:p-6 xl:p-7 overflow-hidden bg-surface-container-low/10 backdrop-blur-md"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
               themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface shadow-[8px_8px_0_0_rgba(0,0,0,0.15)]' :
@@ -438,7 +492,7 @@ onUnmounted(() => {
 
             <!-- Image preview box -->
             <div 
-              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[150px] md:max-h-[200px]"
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[140px] md:max-h-[190px]"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
               <img 
@@ -450,7 +504,7 @@ onUnmounted(() => {
               <img 
                 :src="project.image" 
                 :alt="project.title" 
-                class="relative z-10 max-h-[130px] md:max-h-[180px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
+                class="relative z-10 max-h-[120px] md:max-h-[170px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
             </div>
 
@@ -463,13 +517,13 @@ onUnmounted(() => {
               </div>
 
               <!-- Cinematic Scrambled Title -->
-              <h3 class="text-xl md:text-2xl font-headline font-black uppercase tracking-tight text-on-surface mb-2.5 leading-none">
+              <h3 class="text-xl md:text-2xl font-headline font-black uppercase tracking-tight text-on-surface mb-2 leading-none">
                 <span v-if="index === activeIndex">{{ activeTitle }}</span>
                 <span v-else>{{ project.title }}</span>
               </h3>
 
               <!-- Tech tags -->
-              <div class="flex flex-wrap gap-1.5 mb-3.5">
+              <div class="flex flex-wrap gap-1.5 mb-3">
                 <span 
                   v-for="tag in project.tech" 
                   :key="tag"
@@ -481,7 +535,7 @@ onUnmounted(() => {
               </div>
 
               <!-- Description -->
-              <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-4.5 opacity-90 max-w-sm">
+              <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-4 opacity-90 max-w-sm">
                 {{ project.description }}
               </p>
 
@@ -500,7 +554,7 @@ onUnmounted(() => {
                   v-if="project.link && project.link !== '#'" 
                   :href="project.link" 
                   target="_blank"
-                  class="inline-flex items-center gap-1.5 px-4.5 py-3 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
+                  class="inline-flex items-center gap-1.5 px-4.5 py-2.5 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
                   :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
                   :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
                   v-ripple
@@ -531,7 +585,7 @@ onUnmounted(() => {
     transform: translateY(-100%);
   }
   50% {
-    transform: translateY(300px);
+    transform: translateY(280px);
   }
   100% {
     transform: translateY(-100%);
