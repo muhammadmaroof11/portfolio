@@ -115,8 +115,7 @@ const drawDna = () => {
   mouseX += (targetMouseX - mouseX) * 0.05
   mouseY += (targetMouseY - mouseY) * 0.05
   
-  const time = Date.now() * 0.001
-  const rotation = scrollProgress.value * Math.PI * 6 + time * 0.4
+  const rotation = scrollProgress.value * Math.PI * 6
   
   // Calculate neuron message pulse position along the vertical height
   const pulseY = scrollProgress.value * height
