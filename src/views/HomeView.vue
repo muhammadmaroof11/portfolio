@@ -391,13 +391,16 @@ const offeredServices = [
       </div>
     </section>
 
+    </div> <!-- Close max-w-[1800px] container for full-width DNA block -->
+
     <!-- FEATURED PROJECTS (3D DNA SYSTEM LADDER) -->
-    <section ref="projectsRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 scroll-mt-32 relative layer-base" id="work">
+    <section ref="projectsRef" class="w-full relative layer-base scroll-mt-32" id="work">
       <DnaProjectsList />
     </section>
 
-    <!-- PROJECTS ARCHIVE TABLE -->
-    <ProjectsTable />
+    <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pb-16 overflow-visible"> <!-- Reopen max-w-[1800px] container -->
+      <!-- PROJECTS ARCHIVE TABLE -->
+      <ProjectsTable />
 
     <!-- CORE PHILOSOPHY -->
     <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 px-8 md:px-12 py-20 md:py-32 relative overflow-hidden layer-base"
