@@ -135,14 +135,14 @@ const updateDimensions = () => {
   
   // Make the DNA helix thicker and bigger based on window width
   if (window.innerWidth < 768) {
-    currentRadius = 40
-    baseFontSize = 12
+    currentRadius = 45
+    baseFontSize = 13
   } else if (window.innerWidth < 1024) {
-    currentRadius = 70
-    baseFontSize = 15
+    currentRadius = 75
+    baseFontSize = 16
   } else {
-    currentRadius = 150 // Thicker and way bigger helix!
-    baseFontSize = 24 // Substantially larger binary characters!
+    currentRadius = 160 // Thicker and way bigger helix!
+    baseFontSize = 26 // Substantially larger binary characters!
   }
 }
 
@@ -180,8 +180,18 @@ onUnmounted(() => {
 <template>
   <div ref="containerRef" class="relative w-full overflow-visible">
     <!-- Pinned screen-locked viewport container -->
-    <div ref="pinnedRef" class="h-screen w-full relative flex items-center justify-center overflow-hidden bg-background">
+    <div ref="pinnedRef" class="h-screen w-full relative flex items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
       
+      <!-- Top blend gradient overlay -->
+      <div class="absolute top-0 left-0 right-0 h-32 md:h-48 pointer-events-none z-[45]"
+        :style="{ background: `linear-gradient(to bottom, var(--color-background) 0%, transparent 100%)` }">
+      </div>
+      
+      <!-- Bottom blend gradient overlay -->
+      <div class="absolute bottom-0 left-0 right-0 h-32 md:h-48 pointer-events-none z-[45]"
+        :style="{ background: `linear-gradient(to top, var(--color-background) 0%, transparent 100%)` }">
+      </div>
+
       <!-- Faint Cyberpunk Grid Overlay in Background -->
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-10"></div>
       
@@ -234,12 +244,12 @@ onUnmounted(() => {
       </div>
 
       <!-- Giant Rotating DNA Canvas (Centered behind project cards) -->
-      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[450px] pointer-events-none z-20">
+      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[500px] pointer-events-none z-20">
         <canvas ref="canvasRef" class="w-full h-full opacity-65 dark:opacity-85"></canvas>
       </div>
 
       <!-- Mobile/Tablet top title info -->
-      <div class="absolute top-6 left-6 right-6 z-40 flex lg:hidden justify-between items-center pointer-events-none">
+      <div class="absolute top-8 left-8 right-8 z-40 flex lg:hidden justify-between items-center pointer-events-none">
         <div>
           <span class="text-primary font-black tracking-[0.3em] uppercase text-[8px] block">
             GENETIC SEQUENCER
