@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Cpu, Shield, ChevronRight, Zap } from 'lucide-vue-next'
+import { ArrowRight, Cpu, Shield, ChevronLeft, Zap } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -26,12 +26,13 @@ let targetMouseX = 0
 let targetMouseY = 0
 
 // DNA Geometry
-let currentRadius = 240 // Colossal radius for 70vw center presentation
-const frequency = 0.0055 // Smooth wave frequency
-let baseFontSize = 28
+let currentRadius = 180
+const frequency = 0.0055 // Smooth slanting wave
+let baseFontSize = 26
 
-// Background particles
+// Background particles and active spark particles
 const bgParticles = []
+const sparkParticles = []
 
 // Telemetry state values
 const activeTitle = ref('')
@@ -83,20 +84,64 @@ watch(activeIndex, (newVal) => {
   }
 }, { immediate: true })
 
-// Initialize floating particles
+// Initialize floating particles and spark splatters
 const initParticles = (width, height) => {
   bgParticles.length = 0
-  const count = window.innerWidth < 1024 ? 15 : 40
+  const count = window.innerWidth < 1024 ? 15 : 35
   for (let i = 0; i < count; i++) {
     bgParticles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      speed: 0.2 + Math.random() * 0.8,
+      speed: 0.2 + Math.random() * 0.7,
       char: Math.random() > 0.5 ? '0' : '1',
-      size: 9 + Math.random() * 6,
-      opacity: 0.02 + Math.random() * 0.1
+      size: 9 + Math.random() * 5,
+      opacity: 0.02 + Math.random() * 0.08
     })
   }
+
+  // Active electrical spark explosion particles
+  sparkParticles.length = 0
+  for (let i = 0; i < 25; i++) {
+    sparkParticles.push({
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      size: 2 + Math.random() * 3,
+      opacity: 0,
+      life: 0
+    })
+  }
+}
+
+// Draw a realistic jagged electric arc (lightning)
+const drawLightning = (ctx, startX, startY, endX, endY) => {
+  const colorStr = themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'
+  ctx.strokeStyle = '#ffffff'
+  ctx.shadowColor = colorStr
+  ctx.shadowBlur = 15
+  ctx.lineWidth = window.innerWidth < 1024 ? 1.5 : 2.5
+  
+  ctx.beginPath()
+  ctx.moveTo(startX, startY)
+  
+  const segments = 6
+  let lastX = startX
+  let lastY = startY
+  for (let i = 1; i < segments; i++) {
+    const t = i / segments
+    const targetX = startX + (endX - startX) * t
+    const targetY = startY + (endY - startY) * t
+    
+    // Perpendicular jitter offsets to simulate plasma arc
+    const jitterX = (Math.random() - 0.5) * 20
+    const jitterY = (Math.random() - 0.5) * 8
+    
+    ctx.lineTo(targetX + jitterX, targetY + jitterY)
+  }
+  ctx.lineTo(endX, endY)
+  ctx.stroke()
+  ctx.shadowBlur = 0
 }
 
 // 3D Canvas Loop
@@ -109,15 +154,21 @@ const drawDna = () => {
   
   const width = canvas.width
   const height = canvas.height
-  const centerX = width / 2
+  
+  // Slanted diagonal 3D trajectory centerline formula (matches sample.mp4 camera angle)
+  const getCenterLineX = (y) => {
+    // Slants from bottom-center/left to top-center/right
+    return width * 0.44 + (1 - y / height) * width * 0.16
+  }
   
   // Interpolate mouse movement for smooth parallax
   mouseX += (targetMouseX - mouseX) * 0.05
   mouseY += (targetMouseY - mouseY) * 0.05
   
-  const rotation = scrollProgress.value * Math.PI * 6
+  const time = Date.now() * 0.001
+  const rotation = scrollProgress.value * Math.PI * 5
   
-  // Calculate neuron message pulse position along the vertical height
+  // Calculate neuron electrical pulse position
   const pulseY = scrollProgress.value * height
   
   // Render floating cyber dust in background
@@ -138,21 +189,26 @@ const drawDna = () => {
   const points1 = []
   const points2 = []
   
-  // 3D Wide-angle Camera / Perspective math
+  // 3D Perspective settings
   const distance = 250 
-  const fov = 170 
+  const fov = 160 
   
-  const yStep = window.innerWidth < 1024 ? 22 : 14
+  const yStep = window.innerWidth < 1024 ? 24 : 15
   for (let y = 0; y < height; y += yStep) {
     const angle = y * frequency + rotation
+    const centerX = getCenterLineX(y)
+    
+    // Adaptive depth zoom (lower/foreground is much wider and closer)
+    const depthScale = (y / height) * 1.2 + 0.4 // 0.4 at top, 1.6 at bottom
+    const radius = currentRadius * depthScale
     
     // Strand 1 (3D space coords)
-    const x1 = Math.cos(angle) * currentRadius
-    const z1 = Math.sin(angle) * currentRadius
+    const x1 = Math.cos(angle) * radius
+    const z1 = Math.sin(angle) * radius
     
     // Strand 2 (3D space coords)
-    const x2 = Math.cos(angle + Math.PI) * currentRadius
-    const z2 = Math.sin(angle + Math.PI) * currentRadius
+    const x2 = Math.cos(angle + Math.PI) * radius
+    const z2 = Math.sin(angle + Math.PI) * radius
     
     // Apply camera projection formulas
     const scale1 = fov / (fov + z1)
@@ -162,45 +218,106 @@ const drawDna = () => {
       x: centerX + x1 * scale1 + mouseX,
       y: y + mouseY * (scale1 - 0.5),
       z: z1,
-      scale: scale1
+      scale: scale1,
+      rawY: y
     })
     
     points2.push({
       x: centerX + x2 * scale2 + mouseX,
       y: y + mouseY * (scale2 - 0.5),
       z: z2,
-      scale: scale2
+      scale: scale2,
+      rawY: y
     })
   }
   
-  // Draw rungs with custom glowing neon lines
-  ctx.lineWidth = window.innerWidth < 1024 ? 1 : 2
+  // DRAW 3D GLASS RUNGS (Transparent glass plates connecting the strands)
   for (let i = 0; i < points1.length; i++) {
+    const p1 = points1[i]
+    const p2 = points2[i]
+    
+    const avgZ = (p1.z + p2.z) / 2
+    const distToPulse = Math.abs(p1.rawY - pulseY)
+    const isPulseActive = distToPulse < 100
+    const pulseGlow = isPulseActive ? Math.cos((distToPulse / 100) * Math.PI / 2) : 0
+    
+    // Draw glass bar panel
+    ctx.fillStyle = themeStore.currentStyle === 'street' 
+      ? `rgba(0, 255, 255, ${0.03 + pulseGlow * 0.08})` 
+      : `rgba(34, 197, 94, ${0.03 + pulseGlow * 0.08})`
+      
+    ctx.strokeStyle = themeStore.currentStyle === 'street'
+      ? `rgba(0, 255, 255, ${0.08 + pulseGlow * 0.3})`
+      : `rgba(34, 197, 94, ${0.08 + pulseGlow * 0.3})`
+      
+    ctx.lineWidth = 1 + pulseGlow * 1.5
+    
+    // Draw translucent glass quadrilateral
+    ctx.beginPath()
+    ctx.moveTo(p1.x, p1.y - 8 * p1.scale)
+    ctx.lineTo(p2.x, p2.y - 8 * p2.scale)
+    ctx.lineTo(p2.x, p2.y + 8 * p2.scale)
+    ctx.lineTo(p1.x, p1.y + 8 * p1.scale)
+    ctx.closePath()
+    ctx.fill()
+    ctx.stroke()
+    
+    // Draw horizontal connection rung line
     if (i % 2 === 0) {
-      const p1 = points1[i]
-      const p2 = points2[i]
-      
-      const avgZ = (p1.z + p2.z) / 2
-      const distToPulse = Math.abs(p1.y - pulseY)
-      const isPulseActive = distToPulse < 120
-      const pulseGlow = isPulseActive ? Math.cos((distToPulse / 120) * Math.PI / 2) : 0
-      
-      const opacity = ((avgZ + currentRadius) / (2 * currentRadius)) * 0.35 + 0.05 + pulseGlow * 0.4
-      
-      // Cyber colors: pulse is white/cyan
-      let colorVal = themeStore.currentStyle === 'street' ? '0, 255, 255' : '34, 197, 94'
-      if (isPulseActive) {
-        colorVal = themeStore.currentStyle === 'street' ? '255, 255, 255' : '230, 255, 240'
-      }
-      ctx.strokeStyle = `rgba(${colorVal}, ${opacity})`
-      ctx.lineWidth = window.innerWidth < 1024 ? (1 + pulseGlow * 1.5) : (2 + pulseGlow * 2.5)
-      
       ctx.beginPath()
       ctx.moveTo(p1.x, p1.y)
       ctx.lineTo(p2.x, p2.y)
       ctx.stroke()
     }
   }
+  
+  // DRAW LIVE ELECTRIC LIGHTNING ARC (At the active pulse position)
+  let activeP1 = null
+  let activeP2 = null
+  let minDistance = 99999
+  
+  for (let i = 0; i < points1.length; i++) {
+    const dist = Math.abs(points1[i].rawY - pulseY)
+    if (dist < minDistance) {
+      minDistance = dist
+      activeP1 = points1[i]
+      activeP2 = points2[i]
+    }
+  }
+  
+  if (activeP1 && activeP2 && minDistance < 40) {
+    drawLightning(ctx, activeP1.x, activeP1.y, activeP2.x, activeP2.y)
+    
+    // Trigger electrical spark particles splashing out
+    sparkParticles.forEach(sp => {
+      if (sp.opacity <= 0) {
+        sp.x = (activeP1.x + activeP2.x) / 2 + (Math.random() - 0.5) * 30
+        sp.y = (activeP1.y + activeP2.y) / 2 + (Math.random() - 0.5) * 15
+        sp.vx = (Math.random() - 0.5) * 5 + (activeP1.x > activeP2.x ? 1 : -1) * 2
+        sp.vy = (Math.random() - 0.5) * 4 - 1
+        sp.opacity = 0.9
+        sp.life = 1.0
+      }
+    })
+  }
+  
+  // Update and draw active spark particles
+  sparkParticles.forEach(sp => {
+    if (sp.opacity > 0) {
+      sp.x += sp.vx
+      sp.y += sp.vy
+      sp.vy += 0.08 // slight gravity
+      sp.opacity -= 0.035
+      
+      ctx.fillStyle = themeStore.currentStyle === 'street' ? `rgba(0, 255, 255, ${sp.opacity})` : `rgba(34, 197, 94, ${sp.opacity})`
+      ctx.shadowColor = themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'
+      ctx.shadowBlur = 8
+      ctx.beginPath()
+      ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.shadowBlur = 0
+    }
+  })
   
   // Collect all points, sort by depth (Z-index back to front sorting)
   const allPoints = []
@@ -210,20 +327,18 @@ const drawDna = () => {
   allPoints.sort((a, b) => a.z - b.z)
   
   allPoints.forEach(p => {
-    const distToPulse = Math.abs(p.y - pulseY)
-    const isPulseActive = distToPulse < 120
-    const pulseGlow = isPulseActive ? Math.cos((distToPulse / 120) * Math.PI / 2) : 0
+    const distToPulse = Math.abs(p.rawY - pulseY)
+    const isPulseActive = distToPulse < 100
+    const pulseGlow = isPulseActive ? Math.cos((distToPulse / 100) * Math.PI / 2) : 0
     
-    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.7 + 0.3 + pulseGlow * 0.2
-    // Scale up binary digits at the pulse coordinate to show neuron message traveling
+    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.75 + 0.25 + pulseGlow * 0.2
     const fontSize = baseFontSize * p.scale * (1 + pulseGlow * 0.3)
     
     ctx.font = `bold ${Math.round(fontSize)}px Courier New, monospace`
     
     let colorStr = ''
     if (isPulseActive) {
-      // Blinding white/cyan or white/green pulse node
-      colorStr = themeStore.currentStyle === 'street' ? '255, 255, 255' : '255, 255, 255'
+      colorStr = '255, 255, 255' // White hot lightning nodes
     } else {
       const isCyan = themeStore.currentStyle === 'street' && p.index % 2 === 0
       colorStr = isCyan ? '0, 255, 255' : 
@@ -232,7 +347,6 @@ const drawDna = () => {
                      
     ctx.fillStyle = `rgba(${colorStr}, ${opacity})`
     
-    // Add real shadow glow
     if (isPulseActive || p.z > currentRadius * 0.3) {
       ctx.shadowColor = `rgb(${colorStr})`
       ctx.shadowBlur = (window.innerWidth < 1024 ? 6 : 14) + pulseGlow * 15
@@ -246,32 +360,56 @@ const drawDna = () => {
   
   ctx.shadowBlur = 0
   
-  // DRAW HOLOGRAM LASER LINK (Desktop only, connects active DNA strand coordinate to project card)
-  if (window.innerWidth >= 1024 && scrollProgress.value > 0.01 && scrollProgress.value < 0.99) {
-    const angle = pulseY * frequency + rotation
-    const activeScale = fov / (fov + Math.sin(angle) * currentRadius)
-    // Projected X coordinate of active strand point
-    const activeNodeX = centerX + Math.cos(angle) * currentRadius * activeScale
+  // DRAW HOLOGRAM LASER LINK & CIRCUIT BENDS (Desktop only, connects active DNA to left-aligned project card)
+  if (window.innerWidth >= 1024 && scrollProgress.value > 0.01 && scrollProgress.value < 0.99 && activeP1) {
+    const activeCenterX = (activeP1.x + activeP2.x) / 2
+    const activeCenterY = (activeP1.y + activeP2.y) / 2
     
     const colorStr = themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'
     ctx.strokeStyle = colorStr
     ctx.lineWidth = 1.5
     ctx.shadowColor = colorStr
-    ctx.shadowBlur = 10
-    ctx.setLineDash([4, 4])
+    ctx.shadowBlur = 8
+    
+    // Draw circuit trace bends: starts from DNA node, goes left, bends 45 deg, runs to card border
+    const cardBorderX = window.innerWidth < 1280 ? 440 : 480
+    const cardCenterY = height / 2
     
     ctx.beginPath()
-    ctx.moveTo(activeNodeX + mouseX, pulseY)
+    ctx.moveTo(activeCenterX, activeCenterY)
     
-    // Pointing to left border center of project card (Desktop card floats on right column)
-    const cardLeftX = width - (window.innerWidth < 1280 ? 440 : 490)
-    ctx.lineTo(cardLeftX, height / 2)
+    const firstBendX = activeCenterX - 80
+    const secondBendX = activeCenterX - 160
+    
+    ctx.lineTo(firstBendX, activeCenterY)
+    ctx.lineTo(secondBendX, cardCenterY)
+    ctx.lineTo(cardBorderX, cardCenterY)
     ctx.stroke()
-    ctx.setLineDash([])
     
-    // Draw glowing node bead at connection point
+    // Draw rolling holographic metallic sphere along the circuit lines
+    const rollingCycle = (time * 1.2) % 1.0
+    let sphereX = activeCenterX
+    let sphereY = activeCenterY
+    
+    const segment1 = 0.3
+    const segment2 = 0.7
+    
+    if (rollingCycle < segment1) {
+      const t = rollingCycle / segment1
+      sphereX = activeCenterX + (firstBendX - activeCenterX) * t
+      sphereY = activeCenterY
+    } else if (rollingCycle < segment2) {
+      const t = (rollingCycle - segment1) / (segment2 - segment1)
+      sphereX = firstBendX + (secondBendX - firstBendX) * t
+      sphereY = activeCenterY + (cardCenterY - activeCenterY) * t
+    } else {
+      const t = (rollingCycle - segment2) / (1.0 - segment2)
+      sphereX = secondBendX + (cardBorderX - secondBendX) * t
+      sphereY = cardCenterY
+    }
+    
     ctx.beginPath()
-    ctx.arc(activeNodeX + mouseX, pulseY, 5, 0, Math.PI * 2)
+    ctx.arc(sphereX, sphereY, 6, 0, Math.PI * 2)
     ctx.fillStyle = '#ffffff'
     ctx.fill()
     ctx.shadowBlur = 0
@@ -286,16 +424,15 @@ const updateDimensions = () => {
   canvas.width = canvas.parentElement.clientWidth
   canvas.height = canvas.parentElement.clientHeight
   
-  // Set helix scaling - Colossal widths!
   if (window.innerWidth < 768) {
-    currentRadius = 55
+    currentRadius = 50
     baseFontSize = 13
   } else if (window.innerWidth < 1024) {
-    currentRadius = 90
+    currentRadius = 85
     baseFontSize = 17
   } else {
-    currentRadius = Math.min(canvas.width * 0.28, 250) // Colossal 28% of canvas width!
-    baseFontSize = 28 
+    currentRadius = Math.min(canvas.width * 0.24, 230) // Colossal slanted width
+    baseFontSize = 26 
   }
   
   initParticles(canvas.width, canvas.height)
@@ -326,11 +463,10 @@ onMounted(async () => {
   window.addEventListener('resize', updateDimensions)
   window.addEventListener('mousemove', handleMouseMove)
   
-  // Lock container during scrolling sequences (GSAP Pinned ScrollTrigger)
   scrollTriggerInstance = ScrollTrigger.create({
     trigger: containerRef.value,
     start: 'top top',
-    end: `+=${projects.value.length * 150}%`, // Story mode scrolling pacing
+    end: `+=${projects.value.length * 150}%`,
     pin: pinnedRef.value,
     scrub: true,
     onUpdate: (self) => {
@@ -388,9 +524,9 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- LEFT SIDEBAR TRACKER (Desktop HUD specs) - Floats cleanly on left -->
-      <div class="hidden lg:flex absolute left-8 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-4 z-40 max-w-[240px] pointer-events-none bg-surface-container-lowest/10 backdrop-blur-md p-4 rounded-xl border border-primary/5 shadow-lg">
-        <div>
+      <!-- RIGHT SIDEBAR TRACKER (Desktop HUD specs) - Floats cleanly on right -->
+      <div class="hidden lg:flex absolute right-8 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-4 z-40 max-w-[240px] pointer-events-none bg-surface-container-lowest/10 backdrop-blur-md p-4 rounded-xl border border-primary/5 shadow-lg text-right align-right">
+        <div class="w-full">
           <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] block mb-2">SYSTEM DECK STATUS</span>
           <h3 class="font-headline text-2xl font-black text-on-surface uppercase leading-[0.9]">
             GENETIC<br/><span class="text-primary italic">REGISTRY.</span>
@@ -402,35 +538,35 @@ onUnmounted(() => {
         </p>
 
         <!-- Interactive progression navigation elements -->
-        <div class="flex flex-col gap-2 mt-2 pointer-events-auto w-full">
+        <div class="flex flex-col gap-2 mt-2 pointer-events-auto w-full items-end">
           <button 
             v-for="(p, index) in projects" 
             :key="'hud-i-' + p.id"
-            class="flex items-center gap-3.5 group cursor-pointer border-none bg-transparent p-0 text-left outline-none w-full"
+            class="flex items-center gap-3.5 group cursor-pointer border-none bg-transparent p-0 text-right outline-none w-full justify-end"
             @click="scrollToProject(index)"
           >
-            <div 
-              class="h-[3px] transition-all duration-500 rounded-full"
-              :class="[
-                index === activeIndex ? 'w-10 bg-primary shadow-sm shadow-primary' : 'w-2 bg-on-surface/20 group-hover:bg-primary/50'
-              ]"
-            ></div>
             <span 
               class="text-[9px] font-mono font-black uppercase tracking-[0.2em] transition-colors duration-500 flex items-center gap-1"
               :class="[
                 index === activeIndex ? 'text-primary' : 'text-on-surface/40 group-hover:text-on-surface/70'
               ]"
             >
+              <ChevronRight v-if="index === activeIndex" class="w-3 h-3 text-primary animate-pulse rotate-180" />
               0{{ index + 1 }}. {{ p.title }}
-              <ChevronRight v-if="index === activeIndex" class="w-3 h-3 text-primary animate-pulse" />
             </span>
+            <div 
+              class="h-[3px] transition-all duration-500 rounded-full"
+              :class="[
+                index === activeIndex ? 'w-10 bg-primary shadow-sm shadow-primary' : 'w-2 bg-on-surface/20 group-hover:bg-primary/50'
+              ]"
+            ></div>
           </button>
         </div>
       </div>
 
-      <!-- Centered 3D DNA Canvas Viewport (Takes up massive space in the center, 70vw equivalent) -->
-      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[70vw] lg:max-w-[1200px] pointer-events-none z-20">
-        <canvas ref="canvasRef" class="w-full h-full opacity-70 dark:opacity-85"></canvas>
+      <!-- Giant 3D slanting DNA Canvas Viewport (Slanted bottom-left to top-right layout matching sample.mp4) -->
+      <div class="absolute inset-y-0 left-0 right-0 w-full pointer-events-none z-20">
+        <canvas ref="canvasRef" class="w-full h-full opacity-75 dark:opacity-90"></canvas>
       </div>
 
       <!-- Mobile/Tablet Top Info Deck -->
@@ -449,8 +585,8 @@ onUnmounted(() => {
         </div>
       </div>
 
-      <!-- Project Cards Stack - Positioned on far right column for desktop, bottom for mobile -->
-      <div class="absolute inset-0 z-30 flex items-end lg:items-center justify-center lg:justify-end pointer-events-none px-6 pb-10 md:pb-14 lg:pb-0 lg:pr-8 xl:pr-12">
+      <!-- Project Cards Stack - Positioned on far left column for desktop, bottom for mobile (matches sample.mp4 layout) -->
+      <div class="absolute inset-0 z-30 flex items-end lg:items-center justify-center lg:justify-start pointer-events-none px-6 pb-10 md:pb-14 lg:pb-0 lg:pl-16 xl:pl-24">
         <div 
           v-for="(project, index) in projects" 
           :key="project.id"
@@ -463,14 +599,14 @@ onUnmounted(() => {
                 : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10'
           ]"
         >
-          <!-- Cinematic HUD styled Card Box -->
+          <!-- Cinematic HUD styled Card Box (Glassmorphism look from sample.mp4) -->
           <div 
             class="group relative flex flex-col items-stretch p-5 md:p-6 xl:p-7 overflow-hidden bg-surface-container-low/10 backdrop-blur-md"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
               themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface shadow-[8px_8px_0_0_rgba(0,0,0,0.15)]' :
               themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/95' :
-              'border border-primary/10 bg-surface-container-low/85 backdrop-blur-3xl shadow-2xl'
+              'border border-primary/10 bg-surface-container-low/80 backdrop-blur-3xl shadow-2xl'
             ]"
           >
             <!-- High-tech HUD Corner Brackets -->
