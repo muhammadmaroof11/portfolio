@@ -28,18 +28,6 @@ const readouts = ref([
   { label: 'AI_LINK', val: 'ESTABLISHED' }
 ])
 
-const handleMouseMove = (e) => {
-  if (!containerRef.value) return
-  const rect = containerRef.value.getBoundingClientRect()
-  
-  // Normalized cursor coordinates (-1 to 1) from container center
-  const centerX = rect.left + rect.width / 2
-  const centerY = rect.top + rect.height / 2
-  
-  mouse.targetX = (e.clientX - centerX) / (rect.width / 2)
-  mouse.targetY = (e.clientY - centerY) / (rect.height / 2)
-}
-
 const resizeCanvas = () => {
   if (!canvasRef.value || !containerRef.value) return
   const rect = containerRef.value.getBoundingClientRect()
@@ -284,13 +272,11 @@ const loop = () => {
   // Draw HUD Graphics
   drawHUD(ctx, w, h)
 }
-
 onMounted(() => {
   ctx = canvasRef.value.getContext('2d')
   
   resizeCanvas()
   window.addEventListener('resize', resizeCanvas)
-  window.addEventListener('mousemove', handleMouseMove)
 
   // Intersection Observer
   observer = new IntersectionObserver((entries) => {
@@ -309,7 +295,6 @@ onMounted(() => {
 onUnmounted(() => {
   cancelAnimationFrame(animationFrameId)
   window.removeEventListener('resize', resizeCanvas)
-  window.removeEventListener('mousemove', handleMouseMove)
   if (observer) {
     observer.disconnect()
   }
