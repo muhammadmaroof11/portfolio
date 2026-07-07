@@ -410,43 +410,88 @@ const offeredServices = [
         <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full mt-6 md:mt-8"></div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+      <div class="flex flex-col gap-12 md:gap-20">
         <div v-for="(project, index) in featuredProjects" :key="project.id"
-          class="project-item gsap-reveal group relative overflow-hidden transition-all duration-1000 cursor-pointer active-spring"
-          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }" v-ripple>
-          <div class="aspect-[16/10] overflow-hidden relative"
+          class="project-item gsap-reveal flex flex-col lg:flex-row items-stretch gap-8 lg:gap-12 p-6 md:p-8 lg:p-10 relative overflow-hidden transition-all duration-500"
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.5)' }"
+          :class="[
+            themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
+            themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/90' :
+            'border border-primary/5 bg-surface-container-low/40 backdrop-blur-md hover:bg-surface-container-low/60 shadow-xl'
+          ]"
+        >
+          <!-- Background Glow for Minimal/Street -->
+          <div v-if="themeStore.currentStyle !== 'brutal'"
+            class="absolute inset-0 -z-10 rounded-[inherit] transition-opacity duration-500 opacity-10 hover:opacity-20 pointer-events-none"
+            :style="{
+              background: `radial-gradient(circle at ${index % 2 === 0 ? 'top left' : 'bottom right'}, var(--color-primary-container) 0%, transparent 60%)`
+            }"
+          ></div>
+
+          <!-- Image mockup card -->
+          <div 
+            class="w-full lg:w-1/2 aspect-[16/10] overflow-hidden relative cursor-pointer group/img"
             v-tilt="{ max: 8, scale: 1.02 }"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
-              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 'shadow-2xl border border-primary/5'
-            ]">
+              themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 'shadow-2xl border border-primary/10 bg-surface-container-low/50 backdrop-blur-md',
+              index % 2 === 0 ? 'lg:order-1' : 'lg:order-2'
+            ]"
+          >
             <img :src="project.image" :alt="project.title" 
-              class="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-on-surface via-on-surface/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 z-10"></div>
-            
-            <div class="p-6 md:p-10 absolute bottom-0 left-0 right-0 translate-y-16 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500 z-20">
-              <div class="flex flex-col h-full justify-between items-start">
-                <div class="flex flex-wrap gap-2 mb-4 md:mb-6">
-                   <span v-for="tag in project.tech" :key="tag" 
-                    class="text-[8px] md:text-[9px] font-black text-white px-3 md:px-4 py-1.5 md:py-2 bg-white/10 backdrop-blur-md border border-white/10 uppercase tracking-[0.2em]"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60 group-hover/img:opacity-20 transition-opacity duration-500"></div>
+          </div>
+
+          <!-- Project info block -->
+          <div 
+            class="w-full lg:w-1/2 flex flex-col justify-between items-start py-2 lg:py-4"
+            :class="[
+              index % 2 === 0 ? 'lg:order-2' : 'lg:order-1'
+            ]"
+          >
+            <div class="w-full">
+              <!-- Index Number and Tech Tags -->
+              <div class="flex items-center justify-between mb-4 md:mb-6">
+                <span class="font-headline font-black text-4xl md:text-5xl lg:text-6xl text-primary/15 dark:text-primary/10 tracking-tighter select-none">
+                  0{{ index + 1 }}
+                </span>
+                <div class="flex flex-wrap gap-2">
+                  <span v-for="tag in project.tech" :key="tag" 
+                    class="text-[8px] md:text-[9px] font-black px-3 py-1.5 bg-primary/5 dark:bg-primary/10 text-primary border border-primary/10 uppercase tracking-[0.2em]"
                     :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }">
-                     {{ tag }}
-                   </span>
+                    {{ tag }}
+                  </span>
                 </div>
-                <div class="flex justify-between items-end w-full gap-4">
-                  <div class="max-w-[75%]">
-                    <h3 class="text-2xl md:text-4xl xl:text-5xl font-headline font-black tracking-tighter text-white uppercase leading-none truncate">{{ project.title }}</h3>
-                    <p class="text-white/80 text-[10px] md:text-sm mt-2 md:mt-4 font-body leading-relaxed line-clamp-2">{{ project.description }}</p>
-                  </div>
-                  <a v-if="project.link && project.link !== '#'" :href="project.link" target="_blank" class="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-primary text-on-primary flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl shrink-0"
-                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3)' }"
-                    :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }">
-                    <ArrowRight class="w-5 h-5 md:w-7 md:h-7 -rotate-45" />
-                  </a>
-                  <div v-else-if="project.hoverText" class="px-4 py-2 rounded-xl bg-primary text-on-primary font-black uppercase text-[10px] md:text-xs flex items-center justify-center shrink-0 border border-primary/20 whitespace-nowrap transition-all shadow-2xl"
-                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3)' }">
-                    {{ project.hoverText }}
-                  </div>
-                </div>
+              </div>
+
+              <!-- Project Title -->
+              <h3 class="text-3xl md:text-4xl lg:text-5xl font-headline font-black tracking-tight text-on-surface uppercase mb-4 leading-none">
+                {{ project.title }}
+              </h3>
+
+              <!-- Project Description -->
+              <p class="text-on-surface-variant text-sm md:text-base leading-relaxed font-body font-medium mb-6 opacity-90 max-w-xl">
+                {{ project.description }}
+              </p>
+            </div>
+
+            <!-- Action Button / Link -->
+            <div>
+              <a v-if="project.link && project.link !== '#'" :href="project.link" target="_blank" 
+                class="inline-flex items-center gap-3 px-6 py-4 bg-primary text-on-primary font-black text-[9px] tracking-[0.3em] uppercase transition-all duration-300 hover:scale-[1.05] active-spring shadow-lg shadow-primary/10 hover:shadow-primary/20"
+                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3.5)' }"
+                :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
+                v-ripple
+              >
+                EXPLORE PROJECT
+                <ArrowRight class="w-4 h-4 -rotate-45" />
+              </a>
+              <div v-else-if="project.hoverText" 
+                class="inline-flex items-center gap-2 px-6 py-4 bg-surface-container-high border border-surface-container-high text-on-surface/50 font-black text-[9px] tracking-[0.3em] uppercase select-none cursor-default"
+                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 3.5)' }"
+              >
+                {{ project.hoverText }}
               </div>
             </div>
           </div>
