@@ -8,6 +8,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import PolymorphicCanvas from '../components/PolymorphicCanvas.vue'
 import ThreeDCarousel from '../components/ThreeDCarousel.vue'
 import LivePortraitBackground from '../components/LivePortraitBackground.vue'
+import FuzzyText from '../components/FuzzyText.vue'
+import DecryptedText from '../components/DecryptedText.vue'
+import TextPressure from '../components/TextPressure.vue'
+import CircularText from '../components/CircularText.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -168,7 +172,19 @@ const offeredServices = [
 </script>
 
 <template>
-  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-6 md:pt-16 pb-16 overflow-visible">
+  <!-- Full-width wrapper so CircularText can position relative to viewport edge -->
+  <div class="relative w-full overflow-visible">
+    <!-- CircularText anchors to viewport top-right, scrolls away with page -->
+    <CircularText
+      text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
+      :spinDuration="20"
+      onHover="speedUp"
+      :radius="75"
+      fontSize="12px"
+      class="absolute top-10 right-8 z-40 hidden lg:flex"
+    />
+
+    <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-6 md:pt-16 pb-16 overflow-visible">
     <!-- HERO SECTION -->
     <header ref="heroRef" class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
       <!-- 3D Canvas Background -->
@@ -195,19 +211,33 @@ const offeredServices = [
               </span>
             </span>
             
-            <!-- Rest of Name (character split) -->
-            <span class="text-primary italic block whitespace-nowrap !overflow-visible">
-              <span v-for="(char, idx) in restOfName" :key="'rest-' + idx" class="char-container">
-                <span class="char-inner hero-title-char inline-block" 
-                  :class="[
-                    themeStore.currentStyle === 'street' ? 'street-fx-glitch' : ''
-                  ]">{{ char === ' ' ? '&nbsp;' : char }}</span>
-              </span>
+            <!-- Rest of Name (FuzzyText) -->
+            <span class="block whitespace-nowrap !overflow-visible">
+              <FuzzyText
+                fontStyle="italic"
+                fontSize="clamp(1.5rem, 5vw + 1rem, 9rem)"
+                fontWeight="900"
+                color="var(--color-primary)"
+                fontFamily="Outfit"
+                :baseIntensity="0.18"
+                :hoverIntensity="0.5"
+                :enableHover="true"
+                :glitchMode="themeStore.currentStyle === 'street'"
+                class="!overflow-visible"
+              >MAROOF</FuzzyText>
             </span>
           </h1>
           
           <p class="gsap-reveal text-base md:text-xl text-on-surface-variant max-w-lg mb-8 md:mb-10 leading-relaxed font-body font-medium">
-            {{ profile.role }}. Bridging the gap between creative vision and technical precision with <span class="text-on-surface font-black">Scalable Architectures</span>.
+            <DecryptedText 
+              text="Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures." 
+              animateOn="view"
+              :sequential="true"
+              revealDirection="start"
+              :speed="15"
+              className="text-on-surface-variant font-medium"
+              encryptedClassName="text-primary font-mono opacity-80"
+            />
           </p>
 
           <div class="gsap-reveal flex flex-col sm:flex-row gap-4 md:gap-6">
@@ -361,12 +391,23 @@ const offeredServices = [
 
     <!-- FEATURED PROJECTS -->
     <section ref="projectsRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 scroll-mt-32 relative layer-base" id="work">
-      <div class="flex flex-col md:flex-row items-end justify-between mb-12 md:mb-20 px-4 gap-12">
-        <div class="max-w-3xl">
-          <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-black tracking-[calc(-0.05em)] mb-4 md:mb-6 uppercase leading-[0.85] text-on-surface"
-            :class="{ 'street-fx-outline': themeStore.currentStyle === 'street' }">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
-          <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full"></div>
+      <div class="w-full text-center mb-12 md:mb-20 px-4 flex flex-col items-center">
+        <div class="relative h-[60px] md:h-[100px] lg:h-[120px] xl:h-[150px] w-full flex items-center justify-center max-w-[1200px]">
+          <TextPressure
+            text="ENGINEERED PROJECTS."
+            fontFamily="Roboto Flex"
+            fontUrl="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap"
+            :flex="true"
+            :alpha="false"
+            :stroke="false"
+            :width="true"
+            :weight="true"
+            :italic="true"
+            textColor="var(--color-on-surface)"
+            :minFontSize="36"
+          />
         </div>
+        <div class="w-24 md:w-32 h-2 md:h-3 bg-primary rounded-full mt-6 md:mt-8"></div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
@@ -479,5 +520,6 @@ const offeredServices = [
            </div>
         </div>
     </section>
+  </div>
   </div>
 </template>
