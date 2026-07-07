@@ -12,6 +12,7 @@ import FuzzyText from '../components/FuzzyText.vue'
 import DecryptedText from '../components/DecryptedText.vue'
 import TextPressure from '../components/TextPressure.vue'
 import CircularText from '../components/CircularText.vue'
+import ProjectsTable from '../components/ProjectsTable.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -498,6 +499,9 @@ const offeredServices = [
         </div>
       </div>
     </section>
+
+    <!-- PROJECTS ARCHIVE TABLE -->
+    <ProjectsTable />
 
     <!-- CORE PHILOSOPHY -->
     <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 px-8 md:px-12 py-20 md:py-32 relative overflow-hidden layer-base"
