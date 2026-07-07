@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight } from 'lucide-vue-next'
+import { ArrowRight, Cpu, Sparkles } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -12,17 +12,26 @@ const themeStore = useThemeStore()
 const projects = ref(portfolioData.projects)
 
 const containerRef = ref(null)
+const pinnedRef = ref(null)
 const canvasRef = ref(null)
 
+const scrollProgress = ref(0)
 let ctx = null
 let animationId = null
 let scrollY = 0
 
 // DNA Properties
-const radius = 35 // helix radius
-const frequency = 0.015 // vertical wave frequency
-const rungProbability = 0.25 // frequency of drawing rungs
+let currentRadius = 140 // Helix radius (adaptive)
+const frequency = 0.008 // Wave frequency
+let baseFontSize = 18 // Base font size for 3D binary symbols
 
+// Compute current active index based on scrollProgress
+const activeIndex = computed(() => {
+  const index = Math.floor(scrollProgress.value * projects.value.length)
+  return Math.min(index, projects.value.length - 1)
+})
+
+// Draw loop for Canvas DNA Helix
 const drawDna = () => {
   if (!canvasRef.value) return
   const canvas = canvasRef.value
@@ -34,44 +43,44 @@ const drawDna = () => {
   const height = canvas.height
   const centerX = width / 2
   
-  // Use scroll position and time for rotation speed
   const time = Date.now() * 0.001
-  const rotation = time * 0.8 + scrollY * 0.003
+  // Spin speed reacts directly to scroll position + slow base rotation
+  const rotation = scrollProgress.value * Math.PI * 6 + time * 0.5
   
   const points1 = []
   const points2 = []
   
-  // Draw binary nodes along two strands
-  for (let y = 0; y < height; y += 16) {
+  // Dense double helix calculation
+  const yStep = window.innerWidth < 1024 ? 20 : 16
+  for (let y = 0; y < height; y += yStep) {
     const angle = y * frequency + rotation
     
     // Strand 1
-    const x1 = Math.cos(angle) * radius
-    const z1 = Math.sin(angle) * radius
+    const x1 = Math.cos(angle) * currentRadius
+    const z1 = Math.sin(angle) * currentRadius
     
     // Strand 2
-    const x2 = Math.cos(angle + Math.PI) * radius
-    const z2 = Math.sin(angle + Math.PI) * radius
+    const x2 = Math.cos(angle + Math.PI) * currentRadius
+    const z2 = Math.sin(angle + Math.PI) * currentRadius
     
     points1.push({ x: centerX + x1, y, z: z1 })
     points2.push({ x: centerX + x2, y, z: z2 })
   }
   
-  // Draw connecting horizontal rungs
-  ctx.lineWidth = 1
+  // Draw glowing cyan/green horizontal connector rungs
+  ctx.lineWidth = window.innerWidth < 1024 ? 1.5 : 2.5
   for (let i = 0; i < points1.length; i++) {
-    if (i % 3 === 0) {
+    if (i % 2 === 0) {
       const p1 = points1[i]
       const p2 = points2[i]
       
       const avgZ = (p1.z + p2.z) / 2
-      const opacity = ((avgZ + radius) / (2 * radius)) * 0.35 + 0.05
+      const opacity = ((avgZ + currentRadius) / (2 * currentRadius)) * 0.45 + 0.1
       
-      // Cyber green/cyan theme color based on active theme
       const colorVal = themeStore.currentStyle === 'street' ? '0, 255, 255' : '34, 197, 94'
       ctx.strokeStyle = `rgba(${colorVal}, ${opacity})`
       
-      ctx.setLineDash([2, 4])
+      ctx.setLineDash([4, 6])
       ctx.beginPath()
       ctx.moveTo(p1.x, p1.y)
       ctx.lineTo(p2.x, p2.y)
@@ -80,7 +89,7 @@ const drawDna = () => {
     }
   }
   
-  // Sort and project the binary character points for 3D depth illusion
+  // Combine strands and sort depth (Z-index sorting from back to front)
   const allPoints = []
   points1.forEach((p, idx) => allPoints.push({ ...p, index: idx }))
   points2.forEach((p, idx) => allPoints.push({ ...p, index: idx + 0.5 }))
@@ -91,10 +100,11 @@ const drawDna = () => {
   ctx.textBaseline = 'middle'
   
   allPoints.forEach(p => {
-    const scale = ((p.z + radius) / (2 * radius)) * 0.5 + 0.6 // 0.6 to 1.1
-    const opacity = ((p.z + radius) / (2 * radius)) * 0.75 + 0.25 // 0.25 to 1.0
+    // Math logic for 3D projection sizing/opacity
+    const scale = ((p.z + currentRadius) / (2 * currentRadius)) * 0.6 + 0.5 // 0.5 to 1.1
+    const opacity = ((p.z + currentRadius) / (2 * currentRadius)) * 0.8 + 0.2 // 0.2 to 1.0
     
-    ctx.font = `bold ${Math.round(11 * scale)}px Courier New, monospace`
+    ctx.font = `bold ${Math.round(baseFontSize * scale)}px Courier New, monospace`
     
     const isCyan = themeStore.currentStyle === 'street' && p.index % 2 === 0
     const colorStr = isCyan ? '0, 255, 255' : 
@@ -102,9 +112,9 @@ const drawDna = () => {
                      
     ctx.fillStyle = `rgba(${colorStr}, ${opacity})`
     
-    if (p.z > radius * 0.5) {
+    if (p.z > currentRadius * 0.4) {
       ctx.shadowColor = `rgb(${colorStr})`
-      ctx.shadowBlur = 4
+      ctx.shadowBlur = window.innerWidth < 1024 ? 4 : 8
     } else {
       ctx.shadowBlur = 0
     }
@@ -117,189 +127,246 @@ const drawDna = () => {
   animationId = requestAnimationFrame(drawDna)
 }
 
-const resizeCanvas = () => {
+const updateDimensions = () => {
   if (!canvasRef.value) return
   const canvas = canvasRef.value
   canvas.width = canvas.parentElement.clientWidth
   canvas.height = canvas.parentElement.clientHeight
+  
+  // Make the DNA helix thicker and bigger based on window width
+  if (window.innerWidth < 768) {
+    currentRadius = 40
+    baseFontSize = 12
+  } else if (window.innerWidth < 1024) {
+    currentRadius = 70
+    baseFontSize = 15
+  } else {
+    currentRadius = 150 // Thicker and way bigger helix!
+    baseFontSize = 24 // Substantially larger binary characters!
+  }
 }
+
+let scrollTriggerInstance = null
 
 onMounted(async () => {
   await nextTick()
-  resizeCanvas()
-  window.addEventListener('resize', resizeCanvas)
+  updateDimensions()
+  window.addEventListener('resize', updateDimensions)
   
-  // Track scroll position for rotation sync
-  const onScroll = () => {
-    scrollY = window.scrollY
-  }
-  window.addEventListener('scroll', onScroll, { passive: true })
+  // GSAP ScrollTrigger to lock/pin the screen during DNA exploration
+  scrollTriggerInstance = ScrollTrigger.create({
+    trigger: containerRef.value,
+    start: 'top top',
+    end: `+=${projects.value.length * 120}%`, // Scroll length determines scrub feel
+    pin: pinnedRef.value,
+    scrub: true,
+    onUpdate: (self) => {
+      scrollProgress.value = self.progress
+    }
+  })
   
   drawDna()
-  
-  // Staggered scroll animation for project rows
-  gsap.fromTo('.dna-project-row', 
-    { opacity: 0, y: 50 },
-    {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      stagger: 0.2,
-      scrollTrigger: {
-        trigger: containerRef.value,
-        start: 'top 80%',
-        end: 'bottom 20%',
-        toggleActions: 'play none none none'
-      }
-    }
-  )
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', resizeCanvas)
+  window.removeEventListener('resize', updateDimensions)
+  if (scrollTriggerInstance) {
+    scrollTriggerInstance.kill()
+  }
   cancelAnimationFrame(animationId)
 })
 </script>
 
 <template>
-  <div ref="containerRef" class="relative w-full overflow-visible py-16 md:py-24">
-    
-    <!-- Title Area -->
-    <div class="max-w-3xl mb-16 md:mb-24">
-      <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">Genetic Blueprints</span>
-      <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase leading-[0.9] text-on-surface">
-        DNA SYSTEM OF <br/><span class="text-primary italic">DEPLOYMENTS.</span>
-      </h2>
-    </div>
-
-    <!-- Layout Wrapper containing sticky timeline track and alternating cards -->
-    <div class="relative w-full overflow-visible">
+  <div ref="containerRef" class="relative w-full overflow-visible">
+    <!-- Pinned screen-locked viewport container -->
+    <div ref="pinnedRef" class="h-screen w-full relative flex items-center justify-center overflow-hidden bg-background">
       
-      <!-- Central Sticky DNA Helix Canvas Track -->
-      <div class="absolute inset-y-0 left-0 lg:left-1/2 lg:-translate-x-1/2 w-[70px] lg:w-[100px] pointer-events-none z-10">
-        <div class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
-          <canvas ref="canvasRef" class="w-full h-full opacity-80"></canvas>
+      <!-- Faint Cyberpunk Grid Overlay in Background -->
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-10"></div>
+      
+      <!-- Binary/Digital grid back-glow -->
+      <div 
+        class="absolute inset-0 opacity-[0.03] pointer-events-none z-0"
+        :style="{
+          backgroundImage: `linear-gradient(to right, ${themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'} 1px, transparent 1px), linear-gradient(to bottom, ${themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e'} 1px, transparent 1px)`,
+          backgroundSize: '80px 80px'
+        }"
+      ></div>
+
+      <!-- Left-pinned Info Tracker (Desktop only) -->
+      <div class="hidden lg:flex absolute left-12 top-1/2 -translate-y-1/2 flex-col justify-center items-start gap-4 z-40 max-w-[280px] pointer-events-none">
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[10px]">
+          DNA SYSTEM ENGINE
+        </span>
+        <h3 class="font-headline text-3xl font-black text-on-surface uppercase leading-none">
+          REGISTRY <br/>
+          <span class="text-primary italic">DECK.</span>
+        </h3>
+        <p class="text-on-surface-variant text-[11px] font-body font-semibold opacity-70 leading-relaxed">
+          Scrolling rotates the core genetic binary strand. Projects materialize sequentially according to sequence indices.
+        </p>
+        
+        <!-- Live DNA Track Progress Indicators -->
+        <div class="flex flex-col gap-2 mt-4 pointer-events-auto">
+          <div 
+            v-for="(p, index) in projects" 
+            :key="'indicator-' + p.id"
+            class="flex items-center gap-3 group cursor-pointer"
+            @click="gsap.to(window, { duration: 0.8, scrollTo: scrollTriggerInstance.start + (index * (scrollTriggerInstance.end - scrollTriggerInstance.start) / projects.length) })"
+          >
+            <div 
+              class="h-1.5 transition-all duration-300 rounded-full"
+              :class="[
+                index === activeIndex ? 'w-8 bg-primary' : 'w-2 bg-on-surface/20 group-hover:bg-primary/50'
+              ]"
+            ></div>
+            <span 
+              class="text-[9px] font-black uppercase tracking-widest transition-colors duration-300"
+              :class="[
+                index === activeIndex ? 'text-primary' : 'text-on-surface/40 group-hover:text-on-surface/70'
+              ]"
+            >
+              {{ p.title }}
+            </span>
+          </div>
         </div>
       </div>
 
-      <!-- Projects Alternating List -->
-      <div class="relative w-full space-y-24 md:space-y-36 lg:space-y-48">
+      <!-- Giant Rotating DNA Canvas (Centered behind project cards) -->
+      <div class="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 w-full lg:w-[450px] pointer-events-none z-20">
+        <canvas ref="canvasRef" class="w-full h-full opacity-65 dark:opacity-85"></canvas>
+      </div>
+
+      <!-- Mobile/Tablet top title info -->
+      <div class="absolute top-6 left-6 right-6 z-40 flex lg:hidden justify-between items-center pointer-events-none">
+        <div>
+          <span class="text-primary font-black tracking-[0.3em] uppercase text-[8px] block">
+            GENETIC SEQUENCER
+          </span>
+          <h3 class="font-headline text-lg font-black text-on-surface uppercase mt-1">
+            PROJECT DECK [0{{ activeIndex + 1 }}/0{{ projects.length }}]
+          </h3>
+        </div>
+        <Cpu class="w-5 h-5 text-primary animate-pulse shrink-0" />
+      </div>
+
+      <!-- Project Cards stack - absolute placement, transitions active states -->
+      <div class="absolute inset-0 z-30 flex items-center justify-center pointer-events-none px-6 md:px-12">
         <div 
           v-for="(project, index) in projects" 
           :key="project.id"
-          class="dna-project-row flex flex-col lg:flex-row items-center w-full relative"
+          class="absolute w-full max-w-[500px] lg:max-w-[420px] transition-all duration-750 ease-out flex flex-col pointer-events-none"
           :class="[
-            index % 2 === 0 ? 'lg:flex-row-reverse' : ''
+            index === activeIndex 
+              ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto z-40' 
+              : index < activeIndex 
+                ? 'opacity-0 scale-90 -translate-y-24 pointer-events-none z-10' 
+                : 'opacity-0 scale-90 translate-y-24 pointer-events-none z-10',
+            // Alternates card placement left vs right on desktop
+            index % 2 === 0 ? 'lg:translate-x-[-240px] xl:translate-x-[-320px]' : 'lg:translate-x-[240px] xl:translate-x-[320px]'
           ]"
         >
-          <!-- Project Card Element -->
+          <!-- The visual card container -->
           <div 
-            class="w-full lg:w-[calc(50%-60px)] z-20"
+            class="group relative flex flex-col items-stretch p-6 md:p-8"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1)' }"
             :class="[
-              index % 2 === 0 ? 'lg:mr-auto pl-0 lg:pl-6' : 'lg:ml-auto pr-0 lg:pr-6',
-              'pl-16 lg:pl-0' // Indent on mobile to make room for canvas on left
+              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
+              themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/95 backdrop-blur-xl' :
+              'border border-primary/10 bg-surface-container-low/80 backdrop-blur-2xl shadow-2xl'
             ]"
           >
-            <div 
-              class="group relative transition-all duration-500 overflow-hidden flex flex-col items-stretch p-5 md:p-7"
-              :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.8)' }"
-              :class="[
-                themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
-                themeStore.currentStyle === 'street' ? 'street-card border-2 border-black bg-surface-container-low/90' :
-                'border border-primary/5 bg-surface-container-low/40 backdrop-blur-md hover:bg-surface-container-low/60 shadow-xl'
-              ]"
-            >
-              <!-- Index Number Badge -->
-              <span class="absolute top-4 right-4 font-headline font-black text-3xl md:text-4xl text-primary/10 select-none">
-                0{{ index + 1 }}
-              </span>
+            <!-- Large floating Index Number -->
+            <span class="absolute top-4 right-6 font-headline font-black text-4xl md:text-5xl text-primary/10 select-none">
+              0{{ index + 1 }}
+            </span>
 
-              <!-- Tight Fit Adaptive Picture Container -->
-              <div 
-                class="relative overflow-hidden flex items-center justify-center bg-black/5 dark:bg-black/40 border border-primary/5 cursor-pointer"
-                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.5)' }"
-              >
-                <!-- Blur fill layer -->
-                <img 
-                  :src="project.image" 
-                  alt="" 
-                  class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" 
-                />
-                
-                <!-- Main Image - naturally sized to fit tightly -->
-                <img 
-                  :src="project.image" 
-                  :alt="project.title" 
-                  class="relative z-10 max-h-[250px] md:max-h-[350px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-500 group-hover:scale-[1.02]" 
-                />
+            <!-- Picture container (Padded, contained fit to avoid letterboxing) -->
+            <div 
+              class="relative overflow-hidden flex items-center justify-center bg-black/10 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[160px] md:max-h-[220px]"
+              :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.6)' }"
+            >
+              <!-- Blur fill background -->
+              <img 
+                :src="project.image" 
+                alt="" 
+                class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" 
+              />
+              
+              <!-- Content fitted image -->
+              <img 
+                :src="project.image" 
+                :alt="project.title" 
+                class="relative z-10 max-h-[140px] md:max-h-[200px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-500 group-hover:scale-[1.03]" 
+              />
+            </div>
+
+            <!-- Content Area -->
+            <div class="mt-6">
+              <!-- Tech tags -->
+              <div class="flex flex-wrap gap-1.5 mb-3">
+                <span 
+                  v-for="tag in project.tech" 
+                  :key="tag"
+                  class="text-[7px] md:text-[8px] font-black px-2 py-0.5 bg-primary/10 text-primary border border-primary/10 uppercase tracking-widest rounded"
+                  :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+                >
+                  {{ tag }}
+                </span>
               </div>
 
-              <!-- Content details -->
-              <div class="mt-6">
-                <!-- Tech stacks -->
-                <div class="flex flex-wrap gap-1.5 mb-4">
-                  <span 
-                    v-for="tag in project.tech" 
-                    :key="tag"
-                    class="text-[7px] md:text-[8px] font-black px-2 py-1 bg-primary/5 dark:bg-primary/10 text-primary border border-primary/10 uppercase tracking-widest rounded"
-                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
-                  >
-                    {{ tag }}
-                  </span>
-                </div>
+              <!-- Title -->
+              <h3 class="text-xl md:text-2xl font-headline font-black uppercase tracking-tight text-on-surface mb-2.5">
+                {{ project.title }}
+              </h3>
 
-                <!-- Title -->
-                <h3 class="text-2xl md:text-3xl font-headline font-black uppercase tracking-tight text-on-surface mb-3">
-                  {{ project.title }}
-                </h3>
+              <!-- Description -->
+              <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-5 opacity-90 max-w-sm">
+                {{ project.description }}
+              </p>
 
-                <!-- Description -->
-                <p class="text-on-surface-variant text-xs md:text-sm leading-relaxed font-body font-medium mb-6 opacity-90">
-                  {{ project.description }}
-                </p>
-
-                <!-- Action links -->
-                <div class="flex items-center justify-between mt-auto">
-                  <span class="font-mono text-[10px] font-bold text-on-surface/40 uppercase">
-                    YEAR :: {{ project.year || '2026' }}
-                  </span>
-                  
-                  <a 
-                    v-if="project.link && project.link !== '#'" 
-                    :href="project.link" 
-                    target="_blank"
-                    class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10"
-                    :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
-                    :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
-                    v-ripple
-                  >
-                    EXPLORE
-                    <ArrowRight class="w-3.5 h-3.5 -rotate-45" />
-                  </a>
-                  <div 
-                    v-else-if="project.hoverText"
-                    class="px-4 py-2.5 bg-surface-container-high border border-surface-container-high text-on-surface/50 font-black text-[8px] tracking-[0.2em] uppercase rounded-md"
-                  >
-                    {{ project.hoverText }}
-                  </div>
+              <!-- Footer values and button -->
+              <div class="flex items-center justify-between mt-auto">
+                <span class="font-mono text-[9px] font-bold text-on-surface/40 uppercase">
+                  SEQUENCE :: {{ project.year || '2026' }}
+                </span>
+                
+                <a 
+                  v-if="project.link && project.link !== '#'" 
+                  :href="project.link" 
+                  target="_blank"
+                  class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10"
+                  :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
+                  :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
+                  v-ripple
+                >
+                  EXPLORE
+                  <ArrowRight class="w-3 h-3 -rotate-45" />
+                </a>
+                <div 
+                  v-else-if="project.hoverText"
+                  class="px-3 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/50 font-black text-[8px] tracking-[0.2em] uppercase rounded-md"
+                >
+                  {{ project.hoverText }}
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Empty placeholder opposite spacer on desktop (split structure) -->
-          <div class="hidden lg:block lg:w-[calc(50%-60px)]"></div>
-          
         </div>
       </div>
-      
+
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Canvas responsive height alignment */
-canvas {
-  max-height: 100vh;
+/* Ensure smooth transitions inside Vue views */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+.duration-750 {
+  duration: 750ms;
 }
 </style>
