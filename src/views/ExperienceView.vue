@@ -56,11 +56,8 @@ onMounted(async () => {
       <div class="max-w-3xl">
         <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-8 block">Professional Odyssey</span>
         <h1 class="app-h1 mb-8 md:mb-10 text-on-surface">
-          CHRONOLOGY & <br/><span class="text-primary italic underline decoration-8 underline-offset-[12px]">RIGOR.</span>
+          CHRONOLOGY & <span class="text-primary italic underline decoration-8 underline-offset-[12px]">RIGOR.</span>
         </h1>
-        <p class="text-on-surface-variant text-lg md:text-xl leading-relaxed font-body max-w-2xl opacity-80 font-medium">
-          A documented trajectory of technical mastery, from core computer science foundations to complex enterprise-grade architectures.
-        </p>
       </div>
       <div class="hidden md:flex flex-col gap-4 items-end">
         <div class="bg-primary w-40 h-3 rounded-full"></div>
