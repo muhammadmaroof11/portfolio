@@ -35,6 +35,7 @@ let mouseX = 0
 let mouseY = 0
 let targetMouseX = 0
 let targetMouseY = 0
+let meshCenterX = 0
 
 // Neural Mesh state
 let nodes = []
@@ -107,9 +108,9 @@ function getBrainCoord(nodeIndex, totalNodes) {
   const isLeft = nodeIndex % 2 === 0;
   
   // Scaled up radii to make the brain much larger and more prominent
-  const rx = 165;
-  const ry = 195;
-  const rz = 215;
+  const rx = 210;
+  const ry = 240;
+  const rz = 260;
   
   let bx = Math.sin(phi) * Math.cos(theta);
   let by = Math.sin(phi) * Math.sin(theta);
@@ -279,24 +280,17 @@ function getDigitCoord(digit, t) {
   return { x, y };
 }
 
-// Calculates target coordinates to spell "01", "02", etc.
+// Calculates target coordinates to spell "1", "2", "3", "4", "5", "6"
 function getNumberCoord(projIndex, nodeIndex, totalNodes) {
-  const mid = Math.floor(totalNodes / 2);
-  let dx = 0, dy = 0;
+  const t = nodeIndex / (totalNodes - 1 || 1);
+  const pt = getDigitCoord(projIndex + 1, t);
   
-  if (nodeIndex < mid) {
-    const t = nodeIndex / (mid - 1 || 1);
-    const pt = getDigitCoord(0, t);
-    dx = pt.x - 70; // left digit (0)
-    dy = pt.y;
-  } else {
-    const t = (nodeIndex - mid) / (totalNodes - mid - 1 || 1);
-    const pt = getDigitCoord(projIndex + 1, t);
-    dx = pt.x + 70; // right digit (1, 2, 3, 4, 5, 6)
-    dy = pt.y;
-  }
+  // Scale factor to make the digit mesh bigger!
+  const scale = 2.4;
+  const dx = pt.x * scale;
+  const dy = pt.y * scale;
   
-  const z = (nodeIndex % 2 === 0 ? -45 : 45) + (Math.sin(nodeIndex * 1.7) * 10);
+  const z = (nodeIndex % 2 === 0 ? -60 : 60) + (Math.sin(nodeIndex * 1.7) * 15);
   
   return { x: dx, y: dy, z };
 }
@@ -347,7 +341,12 @@ function buildEdges() {
   const counts = new Array(nodes.length).fill(0)
   for (let i = 0; i < nodes.length; i++) {
     const near = []
+    const isLeftI = i % 2 === 0
     for (let j = i + 1; j < nodes.length; j++) {
+      const isLeftJ = j % 2 === 0
+      // ONLY connect nodes that belong to the same hemisphere/digit side
+      if (isLeftI !== isLeftJ) continue
+      
       const dx = nodes[i].x - nodes[j].x
       const dy = nodes[i].y - nodes[j].y
       const dz = nodes[i].z - nodes[j].z
@@ -390,7 +389,9 @@ function project3D(n, W, H, fov) {
   const rz2 = ry * sx + rz * cx + fov
   if (rz2 <= 1) return null
   const s = fov / rz2
-  return { x: W / 2 + rx * s + mouseX, y: H / 2 + ry2 * s + mouseY, z: rz2, s }
+  // Read meshCenterX from the outer script scope with W / 2 fallback
+  const cxVal = meshCenterX || (W / 2)
+  return { x: cxVal + rx * s + mouseX, y: H / 2 + ry2 * s + mouseY, z: rz2, s }
 }
 
 const drawMesh = () => {
@@ -403,6 +404,25 @@ const drawMesh = () => {
 
   mouseX += (targetMouseX - mouseX) * 0.04
   mouseY += (targetMouseY - mouseY) * 0.04
+
+  // Smoothly shift the horizontal center of the mesh to balance the active layout
+  let targetCenterX = W / 2
+  if (W >= 1024) {
+    if (scrollProgress.value > 0.015) {
+      if (activeIndex.value % 2 === 0) {
+        // Even index project card is on the right side, shift mesh left
+        targetCenterX = W / 2 - 280
+      } else {
+        // Odd index project card is on the left side, shift mesh right
+        targetCenterX = W / 2 + 280
+      }
+    }
+  }
+  if (!meshCenterX) {
+    meshCenterX = targetCenterX
+  } else {
+    meshCenterX += (targetCenterX - meshCenterX) * 0.045
+  }
 
   // Keep letters facing the front, with a subtle continuous organic 3D float
   const targetY = Math.sin(time * 0.35) * 0.16
@@ -447,16 +467,26 @@ const drawMesh = () => {
     const depth = ((pa.z + pb.z) / 2 - fov) / (HUB_SPHERE_R * 2)
     const alpha = Math.max(0, (1 - depth)) * 0.22
     const isActive = nodes[a].hubIndex === activeIndex.value || nodes[b].hubIndex === activeIndex.value
+    
     ctx2.beginPath()
     ctx2.moveTo(pa.x, pa.y)
     ctx2.lineTo(pb.x, pb.y)
-    ctx2.strokeStyle = isActive
-      ? `rgba(${pRGB},${Math.min(alpha * 3.5, 0.85)})`
-      : `rgba(${pRGB},${alpha})`
-    ctx2.lineWidth = isActive ? 1.75 : 0.85
-    if (isActive) { ctx2.shadowBlur = 5; ctx2.shadowColor = pCol }
-    ctx2.stroke()
-    ctx2.shadowBlur = 0
+    
+    if (isActive) {
+      // First pass: Glow (wider line, lower opacity)
+      ctx2.strokeStyle = `rgba(${pRGB},${Math.min(alpha * 1.5, 0.35)})`
+      ctx2.lineWidth = 4.0
+      ctx2.stroke()
+      
+      // Second pass: Core (thinner line, higher opacity)
+      ctx2.strokeStyle = `rgba(${pRGB},${Math.min(alpha * 4.0, 0.9)})`
+      ctx2.lineWidth = 1.75
+      ctx2.stroke()
+    } else {
+      ctx2.strokeStyle = `rgba(${pRGB},${alpha})`
+      ctx2.lineWidth = 0.85
+      ctx2.stroke()
+    }
   })
 
   // Update & draw signals
@@ -476,19 +506,27 @@ const drawMesh = () => {
     const grad = ctx2.createLinearGradient(tx, ty, sx, sy)
     grad.addColorStop(0, `rgba(${col},0)`)
     grad.addColorStop(1, `rgba(${col},${sig.opacity})`)
+    // First pass: Glow line (wider, lower opacity)
+    ctx2.beginPath()
+    ctx2.moveTo(tx, ty)
+    ctx2.lineTo(sx, sy)
+    ctx2.strokeStyle = `rgba(${col},${sig.opacity * 0.22})`
+    ctx2.lineWidth = isAct ? 7.5 : 4.0
+    ctx2.stroke()
+    
+    // Second pass: Core line (thinner, gradient color)
     ctx2.beginPath()
     ctx2.moveTo(tx, ty)
     ctx2.lineTo(sx, sy)
     ctx2.strokeStyle = grad
     ctx2.lineWidth = isAct ? 3.0 : 1.75
-    ctx2.shadowBlur = isAct ? 12 : 5
-    ctx2.shadowColor = colStr
     ctx2.stroke()
+    
+    // Signal dot core
     ctx2.beginPath()
     ctx2.arc(sx, sy, sig.size * ((pa.s + pb.s) / 2) * (isAct ? 1.6 : 1), 0, Math.PI * 2)
     ctx2.fillStyle = `rgba(${col},${sig.opacity})`
     ctx2.fill()
-    ctx2.shadowBlur = 0
   })
   if (Math.random() < 0.18) spawnSignal()
 
@@ -511,18 +549,29 @@ const drawMesh = () => {
         ctx2.lineWidth = ri === 0 ? 0.8 : 1.3
         ctx2.stroke()
       })
+      // Glow fill pass
+      ctx2.beginPath()
+      ctx2.arc(p.x, p.y, r * 2.2, 0, Math.PI * 2)
+      ctx2.fillStyle = `rgba(${pRGB},${bright * 0.25})`
+      ctx2.fill()
+      
+      // Core fill pass
       ctx2.beginPath()
       ctx2.arc(p.x, p.y, r, 0, Math.PI * 2)
       ctx2.fillStyle = `rgba(${pRGB},${bright})`
-      ctx2.shadowBlur = 28; ctx2.shadowColor = pCol
       ctx2.fill()
-      ctx2.shadowBlur = 0
     } else if (n.isHub) {
+      // Glow fill pass for inactive hubs
+      ctx2.beginPath()
+      ctx2.arc(p.x, p.y, r * 1.8, 0, Math.PI * 2)
+      ctx2.fillStyle = `rgba(${sRGB},${bright * 0.15})`
+      ctx2.fill()
+      
+      // Core fill pass for inactive hubs
       ctx2.beginPath()
       ctx2.arc(p.x, p.y, r * 1.3, 0, Math.PI * 2)
       ctx2.fillStyle = `rgba(${sRGB},${bright * 0.55})`
-      ctx2.shadowBlur = 9; ctx2.shadowColor = sCol
-      ctx2.fill(); ctx2.shadowBlur = 0
+      ctx2.fill()
     } else {
       ctx2.beginPath()
       ctx2.arc(p.x, p.y, r, 0, Math.PI * 2)
@@ -557,12 +606,20 @@ const drawMesh = () => {
           // Fade in/out at scroll boundaries
           const sub = scrollProgress.value * projects.value.length - activeIndex.value
           const wireOp = sub < 0.15 ? sub / 0.15 : sub > 0.85 ? (1 - sub) / 0.15 : 1
+          
+          ctx2.setLineDash([4, 7])
+          
+          // First pass: Glow line (wider, lower opacity)
+          ctx2.strokeStyle = `rgba(${pRGB},${wireOp * 0.18})`
+          ctx2.lineWidth = 5.0
+          ctx2.stroke()
+          
+          // Second pass: Core line (thinner, higher opacity)
           ctx2.strokeStyle = `rgba(${pRGB},${wireOp * 0.55})`
           ctx2.lineWidth = 2.2
-          ctx2.setLineDash([4, 7])
-          ctx2.shadowBlur = 8; ctx2.shadowColor = pCol
           ctx2.stroke()
-          ctx2.setLineDash([]); ctx2.shadowBlur = 0
+          
+          ctx2.setLineDash([])
         }
       }
     }
