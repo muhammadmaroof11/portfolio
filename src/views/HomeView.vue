@@ -13,7 +13,7 @@ import DecryptedText from '../components/DecryptedText.vue'
 import TextPressure from '../components/TextPressure.vue'
 import CircularText from '../components/CircularText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
-import DnaProjectsList from '../components/DnaProjectsList.vue'
+import SynapticProjectsList from '../components/SynapticProjectsList.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -395,7 +395,7 @@ const offeredServices = [
 
     <!-- FEATURED PROJECTS (3D DNA SYSTEM LADDER) -->
     <section ref="projectsRef" class="w-full relative layer-base scroll-mt-32" id="work">
-      <DnaProjectsList />
+      <SynapticProjectsList />
     </section>
 
     <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pb-16 overflow-visible"> <!-- Reopen max-w-[1800px] container -->

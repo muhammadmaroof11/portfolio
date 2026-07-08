@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, computed } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { ArrowUpRight, Search, Sparkles } from 'lucide-vue-next'
@@ -27,78 +27,10 @@ const filteredProjects = computed(() => {
     return matchesSearch && matchesTech
   })
 })
-
-// Hover Image Follow state
-const hoveredProject = ref(null)
-const containerRef = ref(null)
-
-const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 }
-const previewStyle = ref({
-  transform: 'translate3d(0px, 0px, 0) scale(0)',
-  opacity: 0
-})
-
-let animationFrameId = null
-
-const handleMouseMove = (e) => {
-  if (!containerRef.value || !hoveredProject.value) return
-  const rect = containerRef.value.getBoundingClientRect()
-  
-  // Calculate cursor offset relative to the table container
-  mouse.targetX = e.clientX - rect.left
-  mouse.targetY = e.clientY - rect.top
-}
-
-const updatePreviewPosition = () => {
-  if (hoveredProject.value) {
-    // Linear interpolation for smooth cursor follow
-    mouse.x += (mouse.targetX - mouse.x) * 0.12
-    mouse.y += (mouse.targetY - mouse.y) * 0.12
-    
-    // Offset the image preview slightly so it sits next to the cursor
-    const offsetX = 30
-    const offsetY = -100
-    
-    previewStyle.value = {
-      transform: `translate3d(${mouse.x + offsetX}px, ${mouse.y + offsetY}px, 0) scale(1) rotate(2deg)`,
-      opacity: 1
-    }
-  } else {
-    // Animate scale down when not hovering
-    previewStyle.value = {
-      transform: `translate3d(${mouse.x}px, ${mouse.y}px, 0) scale(0.6)`,
-      opacity: 0
-    }
-  }
-  animationFrameId = requestAnimationFrame(updatePreviewPosition)
-}
-
-const onRowEnter = (project, e) => {
-  hoveredProject.value = project
-  if (containerRef.value) {
-    const rect = containerRef.value.getBoundingClientRect()
-    mouse.x = e.clientX - rect.left
-    mouse.y = e.clientY - rect.top
-    mouse.targetX = mouse.x
-    mouse.targetY = mouse.y
-  }
-}
-
-const onRowLeave = () => {
-  hoveredProject.value = null
-}
-
-onMounted(() => {
-  updatePreviewPosition()
-})
-
-onUnmounted(() => {
-  cancelAnimationFrame(animationFrameId)
-})
 </script>
 
 <template>
-  <div ref="containerRef" class="relative w-full overflow-visible py-8 md:py-16">
+  <div class="relative w-full overflow-visible py-8 md:py-16">
     <!-- Header of the Table view -->
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-16">
       <div>
@@ -139,48 +71,10 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Floating Preview Card (revealed on row hover, follows cursor) -->
-    <div 
-      class="pointer-events-none absolute left-0 top-0 z-[150] w-[260px] md:w-[320px] aspect-[16/10] overflow-hidden shadow-2xl transition-all duration-300 ease-out border border-white/20"
-      :style="[
-        previewStyle,
-        { borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '1.5rem' }
-      ]"
-      :class="[
-        themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface shadow-[8px_8px_0_0_#000000] bg-surface' :
-        themeStore.currentStyle === 'street' ? 'street-card border-2 border-primary bg-black/90' :
-        'bg-surface-container-high/90 backdrop-blur-lg'
-      ]"
-    >
-      <div v-if="hoveredProject" class="relative w-full h-full flex items-center justify-center bg-black/10 dark:bg-black/50">
-        <!-- Blurred background copy of the image to fill space gracefully -->
-        <img 
-          :src="hoveredProject.image" 
-          alt="" 
-          class="absolute inset-0 w-full h-full object-cover opacity-30 dark:opacity-50 filter blur-lg scale-110 pointer-events-none" 
-        />
-        <!-- Contain-fitted main image -->
-        <img 
-          :src="hoveredProject.image" 
-          :alt="hoveredProject.title" 
-          class="relative z-10 w-full h-full object-contain p-3 scale-[1.03] transition-transform duration-500" 
-        />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent z-20"></div>
-        <div class="absolute bottom-4 left-4 right-4 z-30">
-          <div class="flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-            <span class="text-[8px] font-bold text-white/50 tracking-widest uppercase">PREVIEWING ENGINE</span>
-          </div>
-          <h4 class="text-white font-headline font-black text-sm uppercase tracking-wider mt-1">{{ hoveredProject.title }}</h4>
-        </div>
-      </div>
-    </div>
-
     <!-- Tabular Deck Layout -->
     <div class="w-full overflow-x-auto scrollbar-none border-t border-primary/10">
       <table 
         class="w-full text-left border-collapse"
-        @mousemove="handleMouseMove"
       >
         <thead>
           <tr class="border-b border-primary/10 text-on-surface/40 uppercase font-black text-[9px] tracking-[0.3em]">
@@ -195,8 +89,6 @@ onUnmounted(() => {
           <tr 
             v-for="(project, idx) in filteredProjects" 
             :key="project.id"
-            @mouseenter="onRowEnter(project, $event)"
-            @mouseleave="onRowLeave"
             class="group transition-all duration-300 cursor-pointer"
             :class="[
               themeStore.currentStyle === 'brutal' ? 'hover:bg-primary/5 hover:translate-x-1' :

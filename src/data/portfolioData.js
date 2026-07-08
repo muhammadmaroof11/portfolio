@@ -31,7 +31,7 @@ export const portfolioData = {
     {
       id: 'foodlink',
       title: 'FOODLINK',
-      description: 'Gourmet logistics platform with multi-portal ecosystem (Capacitor/Vue 3) and real-time Supabase architecture.',
+      description: 'Gourmet logistics platform with a multi-portal mobile and web ecosystem powered by Capacitor & Vue 3. Features a real-time reactive Supabase database, high-throughput routing algorithms, geo-tracking coordination, and a low-latency cache layer for rapid delivery syncing.',
       tech: ['Vue 3', 'Supabase', 'Capacitor', 'Tailwind'],
       image: '/projects/foodlink.png',
       link: 'https://foodlinkglobal.netlify.app/',
@@ -41,7 +41,7 @@ export const portfolioData = {
     {
       id: 'bytely-calling-agent',
       title: 'BYTELY CALLING AGENT',
-      description: 'Voice AI conversational calling agent featuring low-latency response processing, call logs dashboard, and agent orchestration.',
+      description: 'AI voice conversational calling agent featuring low-latency response processing, real-time pipeline monitoring, and high-frequency webhook integrations. Integrates agent orchestration, call logs analytics, and telemetry visualization into a streamlined Vue/Pinia dashboard.',
       tech: ['Vue.js', 'Pinia', 'JavaScript', 'Tailwind CSS'],
       image: '/projects/calling-agent.webp',
       link: '#',
@@ -52,7 +52,7 @@ export const portfolioData = {
     {
       id: 'bytelyai',
       title: 'BYTELYAI',
-      description: 'SaaS AI Platform with enterprise-grade secure coding practices.',
+      description: 'Enterprise-grade SaaS artificial intelligence platform focused on secure code generation, LLM orchestrations, and context-aware code analysis. Developed with high-fidelity GSAP scroll timelines, Framer Motion layouts, and responsive state synchronization via Zustand.',
       tech: ['React', 'Vite', 'GSAP', 'Framer Motion', 'Zustand', 'Axios'],
       image: '/projects/bytely.png',
       link: 'https://bytely.ai/',
@@ -62,7 +62,7 @@ export const portfolioData = {
     {
       id: 'crypto-analyzer',
       title: 'CryptoAnalyzer',
-      description: 'Real-time DeFi dashboard integrating CoinGecko API with Matplotlib-inspired asset tracking.',
+      description: 'DeFi financial dashboard integrating real-time CoinGecko API data feeds with Python data processing pipelines. Renders responsive statistical tracking, asset performance metrics, and advanced charting inspired by clean Matplotlib designs for trading desks.',
       tech: ['MERN Stack', 'Python', 'CoinGecko API', 'Matplotlib'],
       image: '/projects/crypto.png',
       link: 'https://crypto-analyze-proj.netlify.app/',
@@ -72,7 +72,7 @@ export const portfolioData = {
     {
       id: 'mentairo',
       title: 'MENTAIRO',
-      description: 'Mental health platform with Agora SDK for secure real-time video consultations.',
+      description: 'Secure health platform incorporating Agora SDK for high-fidelity, low-latency video consultations. Features end-to-end encrypted chat channels, real-time socket connections, robust Firebase auth, and custom state synchronization for secure client-physician sessions.',
       tech: ['Flutter', 'Firebase', 'Agora SDK'],
       image: '/projects/mentairo.jpeg',
       link: '#',
@@ -83,7 +83,7 @@ export const portfolioData = {
     {
       id: 'ezi-services',
       title: 'EZI SERVICES',
-      description: 'High-performance custom blog engine optimized for speed and SEO.',
+      description: 'High-performance blog system and content engine. Developed with Node.js and Express backend controllers, built-in server-side caching, and structured schema markup to optimize lighthouse metrics and achieve maximum search engine presence.',
       tech: ['Vue.js', 'Node.js', 'Express', 'SEO'],
       image: '/projects/ezi.png',
       featured: false,
