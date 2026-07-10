@@ -744,8 +744,8 @@ onUnmounted(() => {
     <div ref="pinnedRef" class="pinned-container h-[calc(100vh-80px)] w-full relative flex items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
       
       <!-- Section Heading inside the pinned screen-locked container -->
-      <div class="absolute top-12 md:top-18 lg:top-20 xl:top-22 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
-        <div class="relative h-[45px] md:h-[75px] lg:h-[90px] xl:h-[105px] w-full flex items-center justify-center max-w-[1000px]">
+      <div class="absolute top-6 md:top-8 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
+        <div class="relative h-[30px] md:h-[45px] lg:h-[50px] xl:h-[55px] w-full flex items-center justify-center max-w-[700px]">
           <TextPressure
             text="ENGINEERED PROJECTS."
             fontFamily="Roboto Flex"
@@ -757,12 +757,12 @@ onUnmounted(() => {
             :weight="true"
             :italic="true"
             textColor="var(--color-on-surface)"
-            :minFontSize="28"
+            :minFontSize="20"
           />
         </div>
         <div
-          class="h-[2px] mt-3 rounded-full synaptic-heading-bar opacity-75 animate-pulse"
-          :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '80px' }"
+          class="h-[1.5px] mt-2 rounded-full synaptic-heading-bar opacity-75 animate-pulse"
+          :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '60px' }"
         />
       </div>
 
@@ -835,13 +835,13 @@ onUnmounted(() => {
                 : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10',
           // Card on right side (even index)
             index % 2 === 0
-              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-10 xl:pr-16'
-              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-10 xl:pl-16'
+              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-10 xl:pr-16 lg:pt-14 xl:pt-18'
+              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-10 xl:pl-16 lg:pt-14 xl:pt-18'
           ]"
         >
           <!-- Cinematic HUD styled Card Box (Glassmorphism look from sample.mp4) -->
           <div 
-            class="group relative flex flex-col justify-between p-5 md:p-6 xl:p-8 overflow-hidden bg-surface-container-low/10 backdrop-blur-md project-card-box w-full max-w-[520px] lg:max-w-[480px] xl:max-w-[530px] lg:min-h-[510px] xl:min-h-[560px] pointer-events-auto transition-all"
+            class="group relative flex flex-col justify-between p-4 md:p-5 xl:p-6 overflow-hidden bg-surface-container-low/10 backdrop-blur-md project-card-box w-full max-w-[500px] lg:max-w-[440px] xl:max-w-[500px] lg:min-h-[460px] xl:min-h-[500px] pointer-events-auto transition-all"
             v-tilt="{ max: 6, scale: 1.01 }"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
@@ -873,13 +873,13 @@ onUnmounted(() => {
             <div class="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none translate-y-[-100%] group-hover:animate-[scan_2.5s_ease-in-out_infinite] z-10"></div>
 
             <!-- Floating sequence indicator -->
-            <span class="absolute top-4 right-6 font-mono font-black text-4xl md:text-5xl text-primary/10 select-none z-10">
+            <span class="absolute top-4 right-6 font-mono font-black text-3xl md:text-4xl text-primary/10 select-none z-10">
               0{{ index + 1 }}
             </span>
 
             <!-- Image preview box -->
             <div 
-              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[200px] md:max-h-[260px] z-10"
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[160px] md:max-h-[200px] z-10"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
               <img 
@@ -891,7 +891,7 @@ onUnmounted(() => {
               <img 
                 :src="project.image" 
                 :alt="project.title" 
-                class="relative z-10 max-h-[175px] md:max-h-[225px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
+                class="relative z-10 max-h-[140px] md:max-h-[170px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
 
               <!-- HUD Target Reticle Overlay -->
@@ -910,7 +910,7 @@ onUnmounted(() => {
             </div>
 
             <!-- Content spec sheet -->
-            <div class="mt-5 z-10 flex-1 flex flex-col justify-between">
+            <div class="mt-4 z-10 flex-1 flex flex-col justify-between">
               <div>
                 <!-- HUD System Headers -->
                 <div class="flex items-center justify-between text-[7px] md:text-[8px] font-mono text-on-surface/30 mb-2">
@@ -932,13 +932,13 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Cinematic Scrambled Title -->
-                <h3 class="text-xl md:text-2xl font-headline font-black uppercase tracking-tight text-on-surface mb-2 leading-none">
+                <h3 class="text-lg md:text-xl font-headline font-black uppercase tracking-tight text-on-surface mb-2 leading-none">
                   <span v-if="index === activeIndex">{{ activeTitle }}</span>
                   <span v-else>{{ project.title }}</span>
                 </h3>
 
                 <!-- Tech tags -->
-                <div class="flex flex-wrap gap-1.5 mb-3">
+                <div class="flex flex-wrap gap-1.5 mb-2.5">
                   <span 
                     v-for="tag in project.tech" 
                     :key="tag"
@@ -950,14 +950,14 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Description -->
-                <p class="text-on-surface-variant text-xs leading-relaxed font-body font-medium mb-4 opacity-90 max-w-sm">
+                <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium mb-3 opacity-90 max-w-sm">
                   {{ project.description }}
                 </p>
               </div>
 
               <div>
                 <!-- Diagnostic HUD Metrics -->
-                <div v-if="themeStore.currentStyle !== 'brutal'" class="flex items-center justify-between border-t border-on-surface/5 pt-3 pb-3 mb-2 font-mono text-[7px] text-on-surface/30">
+                <div v-if="themeStore.currentStyle !== 'brutal'" class="flex items-center justify-between border-t border-on-surface/5 pt-2 pb-2 mb-1.5 font-mono text-[7px] text-on-surface/30">
                   <span class="flex items-center gap-1">
                     <span class="text-primary font-bold">CORE:</span> STABLE
                   </span>
@@ -966,7 +966,7 @@ onUnmounted(() => {
                 </div>
 
                 <!-- Footer with explore actions -->
-                <div class="flex items-center justify-between border-t border-on-surface/5 pt-3.5">
+                <div class="flex items-center justify-between border-t border-on-surface/5 pt-2.5">
                   <div class="flex flex-col">
                     <span class="font-mono text-[8px] font-bold text-on-surface/30 uppercase tracking-wider">
                       COMPILED YEAR
@@ -980,7 +980,7 @@ onUnmounted(() => {
                     v-if="project.link && project.link !== '#'" 
                     :href="project.link" 
                     target="_blank"
-                    class="inline-flex items-center gap-1.5 px-4.5 py-2.5 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
                     :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
                     :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
                     v-ripple
@@ -990,7 +990,7 @@ onUnmounted(() => {
                   </a>
                   <div 
                     v-else-if="project.hoverText"
-                    class="px-3.5 py-2.5 bg-surface-container-high border border-surface-container-high text-on-surface/40 font-black text-[8px] tracking-[0.2em] uppercase rounded-md"
+                    class="px-3.5 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/40 font-black text-[8px] tracking-[0.2em] uppercase rounded-md"
                   >
                     {{ project.hoverText }}
                   </div>

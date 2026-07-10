@@ -3,8 +3,8 @@ import { onMounted, ref, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { 
-  LayoutDashboard, Zap, Smartphone, Globe, Terminal, 
-  Cpu, Server, Code, CheckCircle, ShieldAlert, Cpu as AiIcon
+  Braces, Layers, Cpu, Database, Paintbrush, Smartphone,
+  CheckCircle, ShieldAlert
 } from 'lucide-vue-next'
 import gsap from 'gsap'
 import FuzzyText from '../components/FuzzyText.vue'
@@ -127,26 +127,110 @@ const enrichedMetadata = {
     layer: 'Machine Learning Framework',
     percentage: 80,
     snippet: `import torch\nimport torch.nn as nn\nx = torch.randn(10, 3)\nmodel = nn.Linear(3, 1)`
+  },
+  'PHP': {
+    description: 'Backend server-side scripting language. Building RESTful APIs, handling session authentication, database transactions, and legacy server integrations.',
+    layer: 'Application Logic Layer',
+    percentage: 85,
+    snippet: `<?php\nclass Controller {\n  public function index() {\n    return json_encode(["status" => "active"]);\n  }\n}`
+  },
+  'C': {
+    description: 'Low-level systems programming. Understanding memory allocation, pointers, structures, low-level compilation, and hardware interface optimization.',
+    layer: 'System Interface Layer',
+    percentage: 82,
+    snippet: `#include <stdio.h>\nint main() {\n  printf("System active\\n");\n  return 0;\n}`
+  },
+  'C++': {
+    description: 'Object-oriented low-level systems and application development. Utilizing standard templates library (STL), references, performance-critical loops, and cross-compilation.',
+    layer: 'Performance Engineering',
+    percentage: 80,
+    snippet: `#include <iostream>\nusing namespace std;\nint main() {\n  cout << "Process initialized" << endl;\n}`
+  },
+  'Blender': {
+    description: '3D modeling, asset creation, texturing, animation, and glTF asset optimization for WebGL renderers like Three.js and Babylon.js.',
+    layer: '3D Asset Pipeline',
+    percentage: 85,
+    snippet: `# Python scripting in Blender for procedural object generation\nimport bpy\nbpy.ops.mesh.primitive_uv_sphere_add(radius=1.5)`
+  },
+  'Framer Motion': {
+    description: 'Production-ready animation library for React applications. Creating smooth layout animations, physical spring physics transitions, and gestures-linked tweens.',
+    layer: 'Interactive Transition Engine',
+    percentage: 90,
+    snippet: `<motion.div animate={{ scale: 1.1 }} transition={{ type: "spring", stiffness: 100 }} />`
+  },
+  'CSS': {
+    description: 'Core styling layer. Expertise in grid layouts, flexbox, custom properties, viewport-relative styling, animations, media queries, and pixel-perfect responsiveness.',
+    layer: 'Visual Styling Engine',
+    percentage: 95,
+    snippet: `.element {\n  display: grid;\n  place-items: center;\n  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);\n}`
+  },
+  'Flask': {
+    description: 'Micro web framework for Python. Building modular RESTful APIs, route blue-printing, server-side caching, and lightweight microservice architectures.',
+    layer: 'Microservice Application Layer',
+    percentage: 88,
+    snippet: `from flask import Flask, jsonify\napp = Flask(__name__)\n@app.route('/health')\ndef health():\n    return jsonify(status="ok")`
+  },
+  'GCP': {
+    description: 'Google Cloud Platform infrastructure administration. Configuring VPC networks, virtual machine deployment (GCE), Cloud Run deployment, serverless functions, and Cloud SQL storage.',
+    layer: 'Cloud Infrastructure',
+    percentage: 84,
+    snippet: `# gcloud deployment CLI target\ngcloud run deploy service-name --image gcr.io/project-id/image`
+  },
+  'Postman': {
+    description: 'Comprehensive API testing ecosystem. Writing test suites, automated mock assertions, environment variable synchronization, and run collection testing.',
+    layer: 'API Assurance & Validation',
+    percentage: 90,
+    snippet: `pm.test("Status code is 200", function () {\n  pm.response.to.have.status(200);\n});`
+  },
+  'Kubernetes': {
+    description: 'Orchestrating containerized systems at scale. Configuring deploy manifests, services, ingress controllers, load balancers, secrets, and pod horizontal autoscaling.',
+    layer: 'Container Orchestration',
+    percentage: 80,
+    snippet: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: app-deployment\nspec:\n  replicas: 3`
+  },
+  'Scikit-Learn': {
+    description: 'Classical machine learning in Python. Building regression models, support vector machines, clustering pipelines, dimensionality reduction, and preprocessing workflows.',
+    layer: 'Predictive Analytics Layer',
+    percentage: 85,
+    snippet: `from sklearn.ensemble import RandomForestClassifier\nclf = RandomForestClassifier()\nclf.fit(X_train, y_train)`
+  },
+  'Fine-Tuning': {
+    description: 'Specialized model tuning. Adapting LLMs using LoRA, QLoRA, custom dataset preparation, hyperparameter search, and loss curve monitoring for domain specialization.',
+    layer: 'Model Specialization Tier',
+    percentage: 87,
+    snippet: `# PEFT LoRA configuration in training cycle\npeft_config = LoraConfig(r=16, lora_alpha=32, target_modules=["q_proj", "v_proj"])`
+  },
+  'SQL': {
+    description: 'Designing relational databases, writing optimized queries, configuring indexes, managing schema migrations, and optimizing transaction rollbacks.',
+    layer: 'Data Persistence Layer',
+    percentage: 92,
+    snippet: `SELECT u.id, u.name, COUNT(p.id) AS posts_count\nFROM users u\nLEFT JOIN posts p ON p.author_id = u.id\nGROUP BY u.id;`
+  },
+  'Electron': {
+    description: 'Building desktop native apps with web technologies (HTML, CSS, JavaScript). Implementing IPC bridge communication, OS integration, and auto-updater scripts.',
+    layer: 'Desktop Application Bridge',
+    percentage: 88,
+    snippet: `const { app, BrowserWindow } = require('electron');\nconst createWindow = () => {\n  const win = new BrowserWindow({ width: 1200, height: 800 });\n};`
   }
 }
 
 // Setup categories
 const categories = [
-  { name: 'All', icon: Terminal },
-  { name: 'Frontend', icon: Code },
-  { name: 'Backend', icon: Server },
-  { name: 'AI & Data', icon: Cpu },
-  { name: 'Mobile', icon: Smartphone }
+  { name: 'Languages', icon: Braces },
+  { name: 'Frameworks', icon: Layers },
+  { name: 'AI & Automation', icon: Cpu },
+  { name: 'Backend & Cloud', icon: Database },
+  { name: 'Styling & Motion', icon: Paintbrush },
+  { name: 'Mobile Dev', icon: Smartphone }
 ]
 
-const activeCategory = ref('All')
+const activeCategory = ref('Languages')
 const selectedSkill = ref(null)
 const scrambleSkillName = ref('')
 const scrambleInterval = ref(null)
 
 // Computed filtered skills list
 const filteredSkills = computed(() => {
-  if (activeCategory.value === 'All') return skills
   return skills.filter(s => s.category === activeCategory.value)
 })
 
@@ -230,154 +314,137 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="w-full overflow-visible relative">
-    <!-- Double Crossing Police Caution/Warning ribbons under navbar (running full width in background) -->
-    <!-- Ribbon 1: Angled at 20deg, running across the screen -->
-    <div 
-      class="fixed top-[200px] right-[-600px] w-[3000px] py-1 text-center select-none transform rotate-[20deg] border-y border-black/25 z-[1] shadow-xl flex items-center justify-center pointer-events-none"
-      style="background: repeating-linear-gradient(-45deg, #fbbf24, #fbbf24 6px, #1c1917 6px, #1c1917 12px);"
-    >
-      <div class="w-full bg-black/90 py-2.5 text-[12px] md:text-[14px] font-black tracking-[0.35em] text-yellow-400 font-mono uppercase whitespace-nowrap overflow-hidden">
-        OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED // OVERCLOCKED // OVERSKILLED
-      </div>
-    </div>
-    <!-- Ribbon 2: Crossing angled at 76deg, shifted to the very right edge of the viewport (extended to 5000px) -->
-    <div 
-      class="fixed top-[-1200px] right-[-1950px] w-[5000px] py-1 text-center select-none transform rotate-[76deg] border-y border-black/25 z-[2] shadow-xl flex items-center justify-center pointer-events-none"
-      style="background: repeating-linear-gradient(-45deg, #fbbf24, #fbbf24 6px, #1c1917 6px, #1c1917 12px);"
-    >
-      <div class="w-full bg-black/90 py-2.5 text-[12px] md:text-[14px] font-black tracking-[0.35em] text-yellow-400 font-mono uppercase whitespace-nowrap overflow-hidden">
-        DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF // DANGER // CONFIDENT_AF
-      </div>
-    </div>
-
-    <!-- MAIN CONTENT WRAPPER (Keeps page text, grids, and details above caution ribbons) -->
-    <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative z-10 pointer-events-none-children-auto">
-
-    <!-- HERO HEADER -->
-    <header class="mb-12 md:mb-16 skills-header">
-      <div class="max-w-3xl">
-        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-6 md:mb-8 block">Technical Competencies</span>
-        <h1 class="text-4xl sm:text-5xl md:text-7xl xl:text-[100px] font-headline font-black text-on-background tracking-[calc(-0.06em)] leading-none mb-8 md:mb-10 uppercase flex flex-wrap lg:flex-nowrap items-baseline gap-x-3 md:gap-x-4">
-          <span>ENGINEERING</span>
-          <FuzzyText 
-            color="var(--color-primary)" 
-            font-style="italic"
-            font-size="clamp(2.5rem, 6vw, 6.2rem)"
-            font-weight="900"
-            font-family="inherit"
-            class-name="text-primary italic inline-block select-none"
-            :base-intensity="0.15"
-            :hover-intensity="0.45"
-            :fuzz-range="18"
-            :enable-hover="true"
-          >
-            ARSENAL.
-          </FuzzyText>
-        </h1>
-      </div>
-    </header>
-
-    <!-- CYBERNETIC CONTROL TABS -->
-    <div class="flex flex-wrap gap-3 mb-10 border-b border-on-surface/10 pb-5 gsap-console-enter">
-      <button 
-        v-for="cat in categories" 
-        :key="cat.name"
-        @click="activeCategory = cat.name"
-        class="flex items-center gap-3 px-5 py-3 text-xs md:text-sm font-black uppercase tracking-wider transition-all duration-300 relative border cursor-pointer select-none"
-        :style="{ borderRadius: 'calc(var(--app-radius) / 2)' }"
-        :class="[
-          activeCategory === cat.name 
-            ? 'bg-primary text-background border-primary shadow-lg shadow-primary/20 scale-[1.03]' 
-            : 'bg-surface-container-low text-on-surface/75 border-primary/10 hover:border-primary/40 hover:text-on-surface',
-          themeStore.currentStyle === 'brutal' ? 'brutal-card border-2 font-mono' : '',
-          themeStore.currentStyle === 'street' ? 'street-card font-mono' : ''
-        ]"
-      >
-        <component :is="cat.icon" class="w-4 h-4" />
-        {{ cat.name }}
-      </button>
-    </div>
+  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative">
 
     <!-- MAIN INTERACTIVE DECK CONSOLE -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
-      <!-- LEFT HAND PANEL: CARDS DECK (lg:7 cols) -->
-      <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 gsap-console-enter">
-        <div 
-          v-for="skill in filteredSkills" 
-          :key="skill.name"
-          @click="selectSkill(skill)"
-          class="skill-card p-5 transition-all duration-500 cursor-pointer border relative overflow-hidden flex flex-col justify-between group active-spring min-h-[140px]"
-          :style="{ borderRadius: 'var(--app-radius)' }"
-          :class="[
-            selectedSkill?.name === skill.name
-              ? 'border-primary ring-2 ring-primary/25 bg-surface-container-high' 
-              : 'border-primary/5 bg-surface-container-low hover:bg-surface-container hover:border-primary/20',
-            themeStore.currentStyle === 'brutal' 
-              ? `brutal-card border-4 border-on-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]` 
-              : '',
-            themeStore.currentStyle === 'street' 
-              ? 'street-card border-primary/20 shadow-[0_0_15px_rgba(0,255,255,0.02)] hover:shadow-[0_0_20px_rgba(0,255,255,0.08)]' 
-              : ''
-          ]"
-        >
-          <!-- Selected Tech Glow Bar -->
-          <div 
-            v-if="selectedSkill?.name === skill.name" 
-            class="absolute top-0 left-0 right-0 h-[3px]"
-            :style="{ backgroundColor: skill.color }"
-          ></div>
+      <!-- LEFT HAND PANEL: FILTERS & CARDS DECK (lg:7 cols) -->
+      <div class="lg:col-span-7 flex flex-col gap-6">
 
-          <div class="flex items-start justify-between gap-3 mb-4">
-            <!-- Icon Frame -->
-            <div class="w-12 h-12 flex items-center justify-center p-2.5 rounded shadow-inner bg-surface border border-primary/10 transition-transform duration-500 group-hover:scale-105 shrink-0"
-              :style="{ color: skill.color, borderRadius: 'calc(var(--app-radius) / 4)' }"
-              :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
-            >
-              <i v-if="skill.faIcon" :class="skill.faIcon" class="text-2xl" :style="{ color: skill.color }"></i>
-              <div v-else-if="skill.iconUrl && skill.iconUrl.includes('simple-icons')"
-                class="w-full h-full"
-                :style="{
-                  backgroundColor: skill.color,
-                  mask: `url(${skill.iconUrl}) no-repeat center / contain`,
-                  webkitMask: `url(${skill.iconUrl}) no-repeat center / contain`
-                }"
-              ></div>
-              <img v-else :src="skill.iconUrl || `https://skillicons.dev/icons?i=${skill.slug}`" 
-                :alt="skill.name" 
-                class="w-full h-full object-contain" />
+        <!-- HERO HEADER (nested inside left column and scaled down by 30%) -->
+        <header class="mb-6 skills-header">
+          <div class="max-w-3xl">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl xl:text-7xl font-headline font-black text-on-background tracking-[calc(-0.06em)] leading-none mb-4 uppercase flex flex-wrap items-baseline gap-x-3 md:gap-x-4">
+              <span>ENGINEERING</span>
+              <FuzzyText 
+                color="var(--color-primary)" 
+                font-style="italic"
+                font-size="clamp(1.8rem, 4.5vw, 4.4rem)"
+                font-weight="900"
+                font-family="inherit"
+                class-name="text-primary italic inline-block select-none"
+                :base-intensity="0.15"
+                :hover-intensity="0.45"
+                :fuzz-range="18"
+                :enable-hover="true"
+              >
+                ARSENAL.
+              </FuzzyText>
+            </h1>
+          </div>
+        </header>
+        <!-- CYBERNETIC CONTROL TABS -->
+        <div class="flex flex-wrap gap-2.5 border-b border-on-surface/10 pb-4 gsap-console-enter">
+          <button 
+            v-for="cat in categories" 
+            :key="cat.name"
+            @click="activeCategory = cat.name"
+            class="flex items-center gap-2.5 px-4 py-2.5 text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-300 relative border cursor-pointer select-none"
+            :style="{ borderRadius: 'calc(var(--app-radius) / 2)' }"
+            :class="[
+              activeCategory === cat.name 
+                ? 'bg-primary text-background border-primary shadow-lg shadow-primary/20 scale-[1.02]' 
+                : 'bg-surface-container-low text-on-surface/75 border-primary/10 hover:border-primary/40 hover:text-on-surface',
+              themeStore.currentStyle === 'brutal' ? 'brutal-card border-2 font-mono' : '',
+              themeStore.currentStyle === 'street' ? 'street-card font-mono' : ''
+            ]"
+          >
+            <component :is="cat.icon" class="w-3.5 h-3.5" />
+            {{ cat.name }}
+          </button>
+        </div>
+
+        <!-- CARDS DECK -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 gsap-console-enter">
+          <div 
+            v-for="skill in filteredSkills" 
+            :key="skill.name"
+            @click="selectSkill(skill)"
+            class="skill-card p-5 transition-all duration-500 cursor-pointer border relative overflow-hidden flex flex-col justify-between group active-spring min-h-[140px]"
+            :style="{ borderRadius: 'var(--app-radius)' }"
+            :class="[
+              selectedSkill?.name === skill.name
+                ? 'border-primary ring-2 ring-primary/25 bg-surface-container-high' 
+                : 'border-primary/5 bg-surface-container-low hover:bg-surface-container hover:border-primary/20',
+              themeStore.currentStyle === 'brutal' 
+                ? `brutal-card border-4 border-on-background shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-2px] hover:translate-y-[-2px] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]` 
+                : '',
+              themeStore.currentStyle === 'street' 
+                ? 'street-card border-primary/20 shadow-[0_0_15px_rgba(0,255,255,0.02)] hover:shadow-[0_0_20px_rgba(0,255,255,0.08)]' 
+                : ''
+            ]"
+          >
+            <!-- Selected Tech Glow Bar -->
+            <div 
+              v-if="selectedSkill?.name === skill.name" 
+              class="absolute top-0 left-0 right-0 h-[3px]"
+              :style="{ backgroundColor: skill.color }"
+            ></div>
+
+            <div class="flex items-center justify-between gap-3 mb-4 w-full">
+              <div class="flex items-center gap-3 min-w-0">
+                <!-- Icon Frame -->
+                <div class="w-10 h-10 flex items-center justify-center p-2 rounded shadow-inner bg-surface border border-primary/10 transition-transform duration-500 group-hover:scale-105 shrink-0"
+                  :style="{ color: skill.color, borderRadius: 'calc(var(--app-radius) / 4)' }"
+                  :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
+                >
+                  <i v-if="skill.faIcon" :class="skill.faIcon" class="text-xl" :style="{ color: skill.color }"></i>
+                  <div v-else-if="skill.iconUrl && skill.iconUrl.includes('simple-icons')"
+                    class="w-full h-full"
+                    :style="{
+                      backgroundColor: skill.color,
+                      mask: `url(${skill.iconUrl}) no-repeat center / contain`,
+                      webkitMask: `url(${skill.iconUrl}) no-repeat center / contain`
+                    }"
+                  ></div>
+                  <img v-else :src="skill.iconUrl || `https://skillicons.dev/icons?i=${skill.slug}`" 
+                    :alt="skill.name" 
+                    class="w-full h-full object-contain" />
+                </div>
+
+                <!-- Skill Name next to Icon -->
+                <h4 class="text-sm md:text-base font-headline font-black uppercase tracking-tight text-on-surface truncate">
+                  {{ skill.name }}
+                </h4>
+              </div>
+
+              <!-- Level Label -->
+              <span 
+                class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-surface border border-primary/5 text-on-surface/60 shrink-0"
+                :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
+              >
+                {{ skill.level }}
+              </span>
             </div>
 
-            <!-- Level Label -->
-            <span 
-              class="text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded bg-surface border border-primary/5 text-on-surface/60"
-              :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
-            >
-              {{ skill.level }}
-            </span>
-          </div>
-
-          <!-- Bottom Title + Mini Stats Bar -->
-          <div>
-            <h4 class="text-base font-headline font-black uppercase tracking-tight text-on-surface break-words leading-tight">
-              {{ skill.name }}
-            </h4>
-            
-            <!-- Skill Level mini gauge -->
-            <div class="mt-3 flex items-center gap-2">
-              <div class="flex-grow h-1.5 bg-surface rounded-full overflow-hidden border border-primary/5">
-                <div 
-                  class="h-full rounded-full transition-all duration-700 ease-out" 
-                  :style="{ 
-                    width: `${enrichedMetadata[skill.name]?.percentage || 80}%`,
-                    backgroundColor: skill.color 
-                  }"
-                ></div>
+            <!-- Bottom Mini Stats Bar -->
+            <div class="mt-auto w-full">
+              <!-- Skill Level mini gauge -->
+              <div class="flex items-center gap-2">
+                <div class="flex-grow h-1.5 bg-surface rounded-full overflow-hidden border border-primary/5">
+                  <div 
+                    class="h-full rounded-full transition-all duration-700 ease-out" 
+                    :style="{ 
+                      width: `${enrichedMetadata[skill.name]?.percentage || 80}%`,
+                      backgroundColor: skill.color 
+                    }"
+                  ></div>
+                </div>
+                <span class="text-[9px] font-mono font-bold opacity-60 shrink-0" :style="{ color: skill.color }">
+                  {{ enrichedMetadata[skill.name]?.percentage || 80 }}%
+                </span>
               </div>
-              <span class="text-[9px] font-mono font-bold opacity-60" :style="{ color: skill.color }">
-                {{ enrichedMetadata[skill.name]?.percentage || 80 }}%
-              </span>
             </div>
           </div>
         </div>
@@ -527,7 +594,6 @@ onMounted(async () => {
           {{ skill.name }}
         </span>
       </div>
-    </div>
     </div>
   </div>
 </template>

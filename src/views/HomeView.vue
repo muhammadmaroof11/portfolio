@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, nextTick } from 'vue'
+import { onMounted, ref, nextTick, onUnmounted } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code } from 'lucide-vue-next'
@@ -171,6 +171,10 @@ const offeredServices = [
   { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: Cpu, image: '/services/optimization.png' },
   { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: Smartphone, image: '/services/automation.png' }
 ]
+
+onUnmounted(() => {
+  ScrollTrigger.getAll().forEach(t => t.kill())
+})
 </script>
 
 <template>

@@ -4,13 +4,14 @@ export const portfolioData = {
     title: 'Digital Architect',
     role: 'Full Stack Developer at Byte Force',
     availability: 'Available for projects',
-    location: 'Remote / Global',
-    email: 'maroof@byteforce.dev',
+    location: 'Lahore, Pakistan (Remote)',
+    email: 'mmaroof341@gmail.com',
+    phone: '+923051526463',
     socials: {
       github: 'https://github.com/MuhammadMaroof',
-      linkedin: 'https://linkedin.com/in/muhammadmaroof',
-      twitter: '#',
-      instagram: '#'
+      linkedin: 'https://www.linkedin.com/in/mmaroof11/',
+      whatsapp: 'https://wa.me/923051526463',
+      instagram: 'https://www.instagram.com/anonymous.mars.here/'
     }
   },
   education: [
@@ -91,42 +92,78 @@ export const portfolioData = {
     }
   ],
   skills: [
-    { name: 'JavaScript', category: 'Frontend', level: 'Expert', color: '#F7DF1E', slug: 'js' },
-    { name: 'Python', category: 'AI & Data', level: 'Data/AI', color: '#3776AB', slug: 'py' },
-    { name: 'Vue.js', category: 'Frontend', level: 'Advanced', color: '#4FC08D', slug: 'vue' },
-    { name: 'React', category: 'Frontend', level: 'Advanced', color: '#61DAFB', slug: 'react' },
-    { name: 'Ionic Framework', category: 'Mobile', level: 'Expert', color: '#3880FF', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Ionic_Logo.svg' },
-    { name: 'Tailwind CSS', category: 'Frontend', level: 'Expert', color: '#06B6D4', slug: 'tailwind' },
-    { name: 'Flutter', category: 'Mobile', level: 'Expert', color: '#02569B', slug: 'flutter' },
-    { name: 'Node.js', category: 'Backend', level: 'Advanced', color: '#339933', slug: 'nodejs' },
-    { name: 'MongoDB', category: 'Backend', level: 'Advanced', color: '#00684A', slug: 'mongodb' },
-    { name: 'Supabase', category: 'Backend', level: 'Advanced', color: '#3ECF8E', slug: 'supabase' },
-    { name: 'Firebase', category: 'Backend', level: 'Advanced', color: '#FFCA28', slug: 'firebase' },
-    { name: 'Capacitor', category: 'Mobile', level: 'Advanced', color: '#119EFF', iconUrl: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/capacitor.svg' },
-    { name: 'GSAP', category: 'Frontend', level: 'Advanced', color: '#88CE02', iconUrl: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/greensock.svg' },
-    { name: 'Agentic AI', category: 'AI & Data', level: 'Specialist', color: '#FF5722', faIcon: 'fa-solid fa-robot' },
-    { name: 'n8n Automation', category: 'AI & Data', level: 'Advanced', color: '#ea4b71', iconUrl: '/n8n.svg' },
-    { name: 'Generative AI', category: 'AI & Data', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' },
-    { name: 'Docker', category: 'Backend', level: 'Advanced', color: '#2496ED', slug: 'docker' },
-    { name: 'RAG Agents', category: 'AI & Data', level: 'Specialist', color: '#4CAF50', faIcon: 'fa-solid fa-network-wired' },
-    { name: 'PyTorch', category: 'AI & Data', level: 'Advanced', color: '#EE4C2C', slug: 'pytorch' }
+    // Languages
+    { name: 'JavaScript', category: 'Languages', level: 'Expert', color: '#F7DF1E', slug: 'js' },
+    { name: 'Python', category: 'Languages', level: 'Data/AI', color: '#3776AB', slug: 'py' },
+    { name: 'PHP', category: 'Languages', level: 'Advanced', color: '#777BB4', slug: 'php' },
+    { name: 'C', category: 'Languages', level: 'Advanced', color: '#A8B9CC', slug: 'c' },
+    { name: 'C++', category: 'Languages', level: 'Advanced', color: '#00599C', slug: 'cpp' },
+    
+    // Frameworks
+    { name: 'Vue.js', category: 'Frameworks', level: 'Advanced', color: '#4FC08D', slug: 'vue' },
+    { name: 'React', category: 'Frameworks', level: 'Advanced', color: '#61DAFB', slug: 'react' },
+    
+    // AI & Automation
+    { name: 'Agentic AI', category: 'AI & Automation', level: 'Specialist', color: '#FF5722', faIcon: 'fa-solid fa-robot' },
+    { name: 'n8n Automation', category: 'AI & Automation', level: 'Advanced', color: '#ea4b71', iconUrl: '/n8n.svg' },
+    { name: 'Generative AI', category: 'AI & Automation', level: 'Advanced', color: '#6A1B9A', faIcon: 'fa-solid fa-wand-magic-sparkles' },
+    { name: 'RAG Agents', category: 'AI & Automation', level: 'Specialist', color: '#4CAF50', faIcon: 'fa-solid fa-network-wired' },
+    { name: 'PyTorch', category: 'AI & Automation', level: 'Advanced', color: '#EE4C2C', slug: 'pytorch' },
+    { name: 'Scikit-Learn', category: 'AI & Automation', level: 'Advanced', color: '#F7931E', slug: 'scikitlearn' },
+    { name: 'Fine-Tuning', category: 'AI & Automation', level: 'Specialist', color: '#9C27B0', faIcon: 'fa-solid fa-sliders' },
+
+    // Backend & Cloud
+    { name: 'Node.js', category: 'Backend & Cloud', level: 'Advanced', color: '#339933', slug: 'nodejs' },
+    { name: 'MongoDB', category: 'Backend & Cloud', level: 'Advanced', color: '#00684A', slug: 'mongodb' },
+    { name: 'Supabase', category: 'Backend & Cloud', level: 'Advanced', color: '#3ECF8E', slug: 'supabase' },
+    { name: 'Firebase', category: 'Backend & Cloud', level: 'Advanced', color: '#FFCA28', slug: 'firebase' },
+    { name: 'Docker', category: 'Backend & Cloud', level: 'Advanced', color: '#2496ED', slug: 'docker' },
+    { name: 'Flask', category: 'Backend & Cloud', level: 'Advanced', color: '#000000', slug: 'flask' },
+    { name: 'GCP', category: 'Backend & Cloud', level: 'Advanced', color: '#4285F4', slug: 'googlecloud' },
+    { name: 'Postman', category: 'Backend & Cloud', level: 'Advanced', color: '#FF6C37', slug: 'postman' },
+    { name: 'Kubernetes', category: 'Backend & Cloud', level: 'Advanced', color: '#326CE5', slug: 'kubernetes' },
+    { name: 'SQL', category: 'Backend & Cloud', level: 'Expert', color: '#4479A1', slug: 'mysql' },
+
+    // Styling & Motion
+    { name: 'Tailwind CSS', category: 'Styling & Motion', level: 'Expert', color: '#06B6D4', slug: 'tailwind' },
+    { name: 'GSAP', category: 'Styling & Motion', level: 'Advanced', color: '#88CE02', iconUrl: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/greensock.svg' },
+    { name: 'Blender', category: 'Styling & Motion', level: 'Advanced', color: '#E87D0D', slug: 'blender' },
+    { name: 'Framer Motion', category: 'Styling & Motion', level: 'Expert', color: '#00C5FF', iconUrl: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/framer.svg' },
+    { name: 'CSS', category: 'Styling & Motion', level: 'Expert', color: '#1572B6', slug: 'css' },
+
+    // Mobile Dev
+    { name: 'Ionic Framework', category: 'Mobile Dev', level: 'Expert', color: '#3880FF', iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Ionic_Logo.svg' },
+    { name: 'Flutter', category: 'Mobile Dev', level: 'Expert', color: '#02569B', slug: 'flutter' },
+    { name: 'Capacitor', category: 'Mobile Dev', level: 'Advanced', color: '#119EFF', iconUrl: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/capacitor.svg' },
+    { name: 'Electron', category: 'Mobile Dev', level: 'Advanced', color: '#47848F', slug: 'electron' }
   ],
 
   experience: [
     {
-      company: 'Byte Force',
-      role: 'Lead Full Stack Developer',
-      period: '2026 - Present',
-      description: 'Architecting scalable web applications and orchestrating complex mobile lifecycles with GenAI integration.',
-      tags: ['React.js', 'Node.js', 'Supabase', 'Tailwind'],
+      company: 'Byte Force IT Solutions',
+      location: 'Lahore, Pakistan',
+      role: 'Full Stack Developer',
+      period: 'Feb 2026 – Present',
+      description: 'Design, develop, test, and maintain scalable software applications and automated pipelines.',
+      bullets: [
+        'Design, develop, test, and maintain scalable software applications, integrating RESTful APIs and backend services using modern technologies.',
+        'Engineer and deploy autonomous workflow pipelines utilizing n8n to connect APIs with outside services, managing containerized systems.',
+        'Participate in code reviews, sprint planning, and Agile ceremonies, writing clean, reliable code and investigating system bugs.'
+      ],
+      tags: ['React.js', 'Node.js', 'Supabase', 'n8n', 'Python', 'Flask', 'SQL', 'GCP', 'Postman', 'Docker', 'Kubernetes', 'Electron', 'Tailwind', 'JavaScript', 'PHP', 'C++'],
       status: 'Present'
     },
     {
       company: 'Sairay.pk',
-      role: 'Backend Developer',
-      period: '2024 - 2025',
-      description: 'Developed scalable REST APIs with Flask, achieving significant efficiency improvements.',
-      tags: ['Flask', 'Python', 'REST API']
+      location: 'Remote',
+      role: 'Full Stack Developer (Freelance)',
+      period: 'Nov 2025 – Feb 2026',
+      description: 'Architected Flask REST APIs and optimized React frontend discovery workflows.',
+      bullets: [
+        'Architected a robust, scalable REST API utilizing Python (Flask) to handle dynamic enterprise product inventories.',
+        'Accelerated frontend product discovery workflows by 40% through optimized React.js state-filtering algorithms.'
+      ],
+      tags: ['Flask', 'Python', 'React.js', 'REST API', 'Algorithms']
     }
   ]
 };

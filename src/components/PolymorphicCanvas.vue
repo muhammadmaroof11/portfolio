@@ -526,11 +526,14 @@ onUnmounted(() => {
   if (observer) {
     observer.disconnect()
   }
-  if (renderer && renderer.domElement) {
-    renderer.dispose()
-    if (canvasContainer.value) {
-      canvasContainer.value.innerHTML = ''
+  if (renderer) {
+    if (renderer.domElement) {
+      renderer.dispose()
     }
+    renderer = null
+  }
+  if (canvasContainer.value) {
+    canvasContainer.value.innerHTML = ''
   }
 })
 </script>

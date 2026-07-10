@@ -4,6 +4,7 @@ import { ref, onMounted } from 'vue'
 import Navbar from './components/Navbar.vue'
 import ClickSpark from './components/ClickSpark.vue'
 import { useThemeStore } from './stores/themeStore'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 const themeStore = useThemeStore()
 const router = useRouter()
@@ -20,7 +21,16 @@ router.afterEach(() => {
   setTimeout(() => {
     pageProgress.value = 0
   }, 400)
+  
+  // Force recalculate new triggers once page transitions are completed
+  setTimeout(() => {
+    ScrollTrigger.refresh()
+  }, 750)
 })
+
+const handleBeforeEnter = () => {
+  window.scrollTo(0, 0)
+}
 
 onMounted(() => {
   // Simulate initial load for premium feel
@@ -67,12 +77,7 @@ onMounted(() => {
         <transition 
           name="slide-fade" 
           mode="out-in"
-          enter-active-class="transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
-          enter-from-class="opacity-0 translate-y-8 scale-95"
-          enter-to-class="opacity-100 translate-y-0 scale-100"
-          leave-active-class="transition-all duration-400 ease-[cubic-bezier(0.7,0,0.84,0)]"
-          leave-from-class="opacity-100 translate-y-0 scale-100"
-          leave-to-class="opacity-0 -translate-y-8 scale-95"
+          @before-enter="handleBeforeEnter"
         >
           <component :is="Component" />
         </transition>
@@ -91,10 +96,11 @@ onMounted(() => {
       </div>
 
       <div class="relative z-10 flex flex-col items-center md:items-end gap-6 text-center md:text-right">
-        <div class="flex gap-8 font-label text-[10px] tracking-[0.4em] uppercase font-black">
+        <div class="flex gap-6 sm:gap-8 font-label text-[10px] tracking-[0.3em] sm:tracking-[0.4em] uppercase font-black">
           <a href="https://github.com/MuhammadMaroof" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">GITHUB</a>
-          <a href="https://linkedin.com/in/muhammadmaroof" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">LINKEDIN</a>
-          <a href="#" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">TWITTER</a>
+          <a href="https://www.linkedin.com/in/mmaroof11/" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">LINKEDIN</a>
+          <a href="https://www.instagram.com/anonymous.mars.here/" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">INSTAGRAM</a>
+          <a href="https://wa.me/923051526463" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">WHATSAPP</a>
         </div>
         <p class="font-inter text-[9px] tracking-widest uppercase text-on-surface/30">
           © 2026 THE DIGITAL ARCHITECT. BEYOND COMPROMISE.

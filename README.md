@@ -72,8 +72,10 @@ npm run dev
 ## 🌐 Connectivity
 
 - **GitHub**: [@muhammadmaroof11](https://github.com/muhammadmaroof11/)
-- **LinkedIn**: [muhammad-maroof-dev](https://www.linkedin.com/in/muhammad-maroof-dev/)
-- **Email**: maroof@byteforce.dev
+- **LinkedIn**: [mmaroof11](https://www.linkedin.com/in/mmaroof11/)
+- **Instagram**: [@anonymous.mars.here](https://www.instagram.com/anonymous.mars.here/)
+- **WhatsApp**: [+92 305 1526463](https://wa.me/923051526463)
+- **Email**: mmaroof341@gmail.com
 
 ---
 
