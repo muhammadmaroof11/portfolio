@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, ref, nextTick, onUnmounted } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code } from 'lucide-vue-next'
+import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code, User, Target } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import PolymorphicCanvas from '../components/PolymorphicCanvas.vue'
@@ -14,8 +14,9 @@ import TextPressure from '../components/TextPressure.vue'
 import CircularText from '../components/CircularText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
 import SynapticProjectsList from '../components/SynapticProjectsList.vue'
+import meImage from '../assets/me.webp'
 
-gsap.registerPlugin(ScrollTrigger)
+// ScrollTrigger is registered globally in main.js
 
 const themeStore = useThemeStore()
 const { profile, projects } = portfolioData
@@ -28,22 +29,27 @@ const heroRef = ref(null)
 const servicesRef = ref(null)
 const offeredServicesRef = ref(null)
 const projectsRef = ref(null)
+const aboutRef = ref(null)
+const viewRoot = ref(null)
 
 onMounted(async () => {
   await nextTick()
+
+  const root = viewRoot.value
+  if (!root) return
   
-  // Set initial states to avoid 'stuck hidden' elements
-  gsap.set('.gsap-reveal', { autoAlpha: 0, y: 30 })
+  // Set initial states — scoped to this view's root to avoid bleed onto other pages
+  gsap.set(root.querySelectorAll('.gsap-reveal, .about-reveal'), { autoAlpha: 0, y: 30 })
 
   // 1. Hero Content & Split-Character Reveal
-  gsap.to('.hero-title-char', {
+  gsap.to(root.querySelectorAll('.hero-title-char'), {
     y: 0,
     duration: 1.0,
     stagger: 0.025,
     ease: 'power4.out'
   })
 
-  gsap.to('.hero-content > *:not(h1)', {
+  gsap.to(root.querySelectorAll('.hero-content > *:not(h1)'), {
     y: 0,
     autoAlpha: 1,
     duration: 0.8,
@@ -52,7 +58,7 @@ onMounted(async () => {
   })
 
   // 2. Strategic Pillars Cards Reveal
-  gsap.to('.strategy-card', {
+  gsap.to(root.querySelectorAll('.strategy-card'), {
     scrollTrigger: {
       trigger: servicesRef.value,
       start: 'top 82%',
@@ -63,12 +69,28 @@ onMounted(async () => {
     stagger: 0.15,
     ease: 'power3.out',
     onComplete: () => {
-      gsap.set('.strategy-card', { clearProps: "all" })
+      gsap.set(root.querySelectorAll('.strategy-card'), { clearProps: "all" })
+    }
+  })
+
+  // 2a. About/Mentality Section Reveal
+  gsap.to(root.querySelectorAll('.about-reveal'), {
+    scrollTrigger: {
+      trigger: aboutRef.value,
+      start: 'top 82%',
+    },
+    y: 0,
+    autoAlpha: 1,
+    duration: 1.0,
+    stagger: 0.15,
+    ease: 'power3.out',
+    onComplete: () => {
+      gsap.set(root.querySelectorAll('.about-reveal'), { clearProps: "all" })
     }
   })
 
   // 2b. Offered Services Carousel Reveal
-  gsap.to('.offered-carousel-reveal', {
+  gsap.to(root.querySelectorAll('.offered-carousel-reveal'), {
     scrollTrigger: {
       trigger: offeredServicesRef.value,
       start: 'top 82%',
@@ -79,12 +101,12 @@ onMounted(async () => {
     duration: 1.2,
     ease: 'power4.out',
     onComplete: () => {
-      gsap.set('.offered-carousel-reveal', { clearProps: "all" })
+      gsap.set(root.querySelectorAll('.offered-carousel-reveal'), { clearProps: "all" })
     }
   })
 
   // 3. Dynamic Skew-on-Scroll for Marquee
-  const marqueeSec = document.querySelector('.marquee-section')
+  const marqueeSec = root.querySelector('.marquee-section')
   if (marqueeSec) {
     let proxy = { skew: 0 }
     let skewSetter = gsap.quickSetter(marqueeSec, "skewY", "deg")
@@ -107,26 +129,11 @@ onMounted(async () => {
     })
   }
 
-  // 4. Projects Grid Reveal (staggered 3D-like slide-up)
-  gsap.to('.project-item', {
-    scrollTrigger: {
-      trigger: projectsRef.value,
-      start: 'top 80%',
-    },
-    y: 0,
-    autoAlpha: 1,
-    duration: 1.0,
-    stagger: 0.18,
-    ease: 'power3.out',
-    onComplete: () => {
-      gsap.set('.project-item', { clearProps: "all" })
-    }
-  })
 
   // 5. Core Philosophy Cards - Bounce slide-up entry
-  gsap.from('.philosophy-card', {
+  gsap.from(root.querySelectorAll('.philosophy-card'), {
     scrollTrigger: {
-      trigger: '.philosophy-card',
+      trigger: root.querySelector('.philosophy-card'),
       start: 'top 90%',
     },
     y: 60,
@@ -136,14 +143,14 @@ onMounted(async () => {
     stagger: 0.15,
     ease: 'back.out(1.5)',
     onComplete: () => {
-      gsap.set('.philosophy-card', { clearProps: "all" })
+      gsap.set(root.querySelectorAll('.philosophy-card'), { clearProps: "all" })
     }
   })
 
   // 6. Call To Action Panel - Scale up and glow activation
-  gsap.from('.cta-box', {
+  gsap.from(root.querySelector('.cta-box'), {
     scrollTrigger: {
-      trigger: '.cta-box',
+      trigger: root.querySelector('.cta-box'),
       start: 'top 88%',
     },
     scale: 0.95,
@@ -152,7 +159,7 @@ onMounted(async () => {
     duration: 1.0,
     ease: 'power3.out',
     onComplete: () => {
-      gsap.set('.cta-box', { clearProps: "transform" })
+      gsap.set(root.querySelector('.cta-box'), { clearProps: "transform" })
     }
   })
 })
@@ -165,21 +172,22 @@ const services = [
 ]
 
 const offeredServices = [
-  { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: Globe, image: '/services/web_dev.png' },
-  { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: Gamepad2, image: '/services/game_dev.png' },
-  { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: Code, image: '/services/code_audit.png' },
-  { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: Cpu, image: '/services/optimization.png' },
-  { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: Smartphone, image: '/services/automation.png' }
+  { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: Globe, image: '/services/web_dev.webp' },
+  { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: Gamepad2, image: '/services/game_dev.webp' },
+  { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: Code, image: '/services/code_audit.webp' },
+  { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: Cpu, image: '/services/optimization.webp' },
+  { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: Smartphone, image: '/services/automation.webp' }
 ]
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
+  // Kill all triggers – safe because no other view is mounted yet.
   ScrollTrigger.getAll().forEach(t => t.kill())
 })
 </script>
 
 <template>
   <!-- Full-width wrapper so CircularText can position relative to viewport edge -->
-  <div class="relative w-full overflow-visible">
+  <div ref="viewRoot" class="relative w-full overflow-visible">
     <!-- CircularText anchors to viewport top-right, scrolls away with page -->
     <CircularText
       text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
@@ -248,7 +256,7 @@ onUnmounted(() => {
 
           <div class="gsap-reveal flex flex-col sm:flex-row gap-4 md:gap-6">
             <router-link to="/contact" 
-              class="flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 font-black text-[8px] md:text-[9px] tracking-[0.4em] uppercase transition-all flex items-center justify-center gap-3 group shadow-2xl relative overflow-hidden active-spring"
+              class="flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 font-black text-[10px] md:text-xs tracking-[0.2em] uppercase transition-all flex items-center justify-center gap-3 group shadow-2xl relative overflow-hidden active-spring"
               :style="{ borderRadius: 'calc(var(--app-radius) / 2)' }"
               :class="[
                 themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-primary text-on-primary' : 
@@ -257,7 +265,7 @@ onUnmounted(() => {
               Contact Me <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-2" />
             </router-link>
             <a href="/Muhammad_Maroof_CV.pdf" download="Muhammad_Maroof_CV.pdf"
-              class="flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 font-black text-[8px] md:text-[9px] tracking-[0.4em] uppercase transition-all shadow-xl group border border-surface-container-high flex items-center justify-center active-spring"
+              class="flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 font-black text-[10px] md:text-xs tracking-[0.2em] uppercase transition-all shadow-xl group border border-surface-container-high flex items-center justify-center active-spring"
               :style="{ borderRadius: 'calc(var(--app-radius) / 2)' }"
               :class="[
                 themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-surface-container text-on-surface' : 
@@ -346,6 +354,153 @@ onUnmounted(() => {
             </span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- PROFILE INTRO / MENTALITY SECTION -->
+    <section id="about" ref="aboutRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 relative layer-base scroll-mt-32">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+        
+        <!-- Left: Image Frame with thematic styling -->
+        <div class="lg:col-span-4 order-2 lg:order-1 flex justify-center lg:justify-start about-reveal">
+          <div class="relative w-full max-w-[380px] lg:max-w-full aspect-square md:aspect-[4/5] lg:aspect-[3/4] overflow-visible group">
+            
+            <!-- Minimal/Street background glow -->
+            <div 
+              v-if="themeStore.currentStyle !== 'brutal'"
+              class="absolute -inset-4 opacity-30 blur-3xl transition-opacity duration-1000 group-hover:opacity-50"
+              :class="themeStore.currentStyle === 'street' ? 'bg-gradient-to-tr from-primary via-secondary to-transparent' : 'bg-primary/20'"
+            ></div>
+
+            <!-- Brutalist offset back frame -->
+            <div 
+              v-if="themeStore.currentStyle === 'brutal'"
+              class="absolute inset-0 bg-primary border-4 border-on-surface translate-x-4 translate-y-4"
+            ></div>
+
+            <!-- Image wrapper container -->
+            <div 
+              class="w-full h-full relative overflow-hidden transition-all duration-500 bg-surface-container-low/20"
+              :style="{ 
+                borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '2.5rem',
+                border: themeStore.currentStyle === 'brutal' ? '4px solid var(--color-on-surface)' : 
+                        themeStore.currentStyle === 'street' ? '2px solid var(--color-primary)' : '1px solid rgba(var(--color-primary-rgb), 0.15)'
+              }"
+              :class="{
+                'shadow-2xl backdrop-blur-md': themeStore.currentStyle !== 'brutal'
+              }"
+            >
+              <img 
+                :src="meImage" 
+                alt="Muhammad Maroof" 
+                class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+              />
+
+              <!-- Scanning grid overlay for Street Mode -->
+              <div 
+                v-if="themeStore.currentStyle === 'street'"
+                class="absolute inset-0 pointer-events-none opacity-[0.08]"
+                style="background-image: radial-gradient(var(--color-primary) 1.5px, transparent 1.5px); background-size: 15px 15px;"
+              ></div>
+
+              <!-- Glitch scanner bar for Street Mode -->
+              <div 
+                v-if="themeStore.currentStyle === 'street'"
+                class="absolute top-0 left-0 w-full h-[2px] bg-secondary pointer-events-none translate-y-[-100%] group-hover:animate-[scan_3s_ease-in-out_infinite]"
+              ></div>
+
+              <!-- Telemetry Label -->
+              <div 
+                class="absolute bottom-4 left-4 right-4 z-10 p-3 flex items-center justify-between font-mono text-[9px] uppercase tracking-wider backdrop-blur-md"
+                :style="{ 
+                  borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '1rem',
+                  border: themeStore.currentStyle === 'brutal' ? '2px solid var(--color-on-surface)' : '1px solid rgba(var(--color-on-surface-rgb), 0.08)',
+                  background: themeStore.currentStyle === 'brutal' ? 'var(--color-surface)' : 'rgba(var(--color-background-rgb), 0.75)'
+                }"
+              >
+                <span class="flex items-center gap-1.5 font-bold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                  [OPERATIVE: MAROOF]
+                </span>
+                <span class="opacity-60">SYSTEM_ACTIVE</span>
+              </div>
+            </div>
+
+            <!-- Corner decorations for Street mode -->
+            <div v-if="themeStore.currentStyle === 'street'" class="absolute inset-[-8px] pointer-events-none z-20">
+              <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-primary"></div>
+              <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-primary"></div>
+              <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-primary"></div>
+              <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-primary"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Text Content and Mentality Quote -->
+        <div class="lg:col-span-8 order-1 lg:order-2 flex flex-col justify-center about-reveal">
+          <!-- Decrypt/Scrambled Section Subtitle -->
+          <div class="inline-flex items-center gap-2 mb-4 font-mono text-xs text-primary font-black uppercase tracking-[0.2em]">
+            <User class="w-4 h-4 shrink-0" />
+            <span>// PROFILE INTELLECT</span>
+          </div>
+
+          <!-- Bold, punchy Heading with text pressure or Outfit font -->
+          <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-black uppercase tracking-tight text-on-surface mb-6 leading-[1.05]">
+            SOMEONE WHO <br/>
+            <span class="text-primary italic" :class="{ 'street-fx-radiant': themeStore.currentStyle === 'street' }">
+              DOES NOT STOP
+            </span> <br/>
+            UNTIL WINNING.
+          </h2>
+
+          <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body font-medium mb-8 opacity-90">
+            My commitment is absolute: I do not stop until we win. I partner with high-growth businesses to convert complex concepts into top-tier digital assets. You bring the vision—I deliver the high-caliber engineering, clean architecture, and execution power to turn it into its most impactful practical manifestation.
+          </p>
+
+          <!-- Telemetry Stats Panel -->
+          <div 
+            class="grid grid-cols-2 gap-4 md:gap-6 p-5 md:p-6 mb-8"
+            :style="{ 
+              borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '1.5rem',
+              border: themeStore.currentStyle === 'brutal' ? '3px solid var(--color-on-surface)' : '1px solid rgba(var(--color-primary-rgb), 0.12)',
+              background: themeStore.currentStyle === 'brutal' ? 'var(--color-surface)' : 'var(--color-surface-container-low)'
+            }"
+            :class="{ 'shadow-md': themeStore.currentStyle !== 'brutal' }"
+          >
+            <div>
+              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">EXECUTION MINDSET</span>
+              <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
+                <Target class="w-4 h-4 text-primary shrink-0" />
+                NEVER-SURRENDER
+              </span>
+            </div>
+            <div>
+              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">DEVELOPMENT SPEED</span>
+              <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
+                <Zap class="w-4 h-4 text-primary shrink-0" />
+                RAPID ITERATION
+              </span>
+            </div>
+            <div class="border-t border-on-surface/5 pt-4 col-span-2 flex items-center justify-between font-mono text-[9px] text-on-surface/50">
+              <span>LOC: LAHORE, PK</span>
+              <span>DEV_RIGOR: 99.9%</span>
+            </div>
+          </div>
+
+          <!-- Contact Link Button -->
+          <div>
+            <router-link to="/contact" 
+              class="px-6 py-3.5 font-black text-[11px] md:text-xs tracking-[0.2em] uppercase transition-all inline-flex items-center gap-2 shadow-lg active-spring"
+              :style="{ borderRadius: 'calc(var(--app-radius) / 2.5)' }"
+              :class="[
+                themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-primary text-on-primary' : 
+                'bg-primary text-on-primary hover:scale-[1.03]'
+              ]" v-ripple>
+              LEVERAGE MY DRIVE <ArrowRight class="w-3.5 h-3.5" />
+            </router-link>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -456,10 +611,10 @@ onUnmounted(() => {
                READY TO ARCHITECT<br/>YOUR <span class="text-primary italic underline decoration-wavy underline-offset-8" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">NEXT MILESTONE?</span>
              </h3>
              <router-link to="/contact" 
-               class="px-10 md:px-20 py-5 md:py-8 font-black text-[10px] md:text-[12px] tracking-[0.4em] md:tracking-[0.5em] uppercase inline-flex items-center gap-4 md:gap-6 transition-all shadow-3xl active-spring"
+               class="px-10 md:px-20 py-5 md:py-8 font-black text-xs md:text-sm tracking-[0.25em] md:tracking-[0.3em] uppercase inline-flex items-center gap-4 md:gap-6 transition-all shadow-3xl active-spring"
                :class="[
                  themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-primary text-on-primary text-sm md:text-base' : 
-                 themeStore.currentStyle === 'street' ? 'street-btn shadow-secondary' : 
+                 themeStore.currentStyle === 'street' ? 'street-btn shadow-secondary text-sm md:text-base' : 
                  'bg-primary text-on-primary rounded-2xl md:rounded-[2rem] hover:scale-105 shadow-primary/30'
                ]" v-ripple>
                INITIATE PROTOCOL

@@ -1,4 +1,4 @@
-import { createApp, nextTick } from 'vue'
+import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
@@ -20,16 +20,5 @@ app.directive('tilt', VTilt)
 app.use(pinia)
 app.use(router)
 
-// Global Hash Scroll Support
-router.afterEach((to) => {
-  if (to.hash) {
-    nextTick(() => {
-      const el = document.querySelector(to.hash)
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-      }
-    })
-  }
-})
-
+// Hash scroll is handled by router scrollBehavior in router/index.js
 app.mount('#app')

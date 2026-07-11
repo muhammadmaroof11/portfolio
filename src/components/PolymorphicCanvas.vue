@@ -528,12 +528,10 @@ onUnmounted(() => {
   }
   if (renderer) {
     if (renderer.domElement) {
+      renderer.domElement.remove()
       renderer.dispose()
     }
     renderer = null
-  }
-  if (canvasContainer.value) {
-    canvasContainer.value.innerHTML = ''
   }
 })
 </script>

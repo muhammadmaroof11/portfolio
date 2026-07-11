@@ -59,7 +59,7 @@ const filteredProjects = computed(() => {
             v-for="tech in allTechTags.slice(0, 5)" 
             :key="tech"
             @click="selectedTech = tech"
-            class="text-[8px] font-black tracking-widest px-3 py-2 uppercase transition-all duration-300 whitespace-nowrap active-spring"
+            class="text-[10px] font-black tracking-[0.15em] px-3 py-2 uppercase transition-all duration-300 whitespace-nowrap active-spring"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '0.5rem' }"
             :class="selectedTech === tech 
               ? 'bg-primary text-on-primary shadow-lg shadow-primary/15'

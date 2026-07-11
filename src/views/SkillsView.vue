@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, nextTick, computed, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { 
@@ -11,6 +11,7 @@ import FuzzyText from '../components/FuzzyText.vue'
 
 const themeStore = useThemeStore()
 const { skills } = portfolioData
+const viewRoot = ref(null)
 
 // Enriched telemetry and descriptive content for each skill
 const enrichedMetadata = {
@@ -298,23 +299,30 @@ watch(filteredSkills, (newSkills) => {
 
 onMounted(async () => {
   await nextTick()
+
+  const root = viewRoot.value
+  if (!root) return
   
   // Hero reveal animation
-  gsap.fromTo('.skills-header > *', 
+  gsap.fromTo(root.querySelectorAll('.skills-header > *'), 
     { autoAlpha: 0, y: 30 },
     { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out' }
   )
 
   // Sub-console grids stagger entry
-  gsap.fromTo('.gsap-console-enter',
+  gsap.fromTo(root.querySelectorAll('.gsap-console-enter'),
     { autoAlpha: 0, scale: 0.97 },
     { autoAlpha: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' }
   )
 })
+
+onBeforeUnmount(() => {
+  if (scrambleInterval.value) clearInterval(scrambleInterval.value)
+})
 </script>
 
 <template>
-  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative">
+  <div ref="viewRoot" class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative">
 
     <!-- MAIN INTERACTIVE DECK CONSOLE -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

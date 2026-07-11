@@ -12,6 +12,7 @@
   --app-h1-size-xl: 9xl;
 
   --color-primary: #a855f7;
+  --color-on-primary: #ffffff;
   --color-primary-dim: #7e22ce;
   --color-primary-container: #f3e8ff;
 
@@ -28,7 +29,6 @@
 
   --color-background: #fffbff;
   --color-on-background: #1c1b1f;
-
   --animate-scroll-left: scroll-left 40s linear infinite;
   --animate-scroll-right: scroll-right 40s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -84,6 +84,7 @@
 /* Dark Mode Overrides */
 .dark {
   --color-primary: #d0bcff;
+  --color-on-primary: #12002e;
   --color-primary-dim: #b69df8;
   --color-primary-container: #4f378b;
 
@@ -177,6 +178,7 @@ body {
 /* Style Overrides : STREET (Funky/Graffiti/Retro-Future) */
 .style-street {
   --color-primary: #ff00ff;
+  --color-on-primary: #000000;
   --color-secondary: #00ffff;
   --color-background: #0d0d11;
   --color-on-background: #ffffff;

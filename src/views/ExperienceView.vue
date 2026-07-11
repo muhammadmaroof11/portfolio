@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, nextTick, onUnmounted } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { GraduationCap, Briefcase, Calendar, MapPin, School, Terminal } from 'lucide-vue-next'
@@ -7,16 +7,20 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FuzzyText from '../components/FuzzyText.vue'
 
-gsap.registerPlugin(ScrollTrigger)
+// ScrollTrigger is registered globally in main.js
 
 const themeStore = useThemeStore()
 const { experience, profile, education } = portfolioData
+const viewRoot = ref(null)
 
 onMounted(async () => {
   await nextTick()
+
+  const root = viewRoot.value
+  if (!root) return
   
   // Header animation
-  gsap.fromTo('.exp-header > *', 
+  gsap.fromTo(root.querySelectorAll('.exp-header > *'), 
     { autoAlpha: 0, y: 30 },
     {
       y: 0,
@@ -28,7 +32,7 @@ onMounted(async () => {
   )
 
   // Experience timeline nodes entering from left as you scroll
-  gsap.utils.toArray('.exp-item').forEach((item) => {
+  root.querySelectorAll('.exp-item').forEach((item) => {
     gsap.fromTo(item, 
       { autoAlpha: 0, x: -50 },
       {
@@ -46,7 +50,7 @@ onMounted(async () => {
   })
 
   // Sidebar cards entering from right as you scroll
-  gsap.utils.toArray('.sidebar-card').forEach((card) => {
+  root.querySelectorAll('.sidebar-card').forEach((card) => {
     gsap.fromTo(card,
       { autoAlpha: 0, x: 50 },
       {
@@ -64,13 +68,14 @@ onMounted(async () => {
   })
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
+  // Safe to kill all: no other page's triggers are alive when leaving this view.
   ScrollTrigger.getAll().forEach(t => t.kill())
 })
 </script>
 
 <template>
-  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-12 md:pt-16 pb-12 overflow-visible">
+  <div ref="viewRoot" class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-12 md:pt-16 pb-12 overflow-visible">
     <!-- HERO HEADER -->
     <header class="mb-10 md:mb-12 flex flex-col md:flex-row justify-between items-end gap-8 exp-header">
       <div class="max-w-3xl">
@@ -269,7 +274,7 @@ onUnmounted(() => {
         </div>
         <div class="w-full lg:w-auto">
           <router-link to="/contact" 
-            class="w-full lg:w-auto px-5 py-4 sm:px-8 sm:py-5 lg:px-10 lg:py-6 bg-primary text-on-primary font-black font-label text-[10px] sm:text-[11px] lg:text-[13px] tracking-[0.2em] sm:tracking-[0.3em] lg:tracking-[0.4em] hover:translate-y-[-5px] transition-all shadow-xl shadow-primary/40 uppercase inline-flex justify-center items-center active-spring"
+            class="w-full lg:w-auto px-5 py-4 sm:px-8 sm:py-5 lg:px-10 lg:py-6 bg-primary text-on-primary font-black font-label text-xs sm:text-sm lg:text-base tracking-[0.15em] sm:tracking-[0.2em] lg:tracking-[0.25em] hover:translate-y-[-5px] transition-all shadow-xl shadow-primary/40 uppercase inline-flex justify-center items-center active-spring"
             :style="{ borderRadius: 'calc(var(--app-radius))' }" v-ripple>
             INITIATE CONTACT
           </router-link>

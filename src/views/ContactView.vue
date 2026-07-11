@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, nextTick, onUnmounted } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount, shallowRef } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { Mail, Github, Linkedin, MessageCircle, Instagram, Send, MapPin, Clock, ArrowUpRight, Globe, Phone } from 'lucide-vue-next'
@@ -7,10 +7,11 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FuzzyText from '../components/FuzzyText.vue'
 
-gsap.registerPlugin(ScrollTrigger)
+// ScrollTrigger is registered globally in main.js
 
 const themeStore = useThemeStore()
 const { profile } = portfolioData
+const viewRoot = ref(null)
 const bgCanvas = ref(null)
 let animationFrameId = null
 let resize = null
@@ -51,48 +52,63 @@ const handleSubmit = async () => {
 onMounted(async () => {
   await nextTick()
   
-  // Set initial states
-  gsap.set('.gsap-reveal', { autoAlpha: 0, y: 30 })
+  const root = viewRoot.value
+  if (!root) return
 
-  gsap.to('.gsap-reveal', {
+  // Set initial states — scoped to this view's root to avoid bleed onto other pages
+  gsap.set(root.querySelectorAll('.gsap-reveal'), { autoAlpha: 0, y: 30 })
+  gsap.set(root.querySelectorAll('.contact-header > *'), { autoAlpha: 0, y: 20 })
+  gsap.set(root.querySelectorAll('.contact-card'), { autoAlpha: 0, x: -30 })
+  gsap.set(root.querySelector('.contact-form'), { autoAlpha: 0, x: 30 })
+
+  gsap.to(root.querySelectorAll('.gsap-reveal'), {
     y: 0,
     autoAlpha: 1,
     duration: 1,
     stagger: 0.15,
     ease: 'power3.out',
     onComplete: () => {
-      gsap.set('.gsap-reveal', { clearProps: "transform" })
+      gsap.set(root.querySelectorAll('.gsap-reveal'), { clearProps: "all" })
     }
   })
 
-  gsap.to('.contact-header > *', {
+  gsap.to(root.querySelectorAll('.contact-header > *'), {
     y: 0,
     autoAlpha: 1,
     duration: 1,
     stagger: 0.1,
-    ease: 'power4.out'
+    ease: 'power4.out',
+    onComplete: () => {
+      gsap.set(root.querySelectorAll('.contact-header > *'), { clearProps: "all" })
+    }
   })
 
-  gsap.to('.contact-card', {
+  gsap.to(root.querySelectorAll('.contact-card'), {
     scrollTrigger: {
-      trigger: '.contact-card',
+      trigger: root.querySelector('.contact-card'),
       start: 'top 85%'
     },
     x: 0,
     autoAlpha: 1,
     duration: 0.8,
-    stagger: 0.1
+    stagger: 0.1,
+    onComplete: () => {
+      gsap.set(root.querySelectorAll('.contact-card'), { clearProps: "all" })
+    }
   })
 
-  gsap.to('.contact-form', {
+  gsap.to(root.querySelector('.contact-form'), {
     scrollTrigger: {
-      trigger: '.contact-form',
+      trigger: root.querySelector('.contact-form'),
       start: 'top 85%'
     },
     x: 0,
     autoAlpha: 1,
     duration: 1,
-    ease: 'expo.out'
+    ease: 'expo.out',
+    onComplete: () => {
+      gsap.set(root.querySelector('.contact-form'), { clearProps: "all" })
+    }
   })
 
   // Canvas Corner Mesh Animation Loop
@@ -351,7 +367,7 @@ const socialLinks = [
   { name: 'WhatsApp', icon: MessageCircle, link: profile.socials.whatsapp }
 ]
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId)
   }
@@ -369,8 +385,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 min-h-[calc(100vh-96px)] flex flex-col justify-center py-8 md:py-12 overflow-hidden relative">
-    <canvas ref="bgCanvas" class="fixed inset-0 w-screen h-screen pointer-events-none select-none z-0"></canvas>
+  <div ref="viewRoot" class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 min-h-[calc(100vh-96px)] flex flex-col justify-center py-8 md:py-12 overflow-hidden relative">
+    <canvas ref="bgCanvas" class="absolute inset-0 w-full h-full pointer-events-none select-none z-0"></canvas>
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center relative z-10 w-full">
       
       <!-- LEFT SIDE: HEADER & COMPACT INFO -->
@@ -522,7 +538,7 @@ onUnmounted(() => {
             </div>
 
             <button type="submit" :disabled="isSubmitting"
-              class="w-full py-4 md:py-5 bg-primary text-on-primary font-black tracking-[0.4em] text-[10px] md:text-[11px] uppercase flex items-center justify-center gap-4 hover:translate-y-[-3px] transition-all shadow-[0_15px_30px_-10px_rgba(var(--primary-rgb),0.3)] group disabled:opacity-50 disabled:grayscale active-spring"
+              class="w-full py-4 md:py-5 bg-primary text-on-primary font-black tracking-[0.2em] md:tracking-[0.25em] text-xs md:text-sm uppercase flex items-center justify-center gap-4 hover:translate-y-[-3px] transition-all shadow-[0_15px_30px_-10px_rgba(var(--primary-rgb),0.3)] group disabled:opacity-50 disabled:grayscale active-spring"
               :style="{ borderRadius: 'calc(var(--app-radius) / 2.5)' }" v-ripple>
               <span v-if="!isSubmitting">SEND MESSAGE</span>
               <span v-else class="animate-pulse">SENDING MESSAGE...</span>

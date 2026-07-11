@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, computed, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Cpu, Shield, ChevronRight, Zap } from 'lucide-vue-next'
@@ -690,7 +690,7 @@ onMounted(async () => {
   drawMesh()
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   window.removeEventListener('resize', updateDimensions)
   window.removeEventListener('mousemove', handleMouseMove)
   if (scrollTriggerInstance) {
@@ -980,7 +980,7 @@ onUnmounted(() => {
                     v-if="project.link && project.link !== '#'" 
                     :href="project.link" 
                     target="_blank"
-                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary text-on-primary font-black text-[8px] tracking-[0.2em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-primary text-on-primary font-black text-[10px] md:text-xs tracking-[0.15em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10 pointer-events-auto"
                     :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
                     :class="{ 'brutal-btn border-2 border-on-surface': themeStore.currentStyle === 'brutal' }"
                     v-ripple
@@ -990,7 +990,7 @@ onUnmounted(() => {
                   </a>
                   <div 
                     v-else-if="project.hoverText"
-                    class="px-3.5 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/40 font-black text-[8px] tracking-[0.2em] uppercase rounded-md"
+                    class="px-3.5 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/40 font-black text-[10px] md:text-xs tracking-[0.15em] uppercase rounded-md"
                   >
                     {{ project.hoverText }}
                   </div>

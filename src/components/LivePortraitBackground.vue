@@ -335,7 +335,7 @@ watch(() => themeStore.currentStyle, () => {
       <!-- User Portrait Image with dynamic parallax offset applied inline -->
       <img 
         ref="imageRef"
-        src="/1.png" 
+        src="/1.webp" 
         alt="Muhammad Maroof" 
         class="w-full h-auto object-cover transition-transform duration-300 ease-out z-10 drop-shadow-[0_15px_40px_rgba(0,0,0,0.35)] select-none pointer-events-none"
       />

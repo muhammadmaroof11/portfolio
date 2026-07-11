@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView, useRouter } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import Navbar from './components/Navbar.vue'
 import ClickSpark from './components/ClickSpark.vue'
 import { useThemeStore } from './stores/themeStore'
@@ -11,9 +11,26 @@ const router = useRouter()
 const isLoading = ref(true)
 const pageProgress = ref(0)
 
-router.beforeEach(() => {
+router.beforeEach((to, from) => {
+  // Workaround: Hard reload the page when navigating away from Home ('/')
+  // to avoid Vue transition unmount stalling/freezing bugs.
+  // We check from.matched.length > 0 to make sure this is an actual user-initiated
+  // navigation and not the initial application mount (which Vue Router boots as from '/')
+  if (from.matched.length > 0 && from.path === '/' && to.path !== '/') {
+    window.location.href = to.fullPath
+    return false // Cancel SPA transition/navigation
+  }
+
   pageProgress.value = 30
   setTimeout(() => pageProgress.value = 70, 200)
+  
+  // Kill and revert all ScrollTriggers immediately before transition starts.
+  // This clears all pin-spacers and restores DOM layout positions, ensuring Vue
+  // can transition out the page without layout/pin jumps or reactive lifecycle conflicts.
+  ScrollTrigger.getAll().forEach(t => t.kill(true))
+  
+  // Reset viewport scroll offset instantly
+  window.scrollTo(0, 0)
 })
 
 router.afterEach(() => {
@@ -22,15 +39,11 @@ router.afterEach(() => {
     pageProgress.value = 0
   }, 400)
   
-  // Force recalculate new triggers once page transitions are completed
+  // Force recalculate new triggers once page transitions are completed (transition is 600ms)
   setTimeout(() => {
     ScrollTrigger.refresh()
-  }, 750)
+  }, 800)
 })
-
-const handleBeforeEnter = () => {
-  window.scrollTo(0, 0)
-}
 
 onMounted(() => {
   // Simulate initial load for premium feel
@@ -77,7 +90,6 @@ onMounted(() => {
         <transition 
           name="slide-fade" 
           mode="out-in"
-          @before-enter="handleBeforeEnter"
         >
           <component :is="Component" />
         </transition>
@@ -126,5 +138,16 @@ onMounted(() => {
   opacity: 0;
   transform: translateY(20px);
   filter: blur(10px);
+}
+
+/* Loading overlay fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

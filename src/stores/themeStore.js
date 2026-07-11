@@ -2,11 +2,12 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 
 export const useThemeStore = defineStore('theme', () => {
-  const currentStyle = ref('minimal')
+  const currentStyle = ref(localStorage.getItem('portfolio-theme-style') || 'minimal')
   const isDark = ref(true)
 
   const setStyle = (style) => {
     currentStyle.value = style
+    localStorage.setItem('portfolio-theme-style', style)
   }
 
   const toggleDarkMode = () => {
