@@ -41,6 +41,16 @@ This portfolio isn't just a static site—it's a multi-state architectural demon
 
 ---
 
+## 🚀 V2 Update Complete
+
+The architecture has been upgraded to **Version 2.0** with massive performance optimizations and visual enhancements:
+- **Mobile Performance Paradigm**: Dynamic loading and selective pausing of heavy 3D canvases and complex glitch effects (FuzzyText, Polymorphic Canvas) exclusively on touch devices to ensure silky-smooth performance and preserve battery life.
+- **Adaptive Typography & Layouts**: Re-engineered floating metric cards and responsive text grids that intelligently adapt from complex stacked layouts on desktop to clean, readable single-row layouts on mobile screens.
+- **Enhanced Visual Context**: The hero section now features a frosted hollow-ring ambient backlight and expanded orbital text (`BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * ELITE CODE ARCHITECT *`), offering a richer, premium feel.
+- **Global App Navigation**: Added a smart, scroll-aware floating Action Button that instantly returns users to the primary viewport, auto-hiding near page boundaries.
+
+---
+
 ## 📐 Key Features
 
 - **Viewport-First Optimization**: Engineered to ensure critical content and CTAs are always "above the fold" on any device size.
