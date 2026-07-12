@@ -11,7 +11,6 @@ import LivePortraitBackground from '../components/LivePortraitBackground.vue'
 import FuzzyText from '../components/FuzzyText.vue'
 import DecryptedText from '../components/DecryptedText.vue'
 import TextPressure from '../components/TextPressure.vue'
-import CircularText from '../components/CircularText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
 import SynapticProjectsList from '../components/SynapticProjectsList.vue'
 import meImage from '../assets/me.webp'
@@ -186,17 +185,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- Full-width wrapper so CircularText can position relative to viewport edge -->
+  <!-- Full-width wrapper -->
   <div ref="viewRoot" class="relative w-full overflow-visible">
-    <!-- CircularText anchors to viewport top-right, scrolls away with page -->
-    <CircularText
-      text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
-      :spinDuration="20"
-      onHover="speedUp"
-      :radius="75"
-      fontSize="12px"
-      class="absolute top-10 right-8 z-40 hidden lg:flex"
-    />
 
     <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-6 md:pt-16 pb-16 overflow-visible">
     <!-- HERO SECTION -->
@@ -214,9 +204,9 @@ onBeforeUnmount(() => {
             {{ profile.availability }}
           </div>
           
-          <h1 class="app-h1 mb-6 md:mb-8 relative !overflow-visible select-none">
+          <h1 class="app-h1 mb-6 md:mb-8 relative !overflow-visible select-none flex flex-wrap items-center gap-x-4 gap-y-2">
             <!-- First Name (character split) -->
-            <span class="block whitespace-nowrap !overflow-visible">
+            <span class="inline-block whitespace-nowrap !overflow-visible">
               <span v-for="(char, idx) in firstWord" :key="'first-' + idx" class="char-container">
                 <span class="char-inner hero-title-char inline-block" 
                   :class="[
@@ -226,10 +216,10 @@ onBeforeUnmount(() => {
             </span>
             
             <!-- Rest of Name (FuzzyText) -->
-            <span class="block whitespace-nowrap !overflow-visible">
+            <span class="inline-block whitespace-nowrap !overflow-visible">
               <FuzzyText
                 fontStyle="italic"
-                fontSize="clamp(1.5rem, 5vw + 1rem, 9rem)"
+                fontSize="inherit"
                 fontWeight="900"
                 color="var(--color-primary)"
                 fontFamily="Outfit"
@@ -277,7 +267,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Hero Visual (Overhauled with Live Background Canvas) -->
-        <div class="lg:col-span-5 relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible w-full max-w-[320px] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[620px]">
+        <div class="lg:col-span-5 relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible w-full max-w-[320px] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[620px] mx-auto lg:mx-0">
           <!-- Stylistic Backdrop Glow -->
           <div class="absolute inset-0 scale-[1.2] blur-[80px] md:blur-[120px] opacity-40 transition-all duration-1000 z-0"
             :class="[
@@ -316,10 +306,10 @@ onBeforeUnmount(() => {
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <div v-for="service in services" :key="service.title"
-          class="strategy-card w-full p-8 md:p-10 transition-all duration-500 cursor-pointer active-spring hover:-translate-y-2 border border-primary/10 bg-surface-container-low/80 backdrop-blur-md relative group overflow-hidden gsap-reveal"
+          class="strategy-card w-full p-5 md:p-8 lg:p-10 rounded-[1.25rem] md:rounded-[2rem] transition-all duration-500 cursor-pointer active-spring hover:-translate-y-2 border border-primary/10 bg-surface-container-low/80 backdrop-blur-md relative group overflow-hidden gsap-reveal"
           v-ripple
           v-tilt="{ max: 15, scale: 1.03 }"
-          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '2rem' }"
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
           :class="[
             themeStore.currentStyle === 'brutal' ? 'brutal-card' : 
             themeStore.currentStyle === 'street' ? 'street-card border-2 border-black' : ''
@@ -328,12 +318,12 @@ onBeforeUnmount(() => {
           <!-- Hover Gradient Overlay -->
           <div class="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-          <div class="w-12 h-12 md:w-14 md:h-14 bg-primary/10 flex items-center justify-center mb-6 md:mb-8 transition-transform group-hover:scale-110"
+          <div class="w-10 h-10 md:w-14 md:h-14 bg-primary/10 flex items-center justify-center mb-4 md:mb-6 lg:mb-8 transition-transform group-hover:scale-110"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 4)' }">
-            <component :is="service.icon" class="w-6 h-6 md:w-7 md:h-7 text-primary" />
+            <component :is="service.icon" class="w-5 h-5 md:w-7 md:h-7 text-primary" />
           </div>
-          <h3 class="font-headline text-lg md:text-xl font-black mb-3 md:mb-4 uppercase tracking-tight leading-none text-on-surface">{{ service.title }}</h3>
-          <p class="text-on-surface-variant leading-relaxed text-sm md:text-base opacity-75 font-medium">{{ service.desc }}</p>
+          <h3 class="font-headline text-base md:text-xl font-black mb-2 md:mb-4 uppercase tracking-tight leading-none text-on-surface">{{ service.title }}</h3>
+          <p class="text-on-surface-variant leading-relaxed text-xs md:text-sm lg:text-base opacity-75 font-medium">{{ service.desc }}</p>
         </div>
       </div>
     </section>
@@ -362,7 +352,7 @@ onBeforeUnmount(() => {
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         
         <!-- Left: Image Frame with thematic styling -->
-        <div class="lg:col-span-4 order-2 lg:order-1 flex justify-center lg:justify-start about-reveal">
+        <div class="lg:col-span-4 flex justify-center lg:justify-start about-reveal">
           <div class="relative w-full max-w-[380px] lg:max-w-full aspect-square md:aspect-[4/5] lg:aspect-[3/4] overflow-visible group">
             
             <!-- Minimal/Street background glow -->
@@ -437,7 +427,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Right: Text Content and Mentality Quote -->
-        <div class="lg:col-span-8 order-1 lg:order-2 flex flex-col justify-center about-reveal">
+        <div class="lg:col-span-8 flex flex-col justify-center about-reveal">
           <!-- Decrypt/Scrambled Section Subtitle -->
           <div class="inline-flex items-center gap-2 mb-4 font-mono text-xs text-primary font-black uppercase tracking-[0.2em]">
             <User class="w-4 h-4 shrink-0" />
@@ -519,7 +509,7 @@ onBeforeUnmount(() => {
       <div class="overflow-visible py-4 gsap-reveal offered-carousel-reveal -mx-6 md:-mx-12 xl:-mx-20 px-6 md:px-12 xl:px-20">
         <ThreeDCarousel :items="offeredServices" cardWidth="480px" v-slot="{ item: service, isActive }">
           <div 
-            class="w-full p-6 md:p-8 transition-all duration-700 cursor-pointer active-spring"
+            class="w-full p-4 md:p-8 transition-all duration-700 cursor-pointer active-spring"
             v-ripple
             v-tilt="{ max: 12, scale: 1.03 }"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '2rem' }"
@@ -531,20 +521,20 @@ onBeforeUnmount(() => {
             ]"
           >
             <!-- Futuristic Image Banner -->
-            <div v-if="service.image" class="w-full aspect-[21/9] overflow-hidden mb-6 relative rounded-xl border border-primary/10">
+            <div v-if="service.image" class="w-full aspect-[21/9] overflow-hidden mb-4 md:mb-6 relative rounded-xl border border-primary/10">
               <img :src="service.image" :alt="service.title" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
               <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low/30 via-transparent to-transparent"></div>
             </div>
 
             <!-- Header and Description -->
-            <div class="flex items-center gap-4 mb-4">
-              <div class="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0"
+            <div class="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+              <div class="w-8 h-8 md:w-10 md:h-10 bg-primary/10 flex items-center justify-center shrink-0"
                 :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 5)' }">
-                <component :is="service.icon" class="w-5 h-5 text-primary" />
+                <component :is="service.icon" class="w-4.5 h-4.5 md:w-5 md:h-5 text-primary" />
               </div>
-              <h3 class="font-headline text-lg md:text-xl font-black uppercase tracking-tight leading-none text-on-surface truncate">{{ service.title }}</h3>
+              <h3 class="font-headline text-sm sm:text-base md:text-xl font-black uppercase tracking-tight leading-tight text-on-surface">{{ service.title }}</h3>
             </div>
-            <p class="text-on-surface-variant leading-relaxed text-sm md:text-base opacity-75 font-medium">{{ service.desc }}</p>
+            <p class="text-on-surface-variant leading-relaxed text-xs md:text-base opacity-75 font-medium">{{ service.desc }}</p>
           </div>
         </ThreeDCarousel>
       </div>
@@ -558,8 +548,10 @@ onBeforeUnmount(() => {
     </section>
 
     <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pb-16 overflow-visible"> <!-- Reopen max-w-[1800px] container -->
-      <!-- PROJECTS ARCHIVE TABLE -->
-      <ProjectsTable />
+      <!-- PROJECTS ARCHIVE TABLE (hidden on mobile and tablet — merged above in Engineered Projects) -->
+      <div class="hidden lg:block">
+        <ProjectsTable />
+      </div>
 
     <!-- CORE PHILOSOPHY -->
     <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 -mx-6 md:-mx-12 px-8 md:px-12 py-20 md:py-32 relative overflow-hidden layer-base"
@@ -581,13 +573,14 @@ onBeforeUnmount(() => {
               themeStore.currentStyle === 'street' ? 'street-fx-glitch' : ''
             ]">without compromise.</span>
          </h2>
-         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mt-12 md:mt-20">
-            <div v-for="val in ['SECURITY FIRST', 'ENGINEERING RIGOR', 'USER EXPERIENCE']" :key="val" 
+         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 mt-12 md:mt-20">
+            <div v-for="(val, index) in ['SECURITY FIRST', 'ENGINEERING RIGOR', 'USER EXPERIENCE']" :key="val" 
               class="philosophy-card p-6 md:p-10 transition-all duration-500 group cursor-pointer active-spring"
               :class="[
                 themeStore.currentStyle === 'brutal' ? 'bg-surface border-4 border-on-surface-variant shadow-[8px_8px_0_0_#000000] hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none' : 
                 themeStore.currentStyle === 'street' ? 'street-card border-secondary/40 shadow-[10px_10px_0_0_#00ffff]' : 
-                'bg-surface-container-low/40 backdrop-blur-md border border-primary/5 rounded-2xl md:rounded-[2.5rem] hover:border-primary/50'
+                'bg-surface-container-low/40 backdrop-blur-md border border-primary/5 rounded-2xl md:rounded-[2.5rem] hover:border-primary/50',
+                index === 2 ? 'md:col-span-2 lg:col-span-1' : ''
               ]" v-ripple>
                <p class="font-headline font-black text-lg md:text-2xl tracking-[0.2em] transition-opacity"
                  :class="[

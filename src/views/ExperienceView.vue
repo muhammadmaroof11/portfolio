@@ -2,7 +2,7 @@
 import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { GraduationCap, Briefcase, Calendar, MapPin, School, Terminal } from 'lucide-vue-next'
+import { GraduationCap, Briefcase, Calendar, MapPin, School, Terminal, ChevronDown } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FuzzyText from '../components/FuzzyText.vue'
@@ -12,6 +12,14 @@ import FuzzyText from '../components/FuzzyText.vue'
 const themeStore = useThemeStore()
 const { experience, profile, education } = portfolioData
 const viewRoot = ref(null)
+
+const expandedCards = ref(new Set())
+const toggleCard = (index) => {
+  const newSet = new Set(expandedCards.value)
+  if (newSet.has(index)) newSet.delete(index)
+  else newSet.add(index)
+  expandedCards.value = newSet
+}
 
 onMounted(async () => {
   await nextTick()
@@ -103,21 +111,21 @@ onBeforeUnmount(() => {
       </div>
     </header>
 
-    <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 md:gap-12 overflow-visible mb-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 overflow-visible mb-16">
       <!-- TIMELINE COLUMN -->
-      <div class="xl:col-span-8 relative">
+      <div class="lg:col-span-8 relative">
         <!-- Vertical Line -->
-        <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-surface-container-high to-transparent ml-4 md:ml-8 xl:ml-0 opacity-20"></div>
+        <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-surface-container-high to-transparent ml-4 md:ml-8 lg:ml-0 opacity-20"></div>
         
         <div class="space-y-10 md:space-y-12 relative">
           <div v-for="(job, i) in experience" :key="i" 
             class="exp-item relative pl-10 md:pl-16 group transition-all duration-700">
             <!-- Bullet -->
-            <div class="absolute left-[-2px] top-3 w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-primary/5 transition-all duration-500 group-hover:scale-[1.5] group-hover:ring-[10px] md:left-[9px] xl:left-[-4px] z-10"></div>
+            <div class="absolute left-[-2px] top-3 w-3.5 h-3.5 rounded-full bg-primary ring-4 ring-primary/5 transition-all duration-500 group-hover:scale-[1.5] group-hover:ring-[10px] md:left-[9px] lg:left-[-4px] z-10"></div>
             
-            <div class="exp-card-wrapper flex flex-col relative">
+            <div class="exp-card-wrapper flex flex-col relative" :class="{ 'is-expanded': expandedCards.has(i) }">
               <!-- TOP CARD (TRAY): Tags & Deployment Status -->
-              <div class="exp-top-card relative shadow-lg"
+              <div class="exp-top-card relative shadow-lg hidden lg:block"
                 :style="{ 
                   borderTopLeftRadius: 'var(--app-radius)',
                   borderTopRightRadius: 'var(--app-radius)',
@@ -174,6 +182,14 @@ onBeforeUnmount(() => {
                 </div>
 
                 <p class="text-on-surface leading-snug font-body font-medium text-sm md:text-base opacity-95 break-words">{{ job.description }}</p>
+                
+                <!-- Toggle Button -->
+                <div class="mt-6 flex lg:hidden">
+                  <button @click.stop="toggleCard(i)" class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-primary px-3 py-1.5 border border-primary/20 rounded hover:bg-primary/10 transition-colors">
+                    {{ expandedCards.has(i) ? 'Hide Details' : 'Show Details' }}
+                    <ChevronDown class="w-3 h-3 transition-transform" :class="{ 'rotate-180': expandedCards.has(i) }" />
+                  </button>
+                </div>
               </div>
 
               <!-- BACK CARD / BOTTOM CARD (TRAY): Detailed Achievements & Status -->
@@ -189,6 +205,20 @@ onBeforeUnmount(() => {
                   themeStore.currentStyle === 'street' ? 'border border-t-0 border-primary/20 bg-surface-container/95' : 'bg-surface-container border border-t-0 border-primary/5'
                 ]"
               >
+                <!-- MOBILE ONLY: Tech Stack Integration (moved from top tray) -->
+                <div class="flex flex-col gap-2 lg:hidden border-b border-on-surface/5 pb-3">
+                  <div class="flex items-center justify-between pb-1.5">
+                    <span class="font-mono text-[8px] uppercase tracking-widest text-primary font-bold">TECH STACK INTEGRATION</span>
+                    <span class="font-mono text-[8px] opacity-40">DEPLOYS // OK</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span v-for="tag in job.tags" :key="'mob-' + tag" 
+                      class="px-2.5 py-1 rounded bg-surface text-[8px] font-black uppercase tracking-wider text-on-surface/65 border border-surface-container transition-all hover:border-primary hover:text-primary active-spring cursor-pointer" v-ripple>
+                      {{ tag }}
+                    </span>
+                  </div>
+                </div>
+
                 <!-- Detailed Bullet Achievements -->
                 <div class="flex flex-col gap-3">
                   <div class="flex items-center justify-between border-b border-on-surface/5 pb-1.5">
@@ -220,7 +250,7 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- SIDEBAR COLUMN -->
-      <div class="xl:col-span-4 space-y-8">
+      <div class="lg:col-span-4 space-y-8">
         <!-- Academic Records -->
         <section class="sidebar-card p-6 md:p-8 transition-all duration-1000 relative overflow-hidden"
           :style="{ borderRadius: 'var(--app-radius)' }"
@@ -321,14 +351,14 @@ onBeforeUnmount(() => {
   background: linear-gradient(180deg, var(--color-surface-container), var(--color-surface-container-high)) !important;
 }
 
-/* Hover States */
-.exp-card-wrapper:hover .exp-front-card {
+/* Expanded States (button triggered) */
+.exp-card-wrapper.is-expanded .exp-front-card {
   transform: scale(1.005);
   border-color: var(--color-primary) !important;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
 }
 
-.exp-card-wrapper:hover .exp-top-card {
+.exp-card-wrapper.is-expanded .exp-top-card {
   max-height: 200px;
   opacity: 1;
   transform: translateY(0);
@@ -337,8 +367,8 @@ onBeforeUnmount(() => {
   pointer-events: auto;
 }
 
-.exp-card-wrapper:hover .exp-bottom-card {
-  max-height: 400px;
+.exp-card-wrapper.is-expanded .exp-bottom-card {
+  max-height: 800px;
   opacity: 1;
   transform: translateY(0);
   padding: 1.75rem 1.5rem 1.5rem 1.5rem;
@@ -346,16 +376,39 @@ onBeforeUnmount(() => {
   pointer-events: auto;
 }
 
-/* Street style specific overrides for card */
-.theme-street .exp-card-wrapper:hover .exp-front-card {
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+/* Hover States (Desktop ONLY) */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .exp-card-wrapper:hover .exp-front-card {
+    transform: scale(1.005);
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .exp-card-wrapper:hover .exp-top-card {
+    max-height: 200px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 1rem 1.5rem;
+    margin-bottom: -0.75rem;
+    pointer-events: auto;
+  }
+
+  .exp-card-wrapper:hover .exp-bottom-card {
+    max-height: 800px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+    margin-top: -1rem;
+    pointer-events: auto;
+  }
+  
+  .theme-street .exp-card-wrapper:hover .exp-front-card { box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); }
+  .theme-street .exp-card-wrapper:hover .exp-top-card { box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.03); }
+  .theme-street .exp-card-wrapper:hover .exp-bottom-card { box-shadow: 0 10px 20px rgba(255, 0, 255, 0.05); }
 }
 
-.theme-street .exp-card-wrapper:hover .exp-top-card {
-  box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.03);
-}
-
-.theme-street .exp-card-wrapper:hover .exp-bottom-card {
-  box-shadow: 0 10px 20px rgba(255, 0, 255, 0.05);
-}
+/* Street style specific overrides for expanded */
+.theme-street .exp-card-wrapper.is-expanded .exp-front-card { box-shadow: 0 0 20px rgba(0, 255, 255, 0.1); }
+.theme-street .exp-card-wrapper.is-expanded .exp-top-card { box-shadow: 0 -5px 15px rgba(0, 255, 255, 0.03); }
+.theme-street .exp-card-wrapper.is-expanded .exp-bottom-card { box-shadow: 0 10px 20px rgba(255, 0, 255, 0.05); }
 </style>
