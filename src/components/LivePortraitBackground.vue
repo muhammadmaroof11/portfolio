@@ -1,7 +1,11 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed, defineAsyncComponent } from 'vue'
 import { useThemeStore } from '../stores/themeStore'
-import CircularText from './CircularText.vue'
+
+const CircularText = defineAsyncComponent(() => import('./CircularText.vue'))
+
+const isDesktop = ref(window.innerWidth >= 1024)
+let resizeHandler = null
 
 const themeStore = useThemeStore()
 const containerRef = ref(null)
@@ -36,6 +40,8 @@ const readouts = ref([
   { label: 'CORE_STAT', val: 'NOMINAL' },
   { label: 'AI_LINK', val: 'ESTABLISHED' }
 ])
+
+
 
 const resizeCanvas = () => {
   if (!canvasRef.value || !containerRef.value) return
@@ -248,6 +254,17 @@ const drawHUD = (c, w, h) => {
 
 const loop = () => {
   animationFrameId = requestAnimationFrame(loop)
+  if (!isDesktop.value) {
+    if (ctx && canvasRef.value) {
+      const w = canvasRef.value.width / (window.devicePixelRatio || 1)
+      const h = canvasRef.value.height / (window.devicePixelRatio || 1)
+      ctx.clearRect(0, 0, w, h)
+    }
+    if (imageRef.value) {
+      imageRef.value.style.transform = `translate3d(0, 0, 0) scale(1)`
+    }
+    return
+  }
   if (!isVisible || !ctx || !canvasRef.value) return
 
   const w = canvasRef.value.width / (window.devicePixelRatio || 1)
@@ -293,10 +310,16 @@ onMounted(() => {
   window.addEventListener('resize', resizeCanvas)
 
   handleMouseMove = (e) => {
+    if (!isDesktop.value) return
     mouse.targetX = (e.clientX / window.innerWidth) - 0.5
     mouse.targetY = (e.clientY / window.innerHeight) - 0.5
   }
   window.addEventListener('mousemove', handleMouseMove)
+
+  resizeHandler = () => {
+    isDesktop.value = window.innerWidth >= 1024
+  }
+  window.addEventListener('resize', resizeHandler)
 
   // Intersection Observer
   observer = new IntersectionObserver((entries) => {
@@ -315,6 +338,9 @@ onMounted(() => {
 onUnmounted(() => {
   cancelAnimationFrame(animationFrameId)
   window.removeEventListener('resize', resizeCanvas)
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler)
+  }
   if (handleMouseMove) {
     window.removeEventListener('mousemove', handleMouseMove)
   }
@@ -357,7 +383,7 @@ watch(() => themeStore.currentStyle, () => {
       }"
     >
       <!-- Spin text that circles around the portrait image -->
-      <CircularText
+      <CircularText v-if="isDesktop"
         text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
         :spinDuration="25"
         onHover="speedUp"

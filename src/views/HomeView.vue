@@ -5,10 +5,11 @@ import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code, User, Target } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import PolymorphicCanvas from '../components/PolymorphicCanvas.vue'
+import { defineAsyncComponent } from 'vue'
+const PolymorphicCanvas = defineAsyncComponent(() => import('../components/PolymorphicCanvas.vue'))
 import ThreeDCarousel from '../components/ThreeDCarousel.vue'
 import LivePortraitBackground from '../components/LivePortraitBackground.vue'
-import FuzzyText from '../components/FuzzyText.vue'
+const FuzzyText = defineAsyncComponent(() => import('../components/FuzzyText.vue'))
 import DecryptedText from '../components/DecryptedText.vue'
 import TextPressure from '../components/TextPressure.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
@@ -23,6 +24,9 @@ const featuredProjects = projects.filter(p => p.featured)
 const nameParts = profile.name.split(' ')
 const firstWord = nameParts[0].split('')
 const restOfName = nameParts.slice(1).join(' ').split('')
+
+const isDesktop = ref(window.innerWidth >= 1024)
+let resizeHandler = null
 
 const heroRef = ref(null)
 const servicesRef = ref(null)
@@ -161,6 +165,11 @@ onMounted(async () => {
       gsap.set(root.querySelector('.cta-box'), { clearProps: "transform" })
     }
   })
+
+  resizeHandler = () => {
+    isDesktop.value = window.innerWidth >= 1024
+  }
+  window.addEventListener('resize', resizeHandler)
 })
 
 const services = [
@@ -179,6 +188,9 @@ const offeredServices = [
 ]
 
 onBeforeUnmount(() => {
+  if (resizeHandler) {
+    window.removeEventListener('resize', resizeHandler)
+  }
   // Kill all triggers – safe because no other view is mounted yet.
   ScrollTrigger.getAll().forEach(t => t.kill())
 })
@@ -192,7 +204,7 @@ onBeforeUnmount(() => {
     <!-- HERO SECTION -->
     <header ref="heroRef" class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
       <!-- 3D Canvas Background -->
-      <PolymorphicCanvas />
+      <PolymorphicCanvas v-if="isDesktop" />
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full relative overflow-visible">
         <div class="order-2 lg:order-1 lg:col-span-7 hero-content layer-content relative z-10 overflow-visible">
@@ -215,9 +227,9 @@ onBeforeUnmount(() => {
               </span>
             </span>
             
-            <!-- Rest of Name (FuzzyText) -->
+            <!-- Rest of Name (FuzzyText on desktop, fallback span on mobile) -->
             <span class="inline-block whitespace-nowrap !overflow-visible">
-              <FuzzyText
+              <FuzzyText v-if="isDesktop"
                 fontStyle="italic"
                 fontSize="inherit"
                 fontWeight="900"
@@ -229,6 +241,7 @@ onBeforeUnmount(() => {
                 :glitchMode="themeStore.currentStyle === 'street'"
                 class="!overflow-visible"
               >MAROOF</FuzzyText>
+              <span v-else class="text-primary italic font-black">MAROOF</span>
             </span>
           </h1>
           
