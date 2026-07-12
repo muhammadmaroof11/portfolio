@@ -108,7 +108,7 @@ function getBrainCoord(nodeIndex, totalNodes) {
   const isLeft = nodeIndex % 2 === 0;
   
   // Scaled up radii to make the brain much larger and more prominent
-  const brainScale = isMobile.value ? 0.8 : (isTablet.value ? 0.9 : 1.0);
+  const brainScale = isMobile.value ? 0.7 : (isTablet.value ? 0.8 : 0.62);
   const rx = 210 * brainScale;
   const ry = 240 * brainScale;
   const rz = 260 * brainScale;
@@ -286,12 +286,13 @@ function getNumberCoord(projIndex, nodeIndex, totalNodes) {
   const t = nodeIndex / (totalNodes - 1 || 1);
   const pt = getDigitCoord(projIndex + 1, t);
   
-  // Scale factor to make the digit mesh bigger!
-  const scale = isMobile.value ? 2.0 : (isTablet.value ? 2.6 : 2.4);
+  // Scale factor: compact on desktop (1.32), readable on tablet (1.9) and mobile (1.8)
+  const scale = isMobile.value ? 1.8 : (isTablet.value ? 1.9 : 1.32);
   const dx = pt.x * scale;
   const dy = pt.y * scale;
   
-  const z = (nodeIndex % 2 === 0 ? -60 : 60) + (Math.sin(nodeIndex * 1.7) * 15);
+  const zScale = isMobile.value ? 0.85 : (isTablet.value ? 0.9 : 0.58);
+  const z = ((nodeIndex % 2 === 0 ? -60 : 60) + (Math.sin(nodeIndex * 1.7) * 15)) * zScale;
   
   return { x: dx, y: dy, z };
 }
@@ -392,7 +393,7 @@ function project3D(n, W, H, fov) {
   const s = fov / rz2
   // Read meshCenterX from the outer script scope with W / 2 fallback
   const cxVal = meshCenterX || (W / 2)
-  return { x: cxVal + rx * s + mouseX, y: H / 2 + ry2 * s + mouseY, z: rz2, s }
+  return { x: cxVal + rx * s + mouseX, y: H / 2 + 45 + ry2 * s + mouseY, z: rz2, s }
 }
 
 const drawMesh = () => {
@@ -903,18 +904,7 @@ onBeforeUnmount(() => {
         }"
       ></div>
 
-      <!-- CINEMATIC HUD BAR (Top Horizontal Deck Specs) -->
-      <div class="absolute top-6 left-12 right-12 z-40 hidden lg:flex items-center justify-between text-[9px] font-mono text-on-surface/40 pointer-events-none uppercase tracking-[0.2em] border-b border-on-surface/5 pb-4">
-        <div class="flex items-center gap-6">
-          <span class="text-primary font-black">// SYNAPTIC NODE_ENGINE_ v8.71</span>
-          <span>LAT: {{ telemetryCoordX }}°</span>
-          <span>LNG: {{ telemetryCoordY }}°</span>
-        </div>
-        <div class="flex items-center gap-6">
-          <span class="flex items-center gap-1.5"><Shield class="w-3.5 h-3.5 text-primary shrink-0" /> LINK: {{ telemetrySignal }}% SECURE</span>
-          <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
-        </div>
-      </div>
+
 
       <div 
         class="absolute inset-y-0 left-0 right-0 w-full pointer-events-none z-20 transition-transform duration-700 ease-in-out"
@@ -960,7 +950,7 @@ onBeforeUnmount(() => {
         >
           <!-- Cinematic HUD styled Card Box (Glassmorphism look from sample.mp4) -->
           <div 
-            class="group relative flex flex-col justify-between p-4 md:p-5 xl:p-6 overflow-hidden bg-surface-container-low/10 backdrop-blur-md project-card-box w-full max-w-[500px] lg:max-w-[440px] xl:max-w-[500px] lg:min-h-[460px] xl:min-h-[500px] pointer-events-auto transition-all"
+            class="group relative flex flex-col justify-between p-4 md:p-5 xl:p-6 overflow-hidden bg-surface-container-low/10 backdrop-blur-md project-card-box w-full max-w-[440px] lg:max-w-[395px] xl:max-w-[445px] lg:min-h-[385px] xl:min-h-[415px] pointer-events-auto transition-all"
             v-tilt="{ max: 6, scale: 1.01 }"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2)' }"
             :class="[
@@ -998,7 +988,7 @@ onBeforeUnmount(() => {
 
             <!-- Image preview box -->
             <div 
-              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[160px] md:max-h-[200px] z-10"
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[120px] md:max-h-[145px] z-10"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
               <img 
@@ -1010,7 +1000,7 @@ onBeforeUnmount(() => {
               <img 
                 :src="project.image" 
                 :alt="project.title" 
-                class="relative z-10 max-h-[140px] md:max-h-[170px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
+                class="relative z-10 max-h-[105px] md:max-h-[125px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
 
               <!-- HUD Target Reticle Overlay -->
@@ -1069,23 +1059,15 @@ onBeforeUnmount(() => {
                 </div>
 
                 <!-- Description -->
-                <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium mb-3 opacity-90 max-w-sm">
+                <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-90 max-w-sm">
                   {{ project.description }}
                 </p>
               </div>
 
               <div>
-                <!-- Diagnostic HUD Metrics -->
-                <div v-if="themeStore.currentStyle !== 'brutal'" class="flex items-center justify-between border-t border-on-surface/5 pt-2 pb-2 mb-1.5 font-mono text-[7px] text-on-surface/30">
-                  <span class="flex items-center gap-1">
-                    <span class="text-primary font-bold">CORE:</span> STABLE
-                  </span>
-                  <span>ENCRYPT: SHA-256</span>
-                  <span class="text-right">SYS_LOCK: 0x93F{{ index + 1 }}</span>
-                </div>
 
                 <!-- Footer with explore actions -->
-                <div class="flex items-center justify-between border-t border-on-surface/5 pt-2.5">
+                <div class="flex items-center justify-between border-t border-on-surface/5">
                   <div class="flex flex-col">
                     <span class="font-mono text-[8px] font-bold text-on-surface/30 uppercase tracking-wider">
                       COMPILED YEAR
