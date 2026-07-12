@@ -108,9 +108,10 @@ function getBrainCoord(nodeIndex, totalNodes) {
   const isLeft = nodeIndex % 2 === 0;
   
   // Scaled up radii to make the brain much larger and more prominent
-  const rx = 210;
-  const ry = 240;
-  const rz = 260;
+  const brainScale = isMobile.value ? 0.8 : (isTablet.value ? 0.9 : 1.0);
+  const rx = 210 * brainScale;
+  const ry = 240 * brainScale;
+  const rz = 260 * brainScale;
   
   let bx = Math.sin(phi) * Math.cos(theta);
   let by = Math.sin(phi) * Math.sin(theta);
@@ -286,7 +287,7 @@ function getNumberCoord(projIndex, nodeIndex, totalNodes) {
   const pt = getDigitCoord(projIndex + 1, t);
   
   // Scale factor to make the digit mesh bigger!
-  const scale = 2.4;
+  const scale = isMobile.value ? 2.0 : (isTablet.value ? 2.6 : 2.4);
   const dx = pt.x * scale;
   const dy = pt.y * scale;
   
@@ -407,7 +408,7 @@ const drawMesh = () => {
 
   // Smoothly shift the horizontal center of the mesh to balance the active layout
   let targetCenterX = W / 2
-  if (W >= 1024) {
+  if (W >= 1024 && !isTablet.value) {
     if (scrollProgress.value > 0.015) {
       if (activeIndex.value % 2 === 0) {
         // Even index project card is on the right side, shift mesh left
@@ -417,6 +418,10 @@ const drawMesh = () => {
         targetCenterX = W / 2 + 280
       }
     }
+  }
+  // On tablet: always keep mesh centered
+  if (isTablet.value) {
+    targetCenterX = W / 2
   }
   if (!meshCenterX) {
     meshCenterX = targetCenterX
@@ -634,11 +639,18 @@ const initParticles = (width, height) => {
   initMesh(projects.value.length)
 }
 
+const isMobile = ref(false)
+const isTablet = ref(false)
+const isMobileOrTablet = ref(false)
+
 const updateDimensions = () => {
   if (!canvasRef.value) return
   const canvas = canvasRef.value
   canvas.width = canvas.parentElement.clientWidth
   canvas.height = canvas.parentElement.clientHeight
+  isMobile.value = window.innerWidth < 768
+  isTablet.value = window.innerWidth >= 768 && window.innerWidth < 1024
+  isMobileOrTablet.value = window.innerWidth < 1024
   initMesh(projects.value.length)
 }
 
@@ -667,27 +679,30 @@ onMounted(async () => {
   window.addEventListener('resize', updateDimensions)
   window.addEventListener('mousemove', handleMouseMove)
 
-  // Re-measure after font loads so heading width is accurate for DNA radius
-  setTimeout(() => {
-    updateDimensions()
-    ScrollTrigger.refresh()
-  }, 150)
-  
-  scrollTriggerInstance = ScrollTrigger.create({
-    trigger: pinnedRef.value,
-    // Pin immediately when the top of the container reaches the navbar bottom (80px)
-    start: 'top 80px',
-    end: `+=${projects.value.length * 150}%`,
-    pin: pinnedRef.value,
-    pinSpacing: true,
-    scrub: true,
-    invalidateOnRefresh: true,
-    onUpdate: (self) => {
-      scrollProgress.value = self.progress
-    }
-  })
-  
-  drawMesh()
+  // Only run heavy 3D animation and scroll-pin on desktop
+  if (!isMobileOrTablet.value) {
+    // Re-measure after font loads so heading width is accurate for DNA radius
+    setTimeout(() => {
+      updateDimensions()
+      ScrollTrigger.refresh()
+    }, 150)
+    
+    scrollTriggerInstance = ScrollTrigger.create({
+      trigger: pinnedRef.value,
+      // Pin immediately when the top of the container reaches the navbar bottom (80px)
+      start: 'top 80px',
+      end: `+=${projects.value.length * 150}%`,
+      pin: pinnedRef.value,
+      pinSpacing: true,
+      scrub: true,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        scrollProgress.value = self.progress
+      }
+    })
+    
+    drawMesh()
+  }
 })
 
 onBeforeUnmount(() => {
@@ -740,11 +755,115 @@ onBeforeUnmount(() => {
       />
     </div>
 
+    <!-- ===== MOBILE / TABLET: Scrollable project cards (no heavy animation) ===== -->
+    <div class="lg:hidden px-4 sm:px-6 md:px-10 pb-12">
+      <!-- Section heading -->
+      <div class="text-center mb-8 mt-2">
+        <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
+        <div class="h-[1.5px] mt-3 rounded-full mx-auto animate-pulse"
+          :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '60px' }"
+        />
+      </div>
+
+      <!-- Scrollable card grid (Merged Card + Archive layout for Mobile & Tablet) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-6">
+        <div v-for="(project, index) in projects" :key="project.id" class="flex flex-col gap-0 h-full">
+
+          <!-- Visual card: image + title (NO description, NO tags) -->
+          <div
+            class="group relative flex flex-col p-4 overflow-hidden backdrop-blur-md w-full pointer-events-auto transition-all"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 1.2) calc(var(--app-radius) * 1.2) 0 0' }"
+            :class="[
+              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface border-4 border-on-surface' :
+              themeStore.currentStyle === 'street' ? 'street-card border-2 border-b-0 border-black bg-surface-container-low/95' :
+              'border border-b-0 border-primary/10 bg-surface-container-low/80 backdrop-blur-3xl shadow-xl'
+            ]"
+          >
+            <!-- Corner Brackets -->
+            <div v-if="themeStore.currentStyle !== 'brutal'" class="absolute inset-0 pointer-events-none z-10">
+              <div class="absolute top-3 left-3 w-4 h-4 border-t-[2px] border-l-[2px] border-primary/25 group-hover:border-primary transition-colors duration-500"></div>
+              <div class="absolute top-3 right-3 w-4 h-4 border-t-[2px] border-r-[2px] border-primary/25 group-hover:border-primary transition-colors duration-500"></div>
+            </div>
+
+            <!-- Sequence indicator -->
+            <span class="absolute top-3 right-5 font-mono font-black text-2xl text-primary/10 select-none z-10">0{{ index + 1 }}</span>
+
+            <!-- Image preview -->
+            <div
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 max-h-[180px] z-10 mb-3"
+              :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
+            >
+              <img :src="project.image" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" />
+              <img :src="project.image" :alt="project.title" class="relative z-10 max-h-[140px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" />
+            </div>
+
+            <!-- HUD ref line -->
+            <div class="flex items-center text-[7px] font-mono text-on-surface/30 mb-1.5 z-10">
+              <span class="w-1 h-1 rounded-full bg-primary animate-pulse mr-1"></span>
+              [DECK_REF: #0{{ index + 1 }}/PORTFOLIO_NODE]
+            </div>
+
+            <!-- Title -->
+            <h3 class="text-base sm:text-lg font-headline font-black uppercase tracking-tight text-on-surface mb-0 leading-none z-10">{{ project.title }}</h3>
+          </div>
+
+          <!-- Archive row: sits flush below the card, connected visually -->
+          <div
+            class="px-4 py-4 border border-t-0 flex flex-col flex-1"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '0 0 calc(var(--app-radius) * 1.2) calc(var(--app-radius) * 1.2)' }"
+            :class="[
+              themeStore.currentStyle === 'brutal' ? 'bg-surface border-4 border-t-0 border-on-surface' :
+              themeStore.currentStyle === 'street' ? 'border-2 border-t-0 border-black bg-surface-container-low/60' :
+              'border-primary/10 bg-surface-container-lowest/60'
+            ]"
+          >
+            <!-- All tech tags -->
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span
+                v-for="tag in project.tech"
+                :key="tag"
+                class="text-[7px] font-black px-2 py-0.5 bg-surface-container-high/60 border border-primary/10 text-primary uppercase tracking-widest rounded"
+              >{{ tag }}</span>
+            </div>
+
+            <!-- Description -->
+            <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-85 mb-4 flex-1">
+              {{ project.description }}
+            </p>
+
+            <!-- Year + CTA -->
+            <div class="flex items-center justify-between mt-auto">
+              <div class="flex flex-col">
+                <span class="font-mono text-[7px] font-bold text-on-surface/30 uppercase tracking-wider">COMPILED YEAR</span>
+                <span class="font-headline font-black text-xs text-primary tracking-widest">{{ project.year || '2026' }}</span>
+              </div>
+              <a
+                v-if="project.link && project.link !== '#'"
+                :href="project.link"
+                target="_blank"
+                class="inline-flex items-center gap-1.5 px-3 py-2 bg-primary text-on-primary font-black text-[10px] tracking-[0.15em] uppercase transition-all duration-300 hover:scale-[1.03] active-spring shadow-md shadow-primary/10"
+                :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) / 4)' }"
+                v-ripple
+              >
+                LOAD PROTOCOL <ArrowRight class="w-3 h-3 -rotate-45" />
+              </a>
+              <span
+                v-else-if="project.hoverText"
+                class="px-3 py-2 bg-surface-container-high text-on-surface/40 font-black text-[10px] tracking-[0.15em] uppercase rounded-md"
+              >{{ project.hoverText }}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DESKTOP: Pinned neural mesh experience (lg+ only) ===== -->
     <!-- Pinned viewport container with calc(100vh - 80px) to clear navbar -->
-    <div ref="pinnedRef" class="pinned-container h-[calc(100vh-80px)] w-full relative flex items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
+    <div ref="pinnedRef" class="hidden lg:flex pinned-container h-[calc(100vh-80px)] w-full relative items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
       
       <!-- Section Heading inside the pinned screen-locked container -->
-      <div class="absolute top-6 md:top-8 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
+      <div class="absolute top-6 md:top-24 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
         <div class="relative h-[30px] md:h-[45px] lg:h-[50px] xl:h-[55px] w-full flex items-center justify-center max-w-[700px]">
           <TextPressure
             text="ENGINEERED PROJECTS."
@@ -799,7 +918,7 @@ onBeforeUnmount(() => {
 
       <div 
         class="absolute inset-y-0 left-0 right-0 w-full pointer-events-none z-20 transition-transform duration-700 ease-in-out"
-        :style="{ transform: scrollProgress <= 0.015 ? 'translateX(0%)' : (activeIndex % 2 === 0 ? 'translateX(-14%)' : 'translateX(14%)') }"
+        :style="{ transform: isMobileOrTablet || scrollProgress <= 0.015 ? 'translateX(0%)' : (activeIndex % 2 === 0 ? 'translateX(-14%)' : 'translateX(14%)') }"
       >
         <canvas ref="canvasRef" class="w-full h-full opacity-80 dark:opacity-95"></canvas>
       </div>
@@ -807,10 +926,10 @@ onBeforeUnmount(() => {
       <!-- Mobile/Tablet Top Info Deck -->
       <div class="absolute top-6 left-6 right-6 z-40 flex lg:hidden justify-between items-center pointer-events-none">
         <div>
-          <span class="text-primary font-black tracking-[0.3em] uppercase text-[8px] block">
+          <span class="hidden md:block text-primary font-black tracking-[0.3em] uppercase text-[8px]">
             SYNAPTIC CORE
           </span>
-          <h3 class="font-headline text-lg font-black text-on-surface uppercase mt-1">
+          <h3 class="hidden md:block font-headline text-lg font-black text-on-surface uppercase mt-1">
             PROJECT DECK [0{{ activeIndex + 1 }}/0{{ projects.length }}]
           </h3>
         </div>

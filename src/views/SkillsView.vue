@@ -325,10 +325,10 @@ onBeforeUnmount(() => {
   <div ref="viewRoot" class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative">
 
     <!-- MAIN INTERACTIVE DECK CONSOLE -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
       
-      <!-- LEFT HAND PANEL: FILTERS & CARDS DECK (lg:7 cols) -->
-      <div class="lg:col-span-7 flex flex-col gap-6">
+      <!-- LEFT HAND PANEL: FILTERS & CARDS DECK (md:7 cols) -->
+      <div class="md:col-span-7 lg:col-span-7 flex flex-col gap-6">
 
         <!-- HERO HEADER (nested inside left column and scaled down by 30%) -->
         <header class="mb-6 skills-header">
@@ -353,12 +353,12 @@ onBeforeUnmount(() => {
           </div>
         </header>
         <!-- CYBERNETIC CONTROL TABS -->
-        <div class="flex flex-wrap gap-2.5 border-b border-on-surface/10 pb-4 gsap-console-enter">
+        <div class="flex gap-2.5 border-b border-on-surface/10 pb-4 gsap-console-enter overflow-x-auto scrollbar-none px-1">
           <button 
             v-for="cat in categories" 
             :key="cat.name"
             @click="activeCategory = cat.name"
-            class="flex items-center gap-2.5 px-4 py-2.5 text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-300 relative border cursor-pointer select-none"
+            class="shrink-0 flex items-center gap-2.5 px-4 py-2.5 text-[10px] md:text-xs font-black uppercase tracking-wider transition-all duration-300 relative border cursor-pointer select-none"
             :style="{ borderRadius: 'calc(var(--app-radius) / 2)' }"
             :class="[
               activeCategory === cat.name 
@@ -374,12 +374,12 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- CARDS DECK -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 gsap-console-enter">
+        <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 gsap-console-enter">
           <div 
             v-for="skill in filteredSkills" 
             :key="skill.name"
             @click="selectSkill(skill)"
-            class="skill-card p-5 transition-all duration-500 cursor-pointer border relative overflow-hidden flex flex-col justify-between group active-spring min-h-[140px]"
+            class="skill-card p-4 sm:p-5 transition-all duration-500 cursor-pointer border relative overflow-hidden flex flex-col justify-between group active-spring min-h-[140px]"
             :style="{ borderRadius: 'var(--app-radius)' }"
             :class="[
               selectedSkill?.name === skill.name
@@ -458,8 +458,8 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <!-- RIGHT HAND PANEL: TELEMETRY DETAIL HUD (lg:5 cols) -->
-      <div class="lg:col-span-5 gsap-console-enter lg:sticky lg:top-24">
+      <!-- RIGHT HAND PANEL: TELEMETRY DETAIL HUD (md:5 cols) -->
+      <div class="md:col-span-5 lg:col-span-5 gsap-console-enter md:sticky md:top-24">
         <div 
           class="hud-terminal border p-6 md:p-8 relative overflow-hidden backdrop-blur-md shadow-2xl"
           :style="{ 
