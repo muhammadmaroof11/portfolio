@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
           <LivePortraitBackground />
 
           <!-- Floating Counter Metric Card -->
-          <div class="absolute bottom-2 sm:bottom-4 md:bottom-8 lg:-bottom-8 -right-2 md:-right-6 lg:right-auto lg:-left-12 p-3.5 md:p-5 lg:p-6 shadow-3xl w-max max-w-[95vw] lg:max-w-[240px] transition-all duration-700 hover:-translate-y-4 z-20 flex flex-row lg:flex-col items-center lg:items-start gap-4 lg:gap-0"
+          <div class="absolute bottom-2 sm:bottom-4 md:bottom-8 lg:-bottom-8 right-2 sm:right-4 md:right-8 lg:right-auto lg:-left-12 p-3 md:p-4 lg:p-6 shadow-3xl w-max max-w-[95vw] lg:max-w-[240px] transition-all duration-700 hover:-translate-y-4 z-20 flex flex-row lg:flex-col items-center lg:items-start gap-3 lg:gap-0"
             v-tilt="{ max: 15, scale: 1.05 }"
             :style="{ borderRadius: 'calc(var(--app-radius) / 1.5)' }"
             :class="[
@@ -299,9 +299,11 @@ onBeforeUnmount(() => {
               themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
               'bg-surface/90 backdrop-blur-md border border-primary/20 text-on-surface'
             ]">
-            <div class="text-4xl md:text-5xl font-headline font-black text-primary leading-none italic"
+            <div class="text-3xl sm:text-4xl lg:text-5xl font-headline font-black text-primary leading-none italic"
               :class="{ 'street-fx-radiant !not-italic': themeStore.currentStyle === 'street' }">10+</div>
-            <div class="text-[9px] sm:text-[10px] md:text-[11px] lg:text-[8px] font-black uppercase tracking-[0.1em] lg:tracking-[0.3em] leading-tight opacity-70 text-on-surface lg:mt-2 text-left whitespace-nowrap lg:whitespace-normal">Enterprise Ready Implementations</div>
+            <div class="text-[7px] sm:text-[8px] lg:text-[8px] font-black uppercase tracking-[0.1em] lg:tracking-[0.3em] leading-tight opacity-70 text-on-surface lg:mt-2 text-left">
+              Enterprise Ready<br />Implementations
+            </div>
           </div>
         </div>
       </div>
