@@ -121,8 +121,15 @@ onMounted(async () => {
     const mouse = { x: null, y: null }
 
     handleMouseMove = (e) => {
-      mouse.x = e.clientX
-      mouse.y = e.clientY
+      if (window.innerWidth < 1024) {
+        mouse.x = null
+        mouse.y = null
+        return
+      }
+      if (!viewRoot.value) return
+      const rect = viewRoot.value.getBoundingClientRect()
+      mouse.x = e.clientX - rect.left
+      mouse.y = e.clientY - rect.top
     }
     handleMouseLeave = () => {
       mouse.x = null
@@ -275,8 +282,9 @@ onMounted(async () => {
     }
 
     resize = () => {
-      width = window.innerWidth
-      height = window.innerHeight
+      if (!viewRoot.value) return
+      width = viewRoot.value.clientWidth
+      height = viewRoot.value.clientHeight
       canvas.width = width
       canvas.height = height
       initParticles()
@@ -390,33 +398,39 @@ onBeforeUnmount(() => {
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-center relative z-10 w-full">
       
       <!-- LEFT SIDE: HEADER & COMPACT INFO -->
-      <div class="lg:col-span-6 space-y-8 contact-header">
-        <div>
-          <span class="app-badge mb-4 block inline-block" :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">Global Connectivity Protocol</span>
-          <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-[80px] font-headline font-black text-on-surface tracking-[calc(-0.06em)] leading-none mb-6 uppercase flex flex-wrap items-baseline gap-x-3">
-            <span>STRATEGIC</span>
-            <FuzzyText 
-              color="var(--color-primary)" 
-              font-style="italic"
-              font-size="clamp(2.2rem, 5.5vw, 5rem)"
-              font-weight="900"
-              font-family="inherit"
-              class-name="text-primary italic inline-block select-none underline decoration-wavy decoration-[3px] sm:decoration-6 underline-offset-[4px] sm:underline-offset-[8px]"
-              :base-intensity="0.15"
-              :hover-intensity="0.45"
-              :fuzz-range="18"
-              :enable-hover="true"
-            >
-              DIALOGUE.
-            </FuzzyText>
-          </h1>
-          <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body max-w-xl opacity-80 font-medium">
-            Ready to deploy world-class architectures. Initiate the sequence for your next high-impact digital project.
-          </p>
+      <div class="contents lg:block lg:col-span-6 order-none">
+        
+        <!-- HEADING -->
+        <div class="contact-header order-1 lg:order-none mb-0 lg:mb-8 w-full">
+          <div>
+            <span class="app-badge mb-4 block inline-block" :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">Global Connectivity Protocol</span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-[80px] font-headline font-black text-on-surface tracking-[calc(-0.06em)] leading-none mb-6 uppercase flex flex-wrap items-baseline gap-x-3">
+              <span>STRATEGIC</span>
+              <FuzzyText 
+                color="var(--color-primary)" 
+                font-style="italic"
+                font-size="clamp(2.2rem, 5.5vw, 5rem)"
+                font-weight="900"
+                font-family="inherit"
+                class-name="text-primary italic inline-block select-none underline decoration-wavy decoration-[3px] sm:decoration-6 underline-offset-[4px] sm:underline-offset-[8px]"
+                :base-intensity="0.15"
+                :hover-intensity="0.45"
+                :fuzz-range="18"
+                :enable-hover="true"
+              >
+                DIALOGUE.
+              </FuzzyText>
+            </h1>
+            <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body max-w-xl opacity-80 font-medium">
+              Ready to deploy world-class architectures. Initiate the sequence for your next high-impact digital project.
+            </p>
+          </div>
         </div>
 
-        <!-- COMPACT INFO ITEMS -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- DETAILS (COMPACT INFO & SOCIALS) -->
+        <div class="contact-header order-3 lg:order-none space-y-8 mt-4 lg:mt-0 w-full">
+          <!-- COMPACT INFO ITEMS -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div v-for="(info, i) in [
             { label: 'DIRECT SIGNAL', val: profile.email || 'mmaroof341@gmail.com', icon: Mail },
             { label: 'OPERATIONAL BASE', val: profile.location, icon: MapPin },
@@ -457,10 +471,11 @@ onBeforeUnmount(() => {
             <ArrowUpRight class="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>
-      </div>
+        </div> <!-- Close DETAILS wrapper -->
+      </div> <!-- Close LEFT SIDE wrapper -->
 
       <!-- RIGHT SIDE: CONTACT FORM -->
-      <div class="lg:col-span-6 contact-form p-6 sm:p-8 rounded-[2rem] md:rounded-[3rem] transition-all duration-1000 relative overflow-hidden group shadow-3xl"
+      <div class="lg:col-span-6 contact-form p-6 sm:p-8 rounded-[2rem] md:rounded-[3rem] transition-all duration-1000 relative overflow-hidden group shadow-3xl order-2 lg:order-none w-full"
         :class="[
           themeStore.currentStyle === 'brutal' ? 'brutal-card border-8 border-on-surface' : 
           themeStore.currentStyle === 'street' ? 'street-card border-secondary/40' : 'bg-surface-container-highest shadow-2xl border border-primary/10'
@@ -492,7 +507,7 @@ onBeforeUnmount(() => {
           </transition>
 
           <div v-if="!submitted" class="space-y-6 md:space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div class="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               <div class="space-y-3 relative group/input">
                 <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Your Name</label>
                 <input v-model="form.name" type="text" placeholder="Enter your name" required
