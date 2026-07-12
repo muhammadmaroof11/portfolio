@@ -22,11 +22,14 @@ const themeStore = useThemeStore()
 const activeIdx = ref(0)
 const isPaused = ref(false)
 const isMobile = ref(false)
+const isTablet = ref(false)
 const touchStart = ref(0)
 let autoplayInterval = null
 
 const updateMobileStatus = () => {
-  isMobile.value = window.innerWidth < 768
+  const w = window.innerWidth
+  isMobile.value = w < 768
+  isTablet.value = w >= 768 && w < 1024
 }
 
 onMounted(() => {
@@ -135,6 +138,34 @@ const getCardStyle = (idx) => {
       zIndex = 10
       opacity = 0
     }
+  } else if (isTablet.value) {
+    if (isActive) {
+      x = '0%'
+      scale = 1
+      zIndex = 30
+      rotateY = 0
+      opacity = 1
+      pointerEvents = 'auto'
+    } else if (isLeft1) {
+      x = '-62%'
+      scale = 0.82
+      zIndex = 20
+      rotateY = 20
+      opacity = 0.6
+      pointerEvents = 'auto'
+    } else if (isRight1) {
+      x = '62%'
+      scale = 0.82
+      zIndex = 20
+      rotateY = -20
+      opacity = 0.6
+      pointerEvents = 'auto'
+    } else {
+      x = diff < 0 ? '-115%' : '115%'
+      scale = 0.7
+      zIndex = 10
+      opacity = 0
+    }
   } else {
     // Desktop layout settings
     if (isActive) {
@@ -184,7 +215,7 @@ const getCardStyle = (idx) => {
     opacity,
     pointerEvents,
     position: 'absolute',
-    width: isMobile.value ? '82%' : '90%',
+    width: isMobile.value ? '82%' : isTablet.value ? '86%' : '90%',
     maxWidth: props.cardWidth,
     transformStyle: 'preserve-3d',
     transition: 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1)'
@@ -218,7 +249,7 @@ watch(() => themeStore.currentStyle, startAutoplay)
     <!-- Direction Navigation Controls (Absolute Corners) -->
     <button
       @click.stop="prevSlide"
-      class="absolute left-[-16px] md:left-[-32px] lg:left-[-48px] xl:left-[-64px] top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 border active-spring z-40"
+      class="absolute left-2 md:left-4 lg:left-[-48px] xl:left-[-64px] top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 border active-spring z-40"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-surface text-primary border-primary' : 
         'bg-primary/10 hover:bg-primary/20 border-primary/20 hover:border-primary/50 text-primary backdrop-blur-md shadow-lg shadow-primary/10 hover:scale-105'
@@ -229,7 +260,7 @@ watch(() => themeStore.currentStyle, startAutoplay)
     </button>
     <button
       @click.stop="nextSlide"
-      class="absolute right-[-16px] md:right-[-32px] lg:right-[-48px] xl:right-[-64px] top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 border active-spring z-40"
+      class="absolute right-2 md:right-4 lg:right-[-48px] xl:right-[-64px] top-1/2 -translate-y-1/2 w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 border active-spring z-40"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-surface text-primary border-primary' : 
         'bg-primary/10 hover:bg-primary/20 border-primary/20 hover:border-primary/50 text-primary backdrop-blur-md shadow-lg shadow-primary/10 hover:scale-105'

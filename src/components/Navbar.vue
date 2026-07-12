@@ -39,7 +39,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
       </router-link>
 
       <!-- DESKTOP NAV -->
-      <div class="hidden md:flex items-center gap-8">
+      <div class="hidden lg:flex items-center gap-8">
         <router-link v-for="link in navLinks" :key="link.name" :to="link.path"
           class="font-label text-xs font-black tracking-[0.2em] uppercase hover:text-primary transition-colors text-on-surface/80 px-2 py-1 rounded-md active-spring"
           active-class="text-primary !opacity-100" v-ripple>
@@ -65,7 +65,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
       </div>
 
       <!-- MOBILE TOGGLE -->
-      <div class="flex items-center gap-4 md:hidden">
+      <div class="flex items-center gap-4 lg:hidden">
         <button @click="toggleMenu" class="p-2 text-on-surface">
           <Menu v-if="!isMenuOpen" class="w-6 h-6" />
           <X v-else class="w-6 h-6" />
@@ -74,7 +74,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
     </div>
 
     <!-- MOBILE MENU -->
-    <div v-if="isMenuOpen" class="md:hidden absolute top-20 left-0 right-0 bg-surface border-b border-surface-container-high p-6 animate-fade-in shadow-2xl">
+    <div v-if="isMenuOpen" class="lg:hidden absolute top-20 left-0 right-0 bg-surface border-b border-surface-container-high p-6 animate-fade-in shadow-2xl">
       <div class="flex flex-col gap-6">
         <router-link v-for="link in navLinks" :key="link.name" :to="link.path"
           @click="isMenuOpen = false"

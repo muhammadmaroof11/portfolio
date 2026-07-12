@@ -1,16 +1,25 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
 import { useThemeStore } from '../stores/themeStore'
+import CircularText from './CircularText.vue'
 
 const themeStore = useThemeStore()
 const containerRef = ref(null)
 const canvasRef = ref(null)
 const imageRef = ref(null)
+const portraitRef = ref(null)
+
+const computedRadius = ref(150)
+const computedFontSize = computed(() => {
+  const size = Math.max(8, Math.min(14, computedRadius.value * 0.05))
+  return `${size}px`
+})
 
 let ctx = null
 let animationFrameId = null
 let isVisible = true
 let observer = null
+let handleMouseMove = null
 
 // Mouse and Parallax state
 const mouse = { x: 0, y: 0, targetX: 0, targetY: 0 }
@@ -41,6 +50,11 @@ const resizeCanvas = () => {
   
   if (ctx) {
     ctx.scale(dpr, dpr)
+  }
+  
+  if (portraitRef.value) {
+    const pRect = portraitRef.value.getBoundingClientRect()
+    computedRadius.value = pRect.width * 0.52
   }
 }
 
@@ -278,6 +292,12 @@ onMounted(() => {
   resizeCanvas()
   window.addEventListener('resize', resizeCanvas)
 
+  handleMouseMove = (e) => {
+    mouse.targetX = (e.clientX / window.innerWidth) - 0.5
+    mouse.targetY = (e.clientY / window.innerHeight) - 0.5
+  }
+  window.addEventListener('mousemove', handleMouseMove)
+
   // Intersection Observer
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -295,6 +315,9 @@ onMounted(() => {
 onUnmounted(() => {
   cancelAnimationFrame(animationFrameId)
   window.removeEventListener('resize', resizeCanvas)
+  if (handleMouseMove) {
+    window.removeEventListener('mousemove', handleMouseMove)
+  }
   if (observer) {
     observer.disconnect()
   }
@@ -319,6 +342,7 @@ watch(() => themeStore.currentStyle, () => {
 
     <!-- Portrait Container (Float above canvas, offset opposite of mouse) -->
     <div 
+      ref="portraitRef"
       class="relative w-full max-w-[240px] md:max-w-[380px] lg:max-w-[480px] xl:max-w-[540px] aspect-[1/1.1] z-10 overflow-visible flex items-end justify-center transition-all duration-700"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 
@@ -332,6 +356,16 @@ watch(() => themeStore.currentStyle, () => {
         borderBottom: themeStore.currentStyle === 'minimal' ? '4px solid var(--color-primary)' : ''
       }"
     >
+      <!-- Spin text that circles around the portrait image -->
+      <CircularText
+        text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
+        :spinDuration="25"
+        onHover="speedUp"
+        :radius="computedRadius"
+        :fontSize="computedFontSize"
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
+      />
+
       <!-- User Portrait Image with dynamic parallax offset applied inline -->
       <img 
         ref="imageRef"

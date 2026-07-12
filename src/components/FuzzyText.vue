@@ -126,7 +126,8 @@ const initFuzzyText = async () => {
   const computedFontFamily =
     props.fontFamily === 'inherit' ? window.getComputedStyle(canvas).fontFamily || 'sans-serif' : props.fontFamily
 
-  const fontSizeStr = typeof props.fontSize === 'number' ? `${props.fontSize}px` : props.fontSize
+  const inheritedSize = window.getComputedStyle(canvas).fontSize
+  const fontSizeStr = props.fontSize === 'inherit' ? inheritedSize : (typeof props.fontSize === 'number' ? `${props.fontSize}px` : props.fontSize)
   const fontString = `${props.fontStyle} ${props.fontWeight} ${fontSizeStr} ${computedFontFamily}`
 
   try {
@@ -136,7 +137,9 @@ const initFuzzyText = async () => {
   }
 
   let numericFontSize
-  if (typeof props.fontSize === 'number') {
+  if (props.fontSize === 'inherit') {
+    numericFontSize = parseFloat(inheritedSize)
+  } else if (typeof props.fontSize === 'number') {
     numericFontSize = props.fontSize
   } else {
     const temp = document.createElement('span')
