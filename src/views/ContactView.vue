@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
             <span class="app-badge mb-4 block inline-block" :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">Global Connectivity Protocol</span>
             <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-[80px] font-headline font-black text-on-surface tracking-[calc(-0.06em)] leading-none mb-6 uppercase flex flex-wrap items-baseline gap-x-3">
               <span>STRATEGIC</span>
-              <FuzzyText v-if="isDesktop"
+              <FuzzyText 
                 color="var(--color-primary)" 
                 font-style="italic"
                 font-size="clamp(2.2rem, 5.5vw, 5rem)"
@@ -154,15 +154,12 @@ onBeforeUnmount(() => {
                 font-family="inherit"
                 class-name="text-primary italic inline-block select-none underline decoration-wavy decoration-[3px] sm:decoration-6 underline-offset-[4px] sm:underline-offset-[8px]"
                 :base-intensity="0.15"
-                :hover-intensity="0.45"
+                :hover-intensity="isDesktop ? 0.45 : 0.15"
                 :fuzz-range="18"
-                :enable-hover="true"
+                :enable-hover="isDesktop"
               >
                 DIALOGUE.
               </FuzzyText>
-              <span v-else class="text-primary italic inline-block select-none underline decoration-wavy decoration-[3px] sm:decoration-6 underline-offset-[4px] sm:underline-offset-[8px]">
-                DIALOGUE.
-              </span>
             </h1>
             <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body max-w-xl opacity-80 font-medium">
               Ready to deploy world-class architectures. Initiate the sequence for your next high-impact digital project.

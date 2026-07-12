@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
     <!-- HERO SECTION -->
     <header ref="heroRef" class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
       <!-- 3D Canvas Background -->
-      <PolymorphicCanvas v-if="isDesktop" />
+      <PolymorphicCanvas />
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full relative overflow-visible">
         <div class="order-2 lg:order-1 lg:col-span-7 hero-content layer-content relative z-10 overflow-visible">
@@ -229,19 +229,18 @@ onBeforeUnmount(() => {
             
             <!-- Rest of Name (FuzzyText on desktop, fallback span on mobile) -->
             <span class="inline-block whitespace-nowrap !overflow-visible">
-              <FuzzyText v-if="isDesktop"
+              <FuzzyText
                 fontStyle="italic"
                 fontSize="inherit"
                 fontWeight="900"
                 color="var(--color-primary)"
                 fontFamily="Outfit"
                 :baseIntensity="0.18"
-                :hoverIntensity="0.5"
-                :enableHover="true"
+                :hoverIntensity="isDesktop ? 0.5 : 0.18"
+                :enableHover="isDesktop"
                 :glitchMode="themeStore.currentStyle === 'street'"
                 class="!overflow-visible"
               >MAROOF</FuzzyText>
-              <span v-else class="text-primary italic font-black">MAROOF</span>
             </span>
           </h1>
           

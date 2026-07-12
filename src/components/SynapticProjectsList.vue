@@ -758,7 +758,7 @@ onBeforeUnmount(() => {
     <!-- ===== MOBILE / TABLET: Scrollable project cards (no heavy animation) ===== -->
     <div class="lg:hidden px-4 sm:px-6 md:px-10 pb-12">
       <!-- Section heading -->
-      <div class="text-center mb-8 mt-2">
+      <div class="text-center mb-8 mt-12 md:mt-16">
         <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
         <div class="h-[1.5px] mt-3 rounded-full mx-auto animate-pulse"
           :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '60px' }"

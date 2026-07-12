@@ -383,10 +383,10 @@ watch(() => themeStore.currentStyle, () => {
       }"
     >
       <!-- Spin text that circles around the portrait image -->
-      <CircularText v-if="isDesktop"
+      <CircularText
         text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
         :spinDuration="25"
-        onHover="speedUp"
+        :onHover="isDesktop ? 'speedUp' : undefined"
         :radius="computedRadius"
         :fontSize="computedFontSize"
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none"
