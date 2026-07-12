@@ -382,9 +382,20 @@ watch(() => themeStore.currentStyle, () => {
         borderBottom: themeStore.currentStyle === 'minimal' ? '4px solid var(--color-primary)' : ''
       }"
     >
+      <!-- Hollow ring track behind the circular text -->
+      <div 
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 rounded-full pointer-events-none transition-all duration-700"
+        :style="{ 
+          width: `calc(${computedRadius * 2}px + ${computedFontSize} + 8px)`, 
+          height: `calc(${computedRadius * 2}px + ${computedFontSize} + 8px)`,
+          border: `calc(${computedFontSize} + 8px) solid #ffffff`
+        }"
+      ></div>
+
       <!-- Spin text that circles around the portrait image -->
       <CircularText
-        text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * "
+        text="BUG SLAYER CERTIFIED * 100% CHAD VERIFIED * ELITE CODE ARCHITECT * "
+        textColor="#000000"
         :spinDuration="25"
         :onHover="isDesktop ? 'speedUp' : undefined"
         :radius="computedRadius"

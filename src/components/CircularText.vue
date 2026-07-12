@@ -22,6 +22,10 @@ const props = defineProps({
   radius: {
     type: Number,
     default: 80
+  },
+  textColor: {
+    type: String,
+    default: '#ffffff'
   }
 })
 
@@ -112,7 +116,7 @@ watch(() => props.spinDuration, () => startRotation(1))
           marginTop: '-10px',
           fontFamily: 'var(--font-headline, sans-serif)',
           fontWeight: '900',
-          color: '#ffffff',
+          color: props.textColor,
           lineHeight: '20px',
           textAlign: 'center',
           transformOrigin: 'center center',

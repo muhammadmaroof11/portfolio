@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView, useRouter } from 'vue-router'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { ArrowUp } from 'lucide-vue-next'
 import Navbar from './components/Navbar.vue'
 import ClickSpark from './components/ClickSpark.vue'
 import { useThemeStore } from './stores/themeStore'
@@ -45,11 +46,33 @@ router.afterEach(() => {
   }, 800)
 })
 
+const isScrolled = ref(false)
+const isAtBottom = ref(false)
+
+const handleScroll = () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  const scrollHeight = document.documentElement.scrollHeight
+  const clientHeight = document.documentElement.clientHeight
+
+  isScrolled.value = scrollTop > 300
+  isAtBottom.value = scrollTop + clientHeight >= scrollHeight - 50
+}
+
+const scrollToTop = () => {
+  window.scrollTo(0, 0)
+}
+
 onMounted(() => {
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  
   // Simulate initial load for premium feel
   setTimeout(() => {
     isLoading.value = false
   }, 1000)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
@@ -95,6 +118,21 @@ onMounted(() => {
         </transition>
       </router-view>
     </main>
+
+    <!-- Scroll To Top Button (Desktop Only) -->
+    <button 
+      @click="scrollToTop"
+      class="hidden lg:flex fixed bottom-10 right-10 z-[150] w-12 h-12 rounded-full items-center justify-center transition-all duration-500 hover:-translate-y-2 group shadow-2xl active-spring"
+      :class="[
+        (isScrolled && !isAtBottom) ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-10 pointer-events-none',
+        themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-surface-container text-on-surface' : 
+        themeStore.currentStyle === 'street' ? 'bg-primary border-2 border-black text-black' :
+        'bg-primary text-on-primary hover:bg-primary-dim shadow-primary/20'
+      ]"
+      title="Return to Hero"
+    >
+      <ArrowUp class="w-5 h-5 group-hover:-translate-y-1 transition-transform duration-300" stroke-width="3" />
+    </button>
 
     <!-- Footer -->
     <footer class="bg-surface py-16 md:py-24 px-8 md:px-12 flex flex-col md:flex-row justify-between items-center gap-10 border-t border-surface-container-high mt-24 relative overflow-hidden">
