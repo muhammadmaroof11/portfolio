@@ -369,7 +369,7 @@ watch(() => themeStore.currentStyle, () => {
     <!-- Portrait Container (Float above canvas, offset opposite of mouse) -->
     <div 
       ref="portraitRef"
-      class="relative w-full max-w-[240px] md:max-w-[380px] lg:max-w-[480px] xl:max-w-[540px] aspect-[1/1.1] z-10 overflow-visible flex items-end justify-center transition-all duration-700"
+      class="relative w-full max-w-[240px] md:max-w-[380px] lg:max-w-[410px] xl:max-w-[465px] aspect-[1/1.1] z-10 overflow-visible flex items-end justify-center transition-all duration-700"
       :class="[
         themeStore.currentStyle === 'brutal' ? 'border-4 border-on-surface' : 
         themeStore.currentStyle === 'street' ? 'street-card !rounded-[2rem] md:!rounded-[4rem]' : 

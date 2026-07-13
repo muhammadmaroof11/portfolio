@@ -249,13 +249,13 @@ onBeforeUnmount(() => {
           <div v-if="!submitted" class="space-y-6 md:space-y-8">
             <div class="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               <div class="space-y-3 relative group/input">
-                <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Your Name</label>
+                <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Name</label>
                 <input v-model="form.name" type="text" placeholder="Enter your name" required
                   class="w-full px-5 py-3.5 rounded-xl bg-surface-container border-2 border-primary/5 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-body text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-inner dark:bg-black/20" />
                 <div class="absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500 origin-center"></div>
               </div>
               <div class="space-y-3 relative group/input">
-                <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Email Address</label>
+                <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">email</label>
                 <input v-model="form.email" type="email" placeholder="your.email@domain.com" required
                   class="w-full px-5 py-3.5 rounded-xl bg-surface-container border-2 border-primary/5 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-body text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-inner dark:bg-black/20" />
                 <div class="absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500 origin-center"></div>
@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Status Board -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-surface/50 border border-primary/5 font-mono text-[9px] tracking-wider uppercase text-on-surface/50">
+            <div class="grid hidden lg:grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-xl bg-surface/50 border border-primary/5 font-mono text-[9px] tracking-wider uppercase text-on-surface/50">
               <div class="flex flex-col gap-1 border-r border-on-surface/5 pr-2">
                 <span class="opacity-40">AVAILABILITY</span>
                 <span class="text-primary font-black flex items-center gap-1.5">

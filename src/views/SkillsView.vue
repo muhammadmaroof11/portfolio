@@ -400,40 +400,47 @@ onBeforeUnmount(() => {
               :style="{ backgroundColor: skill.color }"
             ></div>
 
-            <div class="flex items-center justify-between gap-3 mb-4 w-full">
-              <div class="flex items-center gap-3 min-w-0">
-                <!-- Icon Frame -->
-                <div class="w-10 h-10 flex items-center justify-center p-2 rounded shadow-inner bg-surface border border-primary/10 transition-transform duration-500 group-hover:scale-105 shrink-0"
-                  :style="{ color: skill.color, borderRadius: 'calc(var(--app-radius) / 4)' }"
-                  :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
-                >
-                  <i v-if="skill.faIcon" :class="skill.faIcon" class="text-xl" :style="{ color: skill.color }"></i>
-                  <div v-else-if="skill.iconUrl && skill.iconUrl.includes('simple-icons')"
-                    class="w-full h-full"
-                    :style="{
-                      backgroundColor: skill.color,
-                      mask: `url(${skill.iconUrl}) no-repeat center / contain`,
-                      webkitMask: `url(${skill.iconUrl}) no-repeat center / contain`
-                    }"
-                  ></div>
-                  <img v-else :src="skill.iconUrl || `https://skillicons.dev/icons?i=${skill.slug}`" 
-                    :alt="skill.name" 
-                    class="w-full h-full object-contain" />
+            <div class="flex flex-col gap-2.5 mb-4 w-full">
+              <div class="flex items-center justify-between w-full">
+                <div class="flex items-center gap-3 min-w-0">
+                  <!-- Icon Frame -->
+                  <div class="w-10 h-10 flex items-center justify-center p-2 rounded shadow-inner bg-surface border border-primary/10 transition-transform duration-500 group-hover:scale-105 shrink-0"
+                    :style="{ color: skill.color, borderRadius: 'calc(var(--app-radius) / 4)' }"
+                    :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
+                  >
+                    <i v-if="skill.faIcon" :class="skill.faIcon" class="text-xl" :style="{ color: skill.color }"></i>
+                    <div v-else-if="skill.iconUrl && skill.iconUrl.includes('simple-icons')"
+                      class="w-full h-full"
+                      :style="{
+                        backgroundColor: skill.color,
+                        mask: `url(${skill.iconUrl}) no-repeat center / contain`,
+                        webkitMask: `url(${skill.iconUrl}) no-repeat center / contain`
+                      }"
+                    ></div>
+                    <img v-else :src="skill.iconUrl || `https://skillicons.dev/icons?i=${skill.slug}`" 
+                      :alt="skill.name" 
+                      class="w-full h-full object-contain" />
+                  </div>
+
+                  <!-- Skill Name next to Icon (Desktop) -->
+                  <h4 class="hidden lg:block text-sm md:text-base font-headline font-black uppercase tracking-tight text-on-surface truncate">
+                    {{ skill.name }}
+                  </h4>
                 </div>
 
-                <!-- Skill Name next to Icon -->
-                <h4 class="text-sm md:text-base font-headline font-black uppercase tracking-tight text-on-surface truncate">
-                  {{ skill.name }}
-                </h4>
+                <!-- Level Label -->
+                <span 
+                  class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-surface border border-primary/5 text-on-surface/60 shrink-0"
+                  :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
+                >
+                  {{ skill.level }}
+                </span>
               </div>
 
-              <!-- Level Label -->
-              <span 
-                class="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded bg-surface border border-primary/5 text-on-surface/60 shrink-0"
-                :class="themeStore.currentStyle === 'brutal' ? 'border-2 border-on-surface' : ''"
-              >
-                {{ skill.level }}
-              </span>
+              <!-- Skill Name in its own row (Mobile/Tablet) -->
+              <h4 class="lg:hidden text-xs sm:text-sm font-headline font-black uppercase tracking-tight text-on-surface truncate">
+                {{ skill.name }}
+              </h4>
             </div>
 
             <!-- Bottom Mini Stats Bar -->

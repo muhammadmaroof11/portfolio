@@ -279,7 +279,7 @@ onBeforeUnmount(() => {
         </div>
 
         <!-- Hero Visual (Overhauled with Live Background Canvas) -->
-        <div class="lg:col-span-5 relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible w-full max-w-[320px] md:max-w-[480px] lg:max-w-[560px] xl:max-w-[620px] mx-auto lg:mx-0">
+        <div class="lg:col-span-5 relative order-1 lg:order-2 flex justify-center lg:justify-end layer-visual group z-30 mb-6 lg:mb-0 overflow-visible w-full max-w-[320px] md:max-w-[480px] lg:max-w-[490px] xl:max-w-[540px] lg:-translate-y-12 xl:-translate-y-16 mx-auto lg:mx-0">
           <!-- Stylistic Backdrop Glow -->
           <div class="absolute inset-0 scale-[1.2] blur-[80px] md:blur-[120px] opacity-40 transition-all duration-1000 z-0"
             :class="[
