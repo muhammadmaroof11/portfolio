@@ -11,7 +11,6 @@ import ThreeDCarousel from '../components/ThreeDCarousel.vue'
 import LivePortraitBackground from '../components/LivePortraitBackground.vue'
 const FuzzyText = defineAsyncComponent(() => import('../components/FuzzyText.vue'))
 import DecryptedText from '../components/DecryptedText.vue'
-import TextPressure from '../components/TextPressure.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
 import SynapticProjectsList from '../components/SynapticProjectsList.vue'
 import meImage from '../assets/me.webp'
