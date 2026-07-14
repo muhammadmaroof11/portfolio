@@ -743,7 +743,7 @@ onBeforeUnmount(() => {
     </section>
 
     <!-- SYSTEMS OPTIMIZATION SIMULATOR -->
-    <section id="simulator" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 max-w-5xl mx-auto relative layer-base scroll-mt-32 gsap-reveal">
+    <section id="simulator" class="mt-8 md:mt-12 max-w-5xl mx-auto relative layer-base scroll-mt-32 gsap-reveal">
       <SystemsSimulator />
     </section>
 
