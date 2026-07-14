@@ -10,6 +10,16 @@ const allProjects = ref(portfolioData.projects)
 // Search and filter state
 const searchQuery = ref('')
 const selectedTech = ref('ALL')
+const selectedChallenge = ref('ALL')
+const filterMode = ref('challenge') // 'challenge' or 'tech'
+
+const challenges = [
+  'ALL',
+  'Automate Operations',
+  'Scale User Growth',
+  'Deploy Agentic AI',
+  'Launch Mobile Products'
+]
 
 // Accordion — all rows expanded by default using a Set of IDs
 const expandedRows = ref(new Set(portfolioData.projects.map(p => p.id)))
@@ -31,8 +41,13 @@ const filteredProjects = computed(() => {
   return allProjects.value.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       p.description.toLowerCase().includes(searchQuery.value.toLowerCase())
-    const matchesTech = selectedTech.value === 'ALL' || p.tech.includes(selectedTech.value)
-    return matchesSearch && matchesTech
+    const matchesTech = filterMode.value === 'tech' && selectedTech.value !== 'ALL'
+      ? p.tech.includes(selectedTech.value)
+      : true
+    const matchesChallenge = filterMode.value === 'challenge' && selectedChallenge.value !== 'ALL'
+      ? p.challenges?.includes(selectedChallenge.value)
+      : true
+    return matchesSearch && matchesTech && matchesChallenge
   })
 })
 </script>
@@ -61,20 +76,60 @@ const filteredProjects = computed(() => {
         </div>
       </div>
 
-      <!-- Tech filter pills — full width new line -->
+      <!-- Filter Mode Selector -->
+      <div class="flex items-center gap-4 text-[10px] font-mono mb-2">
+        <span class="text-on-surface/40 uppercase tracking-wider font-bold">Filter By:</span>
+        <div class="flex gap-2">
+          <button 
+            @click="filterMode = 'challenge'" 
+            class="px-3 py-1 rounded-full border transition-all font-black uppercase text-[8px] tracking-widest active-spring"
+            :class="filterMode === 'challenge' ? 'border-primary text-primary bg-primary/10' : 'border-primary/10 text-on-surface/60 hover:bg-surface-container-high/40'"
+          >
+            Business Challenge
+          </button>
+          <button 
+            @click="filterMode = 'tech'" 
+            class="px-3 py-1 rounded-full border transition-all font-black uppercase text-[8px] tracking-widest active-spring"
+            :class="filterMode === 'tech' ? 'border-primary text-primary bg-primary/10' : 'border-primary/10 text-on-surface/60 hover:bg-surface-container-high/40'"
+          >
+            Technology
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Pills -->
       <div class="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1">
-        <button 
-          v-for="tech in allTechTags.slice(0, 5)" 
-          :key="tech"
-          @click="selectedTech = tech"
-          class="text-[10px] font-black tracking-[0.15em] px-3 py-2 uppercase transition-all duration-300 whitespace-nowrap active-spring"
-          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '0.5rem' }"
-          :class="selectedTech === tech 
-            ? 'bg-primary text-on-primary shadow-lg shadow-primary/15'
-            : 'bg-surface-container-high/30 hover:bg-surface-container-high/70 text-on-surface/60 border border-primary/5'"
-        >
-          {{ tech }}
-        </button>
+        <!-- Challenge Pills -->
+        <template v-if="filterMode === 'challenge'">
+          <button 
+            v-for="ch in challenges" 
+            :key="ch"
+            @click="selectedChallenge = ch"
+            class="text-[10px] font-black tracking-[0.15em] px-3 py-2 uppercase transition-all duration-300 whitespace-nowrap active-spring"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '0.5rem' }"
+            :class="selectedChallenge === ch 
+              ? 'bg-primary text-on-primary shadow-lg shadow-primary/15'
+              : 'bg-surface-container-high/30 hover:bg-surface-container-high/70 text-on-surface/60 border border-primary/5'"
+          >
+            {{ ch }}
+          </button>
+        </template>
+        
+        <!-- Tech Pills -->
+        <template v-else>
+          <button 
+            v-for="tech in allTechTags.slice(0, 8)" 
+            :key="tech"
+            @click="selectedTech = tech"
+            class="text-[10px] font-black tracking-[0.15em] px-3 py-2 uppercase transition-all duration-300 whitespace-nowrap active-spring"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '0.5rem' }"
+            :class="selectedTech === tech 
+              ? 'bg-primary text-on-primary shadow-lg shadow-primary/15'
+              : 'bg-surface-container-high/30 hover:bg-surface-container-high/70 text-on-surface/60 border border-primary/5'"
+          >
+            {{ tech }}
+          </button>
+        </template>
       </div>
     </div>
 

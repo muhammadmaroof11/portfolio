@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
+import { onMounted, ref, nextTick, onBeforeUnmount, computed } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code, User, Target } from 'lucide-vue-next'
@@ -33,6 +33,66 @@ const offeredServicesRef = ref(null)
 const projectsRef = ref(null)
 const aboutRef = ref(null)
 const viewRoot = ref(null)
+
+const adventures = [
+  { id: 'default', label: 'All-Rounder' },
+  { id: 'ai', label: 'AI & Agents' },
+  { id: 'web', label: 'Scalable Systems' },
+  { id: 'mobile', label: 'Mobile Apps' }
+]
+const activeAdventure = ref('default')
+const getAdventureText = computed(() => {
+  switch (activeAdventure.value) {
+    case 'ai':
+      return "Orchestrating intelligent agents, custom LLM configurations, and automated n8n pipeline workflows to build future-proof AI systems."
+    case 'web':
+      return "Designing robust, high-throughput backend controllers and responsive client interfaces that scale seamlessly under heavy workloads."
+    case 'mobile':
+      return "Developing premium cross-platform mobile apps with Capacitor and Flutter that deliver smooth, native performance."
+    default:
+      return "Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures."
+  }
+})
+
+// Metrics cycling state
+const metrics = [
+  { value: 250, suffix: 'K+', label: 'Users Served' },
+  { value: 30, suffix: '%', label: 'Hosting Cost Cut' },
+  { value: 99.9, decimals: 1, suffix: '%', label: 'System SLA Uptime' }
+]
+const activeMetricIdx = ref(0)
+const metricVal = ref(0)
+let metricInterval = null
+
+const animateMetricNumber = (targetVal) => {
+  const currentObj = { val: 0 }
+  gsap.to(currentObj, {
+    val: targetVal,
+    duration: 1.2,
+    ease: 'power2.out',
+    onUpdate: () => {
+      metricVal.value = metrics[activeMetricIdx.value].decimals 
+        ? currentObj.val.toFixed(1) 
+        : Math.round(currentObj.val)
+    }
+  })
+}
+
+// Testimonials data
+const testimonials = [
+  {
+    metric: '30% Server Cost Reduction',
+    quote: 'Maroof audited our Node.js systems, refactored our caching layer, and optimized our database queries, reducing our hosting bill overnight.',
+    author: 'Alex Carter',
+    role: 'CTO, Bytely.ai'
+  },
+  {
+    metric: '0 to 10k Users in 3 Months',
+    quote: 'Thanks to the Capacitor-based mobile layout and Supabase real-time Dispatch core Maroof architected, our delivery app launched smoothly and scaled without hiccups.',
+    author: 'Sara Chen',
+    role: 'Founder, FoodLink'
+  }
+]
 
 onMounted(async () => {
   await nextTick()
@@ -165,6 +225,12 @@ onMounted(async () => {
     }
   })
 
+  animateMetricNumber(metrics[activeMetricIdx.value].value)
+  metricInterval = setInterval(() => {
+    activeMetricIdx.value = (activeMetricIdx.value + 1) % metrics.length
+    animateMetricNumber(metrics[activeMetricIdx.value].value)
+  }, 4500)
+
   resizeHandler = () => {
     isDesktop.value = window.innerWidth >= 1024
   }
@@ -189,6 +255,9 @@ const offeredServices = [
 onBeforeUnmount(() => {
   if (resizeHandler) {
     window.removeEventListener('resize', resizeHandler)
+  }
+  if (metricInterval) {
+    clearInterval(metricInterval)
   }
   // Kill all triggers – safe because no other view is mounted yet.
   ScrollTrigger.getAll().forEach(t => t.kill())
@@ -243,13 +312,29 @@ onBeforeUnmount(() => {
             </span>
           </h1>
           
-          <p class="gsap-reveal text-base md:text-xl text-on-surface-variant max-w-lg mb-8 md:mb-10 leading-relaxed font-body font-medium">
+          <!-- Choose Your Own Adventure pills -->
+          <div class="gsap-reveal flex flex-wrap gap-1.5 mb-5 max-w-lg">
+            <button 
+              v-for="adv in adventures" 
+              :key="adv.id"
+              @click="activeAdventure = adv.id"
+              class="px-2.5 py-1.5 text-[8px] md:text-[9px] font-mono font-bold uppercase tracking-widest rounded-full border transition-all active-spring"
+              :class="activeAdventure === adv.id 
+                ? 'bg-primary text-on-primary border-primary shadow-md shadow-primary/10' 
+                : 'bg-surface-container-high/30 text-on-surface/50 border-primary/5 hover:bg-surface-container-high/60 hover:text-on-surface'"
+            >
+              {{ adv.label }}
+            </button>
+          </div>
+
+          <p class="gsap-reveal text-base md:text-xl text-on-surface-variant max-w-lg mb-8 md:mb-10 leading-relaxed font-body font-medium min-h-[70px]">
             <DecryptedText 
-              text="Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures." 
+              :key="activeAdventure"
+              :text="getAdventureText" 
               animateOn="view"
               :sequential="true"
               revealDirection="start"
-              :speed="15"
+              :speed="8"
               className="text-on-surface-variant font-medium"
               encryptedClassName="text-primary font-mono opacity-80"
             />
@@ -275,6 +360,28 @@ onBeforeUnmount(() => {
               Curriculum Vitae <Download class="w-4 h-4 inline-block ml-3 group-hover:-translate-y-1 transition-transform" />
             </a>
           </div>
+
+          <!-- AI Certification Callout -->
+          <div 
+            @click="() => {
+              const el = document.getElementById('work')
+              if (el) el.scrollIntoView({ behavior: 'smooth' })
+            }"
+            class="gsap-reveal mt-6 inline-flex items-center gap-3 px-4 py-2.5 rounded-xl border border-primary/20 bg-surface-container-low/80 backdrop-blur-md max-w-md shadow-lg group/cert hover:border-primary/50 transition-all cursor-pointer pointer-events-auto"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+            :class="{ 'brutal-card bg-surface': themeStore.currentStyle === 'brutal' }"
+          >
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <div class="flex-1 text-left">
+              <span class="block text-[8px] font-mono text-primary font-black uppercase tracking-widest leading-none mb-1">LIVE INTEL // CERTIFIED AGENTIC AI</span>
+              <p class="text-[10px] font-body font-semibold text-on-surface-variant leading-tight">
+                Built autonomous voice-calling agents & n8n pipeline integrations. <span class="text-primary font-black hover:underline">See project specs →</span>
+              </p>
+            </div>
+          </div>
         </div>
 
         <!-- Hero Visual (Overhauled with Live Background Canvas) -->
@@ -289,8 +396,8 @@ onBeforeUnmount(() => {
 
           <LivePortraitBackground />
 
-          <!-- Floating Counter Metric Card -->
-          <div class="absolute bottom-2 sm:bottom-4 md:bottom-8 lg:-bottom-8 right-2 sm:right-4 md:right-8 lg:right-auto lg:-left-12 p-3 md:p-4 lg:p-6 shadow-3xl w-max max-w-[95vw] lg:max-w-[240px] lg:w-full transition-all duration-700 hover:-translate-y-4 z-20 flex flex-row lg:block items-center gap-3 lg:gap-0"
+          <!-- Floating Dynamic Metric Card -->
+          <div class="absolute bottom-2 sm:bottom-4 md:bottom-8 lg:-bottom-8 right-2 sm:right-4 md:right-8 lg:right-auto lg:-left-12 p-3 md:p-4 lg:p-6 shadow-3xl w-[220px] transition-all duration-700 hover:-translate-y-4 z-20 flex flex-row lg:block items-center gap-3 lg:gap-0"
             v-tilt="{ max: 15, scale: 1.05 }"
             :style="{ borderRadius: 'calc(var(--app-radius) / 1.5)' }"
             :class="[
@@ -298,11 +405,12 @@ onBeforeUnmount(() => {
               themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
               'bg-surface/90 backdrop-blur-md border border-primary/20 text-on-surface'
             ]">
-            <div class="text-3xl sm:text-4xl lg:text-5xl font-headline font-black text-primary leading-none lg:mb-2 italic"
-              :class="{ 'street-fx-radiant !not-italic': themeStore.currentStyle === 'street' }">10+</div>
-            <div class="text-[7px] sm:text-[8px] lg:text-[8px] font-black uppercase tracking-[0.1em] lg:tracking-[0.3em] leading-tight opacity-70 lg:opacity-60 text-on-surface text-left">
-              <span class="lg:hidden">Enterprise Ready<br />Implementations</span>
-              <span class="hidden lg:inline">Enterprise Ready Implementations</span>
+            <div class="text-3xl sm:text-4xl lg:text-5xl font-headline font-black text-primary leading-none lg:mb-2 italic w-28 lg:w-auto text-left"
+              :class="{ 'street-fx-radiant !not-italic': themeStore.currentStyle === 'street' }">
+              {{ metricVal }}{{ metrics[activeMetricIdx].suffix }}
+            </div>
+            <div class="text-[7px] sm:text-[8px] lg:text-[8px] font-black uppercase tracking-[0.1em] leading-tight opacity-70 lg:opacity-60 text-on-surface text-left">
+              {{ metrics[activeMetricIdx].label }}
             </div>
           </div>
         </div>
@@ -508,6 +616,68 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
+    <!-- THE QUANTUM METHODOLOGY & PROBLEM-SOLUTION NARRATIVE -->
+    <section id="methodology" class="mt-24 md:mt-32 lg:mt-40 relative layer-base scroll-mt-32">
+      <div class="mb-12 md:mb-20 text-center">
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">OPERATIONAL PROTOCOL</span>
+        <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
+          THE QUANTUM <span class="text-primary italic">PROTOCOL</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+        <!-- Left Column: The 5-Step Methodology Steps -->
+        <div class="lg:col-span-6 flex flex-col gap-6 text-left">
+          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// 5-STAGE PIPELINE</div>
+          
+          <div v-for="(step, idx) in [
+            { num: '01', title: 'Deep Audit', desc: 'Bottleneck profiling, architectural sanity checking, and complete code dependencies security mapping.' },
+            { num: '02', title: 'AI Synthesis', desc: 'Feasibility engineering for integrating autonomous agent pipelines, vector databases, and custom LLM workflows.' },
+            { num: '03', title: 'Architectural Blueprint', desc: 'Designing low-latency caching schemas, high-throughput message queues, and API routing layouts.' },
+            { num: '04', title: 'Rigorous Execution', desc: 'Writing clean, test-driven code using Vue/React/Node.js/Python following strict Git revisioning standards.' },
+            { num: '05', title: 'Telemetry & Scale', desc: 'Continuous performance profiling, sub-second load optimizations, and secure Docker cloud deployment.' }
+          ]" :key="step.num"
+            class="p-5 border border-primary/10 bg-surface-container-low/40 hover:bg-surface-container-low/80 backdrop-blur-md rounded-2xl group transition-all duration-300 hover:border-primary/40 cursor-default"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+            :class="themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : themeStore.currentStyle === 'street' ? 'street-card' : ''">
+            <div class="flex items-start gap-4">
+              <span class="font-mono font-black text-xs text-primary bg-primary/10 px-2 py-1 rounded">{{ step.num }}</span>
+              <div>
+                <h3 class="font-headline font-black text-sm md:text-base uppercase tracking-wider text-on-surface mb-1">{{ step.title }}</h3>
+                <p class="text-on-surface-variant text-xs font-body font-medium leading-relaxed opacity-80">{{ step.desc }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Problem & Solution Accordion -->
+        <div class="lg:col-span-6 flex flex-col gap-6 text-left">
+          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// PROBLEM RESOLUTION DIRECTIVE</div>
+          
+          <div v-for="(ps, idx) in [
+            { prob: 'Outgrowing legacy unscalable backends and database throttling.', sol: 'Developing low-latency Redis/Supabase caching and indexing strategies to handle millions of transactions.' },
+            { prob: 'Wasting developer and ops hours on repetitive manual tasks.', sol: 'Designing autonomous voice calling agent agents and custom n8n headless background automation workflows.' },
+            { prob: 'Laggy user interfaces driving customer churn.', sol: 'Optimizing asset bundle size, running CSS payloads updates, and scripting fluid custom GSAP animations.' }
+          ]" :key="idx"
+            class="p-5 border border-primary/10 bg-surface-container-low/40 rounded-2xl transition-all duration-300"
+            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+            :class="themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : themeStore.currentStyle === 'street' ? 'street-card' : ''">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-start gap-2">
+                <span class="font-mono font-black text-[9px] text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">PAIN POINT</span>
+                <p class="text-xs font-body font-bold text-on-surface leading-snug">{{ ps.prob }}</p>
+              </div>
+              <div class="h-px bg-on-surface/5 my-1"></div>
+              <div class="flex items-start gap-2">
+                <span class="font-mono font-black text-[9px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">RESOLUTION</span>
+                <p class="text-xs font-body font-medium text-emerald-500 leading-snug">{{ ps.sol }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- SPECIALIZED SERVICES (3D CAROUSEL) -->
     <section id="services" ref="offeredServicesRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 mb-24 md:mb-32 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
@@ -605,6 +775,46 @@ onBeforeUnmount(() => {
        </div>
     </section>
 
+    <!-- OUTCOME-DRIVEN TESTIMONIALS -->
+    <section id="testimonials" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 relative layer-base scroll-mt-32">
+      <div class="mb-12 md:mb-20 text-center">
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">CLIENT DEBRIEFING</span>
+        <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
+          IMPACT <span class="text-primary italic">TESTIMONIALS</span>
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div v-for="t in testimonials" :key="t.author"
+          class="p-8 border border-primary/10 bg-surface-container-low/40 rounded-3xl text-left flex flex-col justify-between"
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+          :class="themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : themeStore.currentStyle === 'street' ? 'street-card' : ''">
+          
+          <div>
+            <!-- Big Bold Metric Outlier -->
+            <div class="text-primary font-headline font-black text-xl md:text-2xl tracking-wide mb-4 uppercase border-b border-primary/10 pb-3 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-primary"></span>
+              {{ t.metric }}
+            </div>
+            
+            <p class="text-on-surface-variant font-body font-medium text-sm md:text-base leading-relaxed italic mb-6">
+              "{{ t.quote }}"
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 pt-4 border-t border-on-surface/5 font-mono">
+            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-headline font-black text-xs text-primary uppercase">
+              {{ t.author[0] }}
+            </div>
+            <div>
+              <span class="block font-black text-[10px] uppercase text-on-surface leading-none mb-1">{{ t.author }}</span>
+              <span class="block text-[8px] text-on-surface-variant/70 leading-none">{{ t.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CALL TO ACTION -->
     <section class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 text-center pb-16 md:pb-24 layer-base">
         <div class="cta-box p-10 md:p-20 relative overflow-hidden group shadow-3xl transition-all duration-1000"
@@ -612,7 +822,17 @@ onBeforeUnmount(() => {
             themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
             themeStore.currentStyle === 'street' ? 'street-card bg-surface rotate-1' : 'bg-surface-container-low border border-primary/20 rounded-[2.5rem] md:rounded-[4rem]'
           ]">
-           <div class="relative z-10">
+           <div class="relative z-10 flex flex-col items-center">
+             
+             <!-- Availability and Urgency indicator -->
+             <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-primary/25 bg-surface-container-low/90 backdrop-blur-md mb-8 text-[9px] md:text-[10px] font-mono tracking-wider text-on-surface max-w-xs mx-auto">
+               <span class="relative flex h-2 w-2">
+                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+               </span>
+               <span>AVAILABILITY: Q3 2026 // ONLY 2 SLOTS LEFT</span>
+             </div>
+
              <h3 class="font-headline text-3xl md:text-5xl lg:text-6xl xl:text-8xl font-black mb-8 md:mb-12 tracking-tighter uppercase leading-[0.9] md:leading-[0.85] text-on-surface text-balance"
                :class="{ 'street-fx-glow text-surface': themeStore.currentStyle === 'street' }">
                READY TO ARCHITECT<br/>YOUR <span class="text-primary italic underline decoration-wavy underline-offset-8" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">NEXT MILESTONE?</span>

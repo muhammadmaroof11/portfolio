@@ -10,7 +10,24 @@ import TextPressure from './TextPressure.vue'
 gsap.registerPlugin(ScrollTrigger)
 
 const themeStore = useThemeStore()
-const projects = ref(portfolioData.projects)
+const selectedChallenge = ref('ALL')
+const challenges = [
+  'ALL',
+  'Automate Operations',
+  'Scale User Growth',
+  'Deploy Agentic AI',
+  'Launch Mobile Products'
+]
+
+const projects = computed(() => {
+  if (selectedChallenge.value === 'ALL') return portfolioData.projects
+  return portfolioData.projects.filter(p => p.challenges?.includes(selectedChallenge.value))
+})
+
+const activeProjectViews = ref({}) // mapping project ID -> 'overview' or 'blueprint'
+const toggleProjectView = (id) => {
+  activeProjectViews.value[id] = activeProjectViews.value[id] === 'blueprint' ? 'overview' : 'blueprint'
+}
 
 const containerRef = ref(null)
 const pinnedRef = ref(null)
@@ -76,6 +93,7 @@ const scrambleActiveTitle = (targetText) => {
 
 // Compute active index
 const activeIndex = computed(() => {
+  if (projects.value.length === 0) return 0
   const index = Math.floor(scrollProgress.value * projects.value.length)
   return Math.min(index, projects.value.length - 1)
 })
@@ -93,6 +111,15 @@ watch(activeIndex, (newVal) => {
     telemetrySignal.value = parseFloat((95 + Math.random() * 4.9).toFixed(1))
   }
 }, { immediate: true })
+
+watch(selectedChallenge, () => {
+  nextTick(() => {
+    updateDimensions()
+    if (scrollTriggerInstance) {
+      scrollTriggerInstance.refresh()
+    }
+  })
+})
 
 // ─── NEURAL MESH ENGINE ──────────────────────────────────────────
 const NODE_COUNT = 72
@@ -759,11 +786,26 @@ onBeforeUnmount(() => {
     <!-- ===== MOBILE / TABLET: Scrollable project cards (no heavy animation) ===== -->
     <div class="lg:hidden px-4 sm:px-6 md:px-10 pb-12">
       <!-- Section heading -->
-      <div class="text-center mb-8 mt-12 md:mt-16">
+      <div class="text-center mb-4 mt-12 md:mt-16">
         <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
         <div class="h-[1.5px] mt-3 rounded-full mx-auto animate-pulse"
           :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '60px' }"
         />
+      </div>
+
+      <!-- Mobile Challenge Filter Pills -->
+      <div class="flex items-center justify-center gap-1.5 overflow-x-auto scrollbar-none py-2 mb-6 max-w-full">
+        <button 
+          v-for="ch in challenges" 
+          :key="ch"
+          @click="selectedChallenge = ch"
+          class="text-[8px] sm:text-[9px] font-black tracking-[0.12em] px-3 py-1.5 uppercase transition-all duration-300 whitespace-nowrap active-spring rounded-full border shrink-0"
+          :class="selectedChallenge === ch 
+            ? 'bg-primary text-on-primary border-primary shadow-md shadow-primary/10'
+            : 'bg-surface-container-high/30 text-on-surface/60 border-primary/5 hover:bg-surface-container-high/60'"
+        >
+          {{ ch }}
+        </button>
       </div>
 
       <!-- Scrollable card grid (Merged Card + Archive layout for Mobile & Tablet) -->
@@ -827,10 +869,43 @@ onBeforeUnmount(() => {
               >{{ tag }}</span>
             </div>
 
+            <!-- Description / Blueprint View Switcher -->
+            <div class="flex items-center gap-3 mb-3 border-b border-on-surface/5 pb-1.5 text-[8px] font-mono">
+              <button 
+                @click="activeProjectViews[project.id] = 'overview'" 
+                class="uppercase tracking-widest font-black active-spring"
+                :class="activeProjectViews[project.id] !== 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+              >Overview</button>
+              <span class="text-on-surface/20">|</span>
+              <button 
+                @click="activeProjectViews[project.id] = 'blueprint'" 
+                class="uppercase tracking-widest font-black flex items-center gap-1 active-spring"
+                :class="activeProjectViews[project.id] === 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+              >
+                Blueprint <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse inline-block"></span>
+              </button>
+            </div>
+
             <!-- Description -->
-            <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-85 mb-4 flex-1">
+            <p v-if="activeProjectViews[project.id] !== 'blueprint'" class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-85 mb-4 flex-1">
               {{ project.description }}
             </p>
+
+            <!-- Blueprint View -->
+            <div v-else class="flex flex-col gap-1.5 mb-4 text-left font-mono text-[8px] flex-1">
+              <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40">
+                <span class="text-primary font-black block">⚡ AI CORE:</span>
+                <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ai }}</span>
+              </div>
+              <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40">
+                <span class="text-primary font-black block">⚙️ SCALE LAYER:</span>
+                <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.scalability }}</span>
+              </div>
+              <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40">
+                <span class="text-primary font-black block">👁️ UX INTERFACE:</span>
+                <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ux }}</span>
+              </div>
+            </div>
 
             <!-- Year + CTA -->
             <div class="flex items-center justify-between mt-auto">
@@ -863,6 +938,22 @@ onBeforeUnmount(() => {
     <!-- Pinned viewport container with calc(100vh - 80px) to clear navbar -->
     <div ref="pinnedRef" class="hidden lg:flex pinned-container h-[calc(100vh-80px)] w-full relative items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
       
+      <!-- Desktop Challenge Filter Deck (High-Tech HUD sidebar/panel look) -->
+      <div class="absolute top-6 left-6 z-40 flex flex-col gap-2 pointer-events-auto bg-surface-container-low/80 backdrop-blur-md border border-primary/15 p-3 rounded-xl max-w-[170px] text-left">
+        <span class="text-[7px] font-mono text-primary font-black uppercase tracking-wider block mb-1">// CHALLENGE SELECTOR</span>
+        <div class="flex flex-col gap-1">
+          <button 
+            v-for="ch in challenges" 
+            :key="ch"
+            @click="selectedChallenge = ch"
+            class="text-left text-[8px] font-mono font-bold tracking-widest px-2.5 py-1.5 rounded transition-all uppercase leading-tight active-spring border border-transparent"
+            :class="selectedChallenge === ch ? 'bg-primary text-on-primary font-black' : 'text-on-surface/60 hover:bg-surface-container-high/40 hover:text-on-surface'"
+          >
+            {{ ch }}
+          </button>
+        </div>
+      </div>
+
       <!-- Section Heading inside the pinned screen-locked container -->
       <div class="absolute top-6 md:top-24 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
         <div class="relative h-[30px] md:h-[45px] lg:h-[50px] xl:h-[55px] w-full flex items-center justify-center max-w-[700px]">
@@ -1058,10 +1149,43 @@ onBeforeUnmount(() => {
                   </span>
                 </div>
 
+                <!-- Description / Blueprint View Switcher -->
+                <div class="flex items-center gap-2.5 mb-2 border-b border-on-surface/5 pb-1.5 text-[9px] font-mono">
+                  <button 
+                    @click="activeProjectViews[project.id] = 'overview'" 
+                    class="uppercase tracking-widest font-black active-spring"
+                    :class="activeProjectViews[project.id] !== 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+                  >Overview</button>
+                  <span class="text-on-surface/20">|</span>
+                  <button 
+                    @click="activeProjectViews[project.id] = 'blueprint'" 
+                    class="uppercase tracking-widest font-black flex items-center gap-1 active-spring"
+                    :class="activeProjectViews[project.id] === 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+                  >
+                    Blueprint <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse inline-block"></span>
+                  </button>
+                </div>
+
                 <!-- Description -->
-                <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-90 max-w-sm">
+                <p v-if="activeProjectViews[project.id] !== 'blueprint'" class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-90 max-w-sm">
                   {{ project.description }}
                 </p>
+
+                <!-- Blueprint View -->
+                <div v-else class="flex flex-col gap-1.5 mb-2 text-left font-mono text-[8px] max-w-sm">
+                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
+                    <span class="text-primary font-black block">⚡ AI CORE:</span>
+                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ai }}</span>
+                  </div>
+                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
+                    <span class="text-primary font-black block">⚙️ SCALE LAYER:</span>
+                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.scalability }}</span>
+                  </div>
+                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
+                    <span class="text-primary font-black block">👁️ UX INTERFACE:</span>
+                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ux }}</span>
+                  </div>
+                </div>
               </div>
 
               <div>

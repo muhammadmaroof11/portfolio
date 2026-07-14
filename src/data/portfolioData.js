@@ -34,6 +34,12 @@ export const portfolioData = {
       title: 'FOODLINK',
       description: 'Gourmet logistics platform with a multi-portal mobile and web ecosystem powered by Capacitor & Vue 3. Features a real-time reactive Supabase database, high-throughput routing algorithms, geo-tracking coordination, and a low-latency cache layer for rapid delivery syncing.',
       tech: ['Vue 3', 'Supabase', 'Capacitor', 'Tailwind'],
+      challenges: ['Scale User Growth', 'Launch Mobile Products'],
+      blueprint: {
+        ai: 'Supabase real-time triggers and automated dispatch routing based on geo-locations.',
+        scalability: 'Low-latency caching rules and indexed database schemas to sustain peak traffic.',
+        ux: 'Unified cross-platform interfaces packaged via Capacitor, maintaining high-fps map tracking.'
+      },
       image: '/projects/foodlink.png',
       link: 'https://foodlinkglobal.netlify.app/',
       featured: true,
@@ -44,6 +50,12 @@ export const portfolioData = {
       title: 'BYTELY CALLING AGENT',
       description: 'AI voice conversational calling agent featuring low-latency response processing, real-time pipeline monitoring, and high-frequency webhook integrations. Integrates agent orchestration, call logs analytics, and telemetry visualization into a streamlined Vue/Pinia dashboard.',
       tech: ['Vue.js', 'Pinia', 'JavaScript', 'Tailwind CSS'],
+      challenges: ['Automate Operations', 'Deploy Agentic AI'],
+      blueprint: {
+        ai: 'Asynchronous streaming response handler for voice agents and multi-prompt contextual routers.',
+        scalability: 'High-frequency webhook queues built to handle concurrent connection webhooks.',
+        ux: 'Real-time telemetry dashboards showing call-state graphs via Pinia store synchronization.'
+      },
       image: '/projects/calling-agent.webp',
       link: '#',
       hoverText: 'Active Demo',
@@ -55,6 +67,12 @@ export const portfolioData = {
       title: 'BYTELYAI',
       description: 'Enterprise-grade SaaS artificial intelligence platform focused on secure code generation, LLM orchestrations, and context-aware code analysis. Developed with high-fidelity GSAP scroll timelines, Framer Motion layouts, and responsive state synchronization via Zustand.',
       tech: ['React', 'Vite', 'GSAP', 'Framer Motion', 'Zustand', 'Axios'],
+      challenges: ['Scale User Growth', 'Deploy Agentic AI'],
+      blueprint: {
+        ai: 'LangChain context parsing pipelines and secure sandboxed code execution endpoints.',
+        scalability: 'Zustand state synchronization layer coordinating multi-agent feedback streams.',
+        ux: 'High-fidelity cinematic transitions using custom GSAP timelines and responsive CSS grid architectures.'
+      },
       image: '/projects/bytely.png',
       link: 'https://bytely.ai/',
       featured: true,
@@ -65,6 +83,12 @@ export const portfolioData = {
       title: 'CryptoAnalyzer',
       description: 'DeFi financial dashboard integrating real-time CoinGecko API data feeds with Python data processing pipelines. Renders responsive statistical tracking, asset performance metrics, and advanced charting inspired by clean Matplotlib designs for trading desks.',
       tech: ['MERN Stack', 'Python', 'CoinGecko API', 'Matplotlib'],
+      challenges: ['Automate Operations', 'Scale User Growth'],
+      blueprint: {
+        ai: 'Python statistical modeling routines parsing live trading patterns and market metrics.',
+        scalability: 'Express API query throttle handlers ensuring data synchronization and rate-limit safety.',
+        ux: 'Highly responsive trading widgets rendering real-time asset performance diagrams.'
+      },
       image: '/projects/crypto.png',
       link: 'https://crypto-analyze-proj.netlify.app/',
       featured: true,
@@ -75,6 +99,12 @@ export const portfolioData = {
       title: 'MENTAIRO',
       description: 'Secure health platform incorporating Agora SDK for high-fidelity, low-latency video consultations. Features end-to-end encrypted chat channels, real-time socket connections, robust Firebase auth, and custom state synchronization for secure client-physician sessions.',
       tech: ['Flutter', 'Firebase', 'Agora SDK'],
+      challenges: ['Launch Mobile Products', 'Scale User Growth'],
+      blueprint: {
+        ai: 'Rule-based scheduling agents and secure document upload/verification processes.',
+        scalability: 'Agora low-latency video gateways integrated with secure Firestore security rules.',
+        ux: 'Polished client/physician messaging app built natively with Flutter widgets.'
+      },
       image: '/projects/mentairo.jpeg',
       link: '#',
       hoverText: 'Coming Soon',
@@ -86,6 +116,12 @@ export const portfolioData = {
       title: 'EZI SERVICES',
       description: 'High-performance blog system and content engine. Developed with Node.js and Express backend controllers, built-in server-side caching, and structured schema markup to optimize lighthouse metrics and achieve maximum search engine presence.',
       tech: ['Vue.js', 'Node.js', 'Express', 'SEO'],
+      challenges: ['Scale User Growth'],
+      blueprint: {
+        ai: 'Auto-generated semantic schema markups helping search engines index complex topic clusters.',
+        scalability: 'Node.js/Express server-side response caching to minimize CPU load and page response times.',
+        ux: 'Optimized static-like rendering achieving perfect Lighthouse performance scores.'
+      },
       image: '/projects/ezi.png',
       featured: false,
       year: '2025'
