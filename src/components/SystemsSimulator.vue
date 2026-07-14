@@ -21,21 +21,21 @@ const reclaimedHours = computed(() => Math.round(manualHours.value * 0.85))
 const operationalBlueprint = computed(() => {
   if (monthlyCloudSpend.value > 3000 || apiLatency.value > 800) {
     return {
-      title: "PROPRIETARY PIPELINE RE-ARCHITECTING",
-      stack: "Varnish Cache // Redis Sentinel // Supabase Index Tuning",
-      details: "Your system configuration requires structural query isolation and database cache proxy layers to bypass core thread throttling."
+      title: "DATABASE & SERVER OPTIMIZATION",
+      stack: "Database Indexing // Server-Side Caching // Load Balancing",
+      details: "We will optimize your database queries and set up fast server caching to prevent slow loading, slash hosting bills, and handle more concurrent users."
     }
   } else if (manualHours.value > 20) {
     return {
-      title: "AGENTIC WORKFLOW DEPLOYMENT",
-      stack: "n8n Workflow Engine // LangChain Agent Routers // Vector DB",
-      details: "High automated routing capabilities will reduce operations overhead by implementing autonomous process triggers."
+      title: "CUSTOM TASK AUTOMATION",
+      stack: "Automated Workflows // AI Helpers // API Integrations",
+      details: "We will set up automated pipelines to handle repetitive manual tasks, saving your team hours of work every week."
     }
   } else {
     return {
-      title: "HYBRID SYSTEM DEPLOYMENT",
-      stack: "Node.js Controller Refactor // Capacitor Native Sync // Indexed DB",
-      details: "General performance tuning: optimizing front-end payload delivery and database indexing schedules."
+      title: "FAST WEB & MOBILE DEPLOYMENT",
+      stack: "Optimized Code // Fast Loading // Clean User Experience",
+      details: "We will build a high-performance website or mobile app optimized for speed and designed to convert visitors into customers."
     }
   }
 })
@@ -62,8 +62,8 @@ const operationalBlueprint = computed(() => {
         <Calculator class="w-5 h-5 text-primary" />
       </div>
       <div>
-        <span class="block font-mono text-[9px] text-primary font-black uppercase tracking-[0.2em] leading-none mb-1">SIMULATION ENGINE // ROI CALCULATOR</span>
-        <h3 class="font-headline font-black text-lg md:text-xl uppercase tracking-tight text-on-surface">SYSTEMS OPTIMIZATION SIMULATOR</h3>
+        <span class="block font-mono text-[9px] text-primary font-black uppercase tracking-[0.2em] leading-none mb-1">ESTIMATE YOUR SAVINGS & SPEED</span>
+        <h3 class="font-headline font-black text-lg md:text-xl uppercase tracking-tight text-on-surface">PROJECT VALUE CALCULATOR</h3>
       </div>
     </div>
 
@@ -73,7 +73,7 @@ const operationalBlueprint = computed(() => {
         <!-- Monthly Cloud Spend Slider -->
         <div class="flex flex-col gap-2.5">
           <div class="flex justify-between items-baseline font-headline font-black text-xs md:text-sm uppercase tracking-wide text-on-surface">
-            <span>MONTHLY INFRASTRUCTURE SPEND</span>
+            <span>MONTHLY SERVER & CLOUD COST</span>
             <span class="text-primary font-mono">${{ monthlyCloudSpend.toLocaleString() }}</span>
           </div>
           <input 
@@ -89,7 +89,7 @@ const operationalBlueprint = computed(() => {
         <!-- API Latency Slider -->
         <div class="flex flex-col gap-2.5">
           <div class="flex justify-between items-baseline font-headline font-black text-xs md:text-sm uppercase tracking-wide text-on-surface">
-            <span>AVERAGE API RESPONSE TIME</span>
+            <span>AVERAGE WEBSITE LOADING SPEED</span>
             <span class="text-primary font-mono">{{ apiLatency }}ms</span>
           </div>
           <input 
@@ -105,7 +105,7 @@ const operationalBlueprint = computed(() => {
         <!-- Manual Work Hours Slider -->
         <div class="flex flex-col gap-2.5">
           <div class="flex justify-between items-baseline font-headline font-black text-xs md:text-sm uppercase tracking-wide text-on-surface">
-            <span>MANUAL OPERATIONS / WEEK</span>
+            <span>MANUAL WORK HOURS SPENT / WEEK</span>
             <span class="text-primary font-mono">{{ manualHours }} Hours</span>
           </div>
           <input 
@@ -129,7 +129,7 @@ const operationalBlueprint = computed(() => {
           >
             <div class="flex items-center gap-1.5 text-on-surface-variant text-[9px] font-mono uppercase tracking-widest mb-1">
               <DollarSign class="w-3.5 h-3.5 text-primary" />
-              ANNUAL SAVINGS
+              PROJECTED ANNUAL SAVINGS
             </div>
             <div class="font-headline font-black text-lg md:text-2xl text-primary italic">
               ${{ yearlySavings.toLocaleString() }}
@@ -142,7 +142,7 @@ const operationalBlueprint = computed(() => {
           >
             <div class="flex items-center gap-1.5 text-on-surface-variant text-[9px] font-mono uppercase tracking-widest mb-1">
               <Cpu class="w-3.5 h-3.5 text-primary" />
-              API RESPONSE TIME
+              PROJECTED LOADING SPEED
             </div>
             <div class="font-headline font-black text-lg md:text-2xl text-primary italic">
               {{ optimizedLatency }}ms <span class="text-[10px] text-emerald-500 font-mono tracking-tight">-{{ latencyReduction }}ms</span>
@@ -155,7 +155,7 @@ const operationalBlueprint = computed(() => {
           >
             <div class="flex items-center gap-1.5 text-on-surface-variant text-[9px] font-mono uppercase tracking-widest mb-1">
               <Clock class="w-3.5 h-3.5 text-primary" />
-              RECLAIMED STAFF TIME
+              RECLAIMED TEAM TIME
             </div>
             <div class="font-headline font-black text-lg md:text-2xl text-primary italic">
               {{ reclaimedHours }} HOURS / WEEK <span class="text-xs text-emerald-500 font-sans tracking-tight font-bold">(-85% Ops Overhead)</span>
@@ -170,7 +170,7 @@ const operationalBlueprint = computed(() => {
         >
           <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary/10 text-primary font-mono text-[8px] font-black uppercase tracking-wider mb-2 leading-none">
             <ShieldCheck class="w-3 h-3" />
-            RECOMMENDED AUDIT PATHWAY
+            RECOMMENDED ACTION PLAN
           </span>
           <h4 class="font-headline font-black text-xs md:text-sm uppercase tracking-wide text-on-surface mb-1">
             {{ operationalBlueprint.title }}
@@ -189,7 +189,7 @@ const operationalBlueprint = computed(() => {
             to="/contact" 
             class="font-headline font-black text-xs text-primary uppercase tracking-widest inline-flex items-center gap-2 group hover:underline"
           >
-            DISCUSS SYSTEM SPECS
+            TALK ABOUT YOUR PROJECT
             <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </router-link>
         </div>

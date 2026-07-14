@@ -36,9 +36,9 @@ const aboutRef = ref(null)
 const viewRoot = ref(null)
 
 const adventures = [
-  { id: 'default', label: 'All-Rounder' },
-  { id: 'ai', label: 'AI & Agents' },
-  { id: 'web', label: 'Scalable Systems' },
+  { id: 'default', label: 'Web Developer' },
+  { id: 'ai', label: 'AI & Automations' },
+  { id: 'web', label: 'Fast Databases' },
   { id: 'mobile', label: 'Mobile Apps' }
 ]
 const activeAdventure = ref('default')
@@ -48,9 +48,9 @@ const getAdventureText = computed(() => {
 
 // Metrics cycling state
 const metrics = [
-  { value: 250, suffix: 'K+', label: 'Users Served' },
-  { value: 30, suffix: '%', label: 'Hosting Cost Cut' },
-  { value: 99.9, decimals: 1, suffix: '%', label: 'System SLA Uptime' }
+  { value: 250, suffix: 'K+', label: 'Active Users Served' },
+  { value: 30, suffix: '%', label: 'Server Costs Saved' },
+  { value: 99.9, decimals: 1, suffix: '%', label: 'Uptime Maintained' }
 ]
 const activeMetricIdx = ref(0)
 const metricVal = ref(0)
@@ -315,7 +315,7 @@ onBeforeUnmount(() => {
                 themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-primary text-on-primary' : 
                 'bg-gradient-to-br from-primary to-primary-dim text-on-primary hover:scale-[1.05] shadow-primary/20'
               ]" v-ripple>
-              Contact Me <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-2" />
+              Let's Work Together <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-2" />
             </router-link>
             <a href="/Muhammad_Maroof_CV.pdf" download="Muhammad_Maroof_CV.pdf"
               class="flex-1 md:flex-none px-6 md:px-8 py-4 md:py-5 font-black text-[10px] md:text-xs tracking-[0.2em] uppercase transition-all shadow-xl group border border-surface-container-high flex items-center justify-center active-spring"
@@ -324,11 +324,11 @@ onBeforeUnmount(() => {
                 themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-surface-container text-on-surface' : 
                 'bg-surface-container-low text-on-surface hover:bg-surface-container-high'
               ]" v-ripple>
-              Curriculum Vitae <Download class="w-4 h-4 inline-block ml-3 group-hover:-translate-y-1 transition-transform" />
+              Download Resume <Download class="w-4 h-4 inline-block ml-3 group-hover:-translate-y-1 transition-transform" />
             </a>
           </div>
 
-          <!-- AI Certification Callout -->
+          <!-- AI Automation Callout -->
           <div 
             @click="() => {
               const el = document.getElementById('work')
@@ -343,9 +343,9 @@ onBeforeUnmount(() => {
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
             <div class="flex-1 text-left">
-              <span class="block text-[8px] font-mono text-primary font-black uppercase tracking-widest leading-none mb-1">LIVE INTEL // CERTIFIED AGENTIC AI</span>
+              <span class="block text-[8px] font-mono text-primary font-black uppercase tracking-widest leading-none mb-1">WORK EXAMPLES // AI AUTOMATION</span>
               <p class="text-[10px] font-body font-semibold text-on-surface-variant leading-tight">
-                Built autonomous voice-calling agents & n8n pipeline integrations. <span class="text-primary font-black hover:underline">See project specs →</span>
+                I build custom AI calling agents and automated workflows. <span class="text-primary font-black hover:underline">See my active projects →</span>
               </p>
             </div>
           </div>
@@ -520,20 +520,20 @@ onBeforeUnmount(() => {
           <!-- Decrypt/Scrambled Section Subtitle -->
           <div class="inline-flex items-center gap-2 mb-4 font-mono text-xs text-primary font-black uppercase tracking-[0.2em]">
             <User class="w-4 h-4 shrink-0" />
-            <span>// PROFILE INTELLECT</span>
+            <span>// WHO I AM</span>
           </div>
 
           <!-- Bold, punchy Heading with text pressure or Outfit font -->
           <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-black uppercase tracking-tight text-on-surface mb-6 leading-[1.05]">
-            SOMEONE WHO <br/>
+            A PARTNER <br/>
             <span class="text-primary italic" :class="{ 'street-fx-radiant': themeStore.currentStyle === 'street' }">
-              DOES NOT STOP
+              COMMITTED TO
             </span> <br/>
-            UNTIL WINNING.
+            YOUR GROWTH.
           </h2>
 
           <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body font-medium mb-8 opacity-90">
-            My commitment is absolute: I do not stop until we win. I partner with high-growth businesses to convert complex concepts into top-tier digital assets. You bring the vision—I deliver the high-caliber engineering, clean architecture, and execution power to turn it into its most impactful practical manifestation.
+            I work closely with business owners to build fast websites, custom software, and time-saving automation. I don't just write code; I design systems that solve real problems, cut operational costs, and help your business grow. You bring the goals—I deliver the clean, high-performance software to achieve them.
           </p>
 
           <!-- Telemetry Stats Panel -->
@@ -547,22 +547,22 @@ onBeforeUnmount(() => {
             :class="{ 'shadow-md': themeStore.currentStyle !== 'brutal' }"
           >
             <div>
-              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">EXECUTION MINDSET</span>
+              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">WORK STYLE</span>
               <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
                 <Target class="w-4 h-4 text-primary shrink-0" />
-                NEVER-SURRENDER
+                RESULTS ORIENTED
               </span>
             </div>
             <div>
-              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">DEVELOPMENT SPEED</span>
+              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">LAUNCH TIME</span>
               <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
                 <Zap class="w-4 h-4 text-primary shrink-0" />
-                RAPID ITERATION
+                FAST & RELIABLE
               </span>
             </div>
             <div class="border-t border-on-surface/5 pt-4 col-span-2 flex items-center justify-between font-mono text-[9px] text-on-surface/50">
               <span>LOC: LAHORE, PK</span>
-              <span>DEV_RIGOR: 99.9%</span>
+              <span>RELIABILITY: 99.9%</span>
             </div>
           </div>
 
@@ -575,7 +575,7 @@ onBeforeUnmount(() => {
                 themeStore.currentStyle === 'brutal' ? 'brutal-btn bg-primary text-on-primary' : 
                 'bg-primary text-on-primary hover:scale-[1.03]'
               ]" v-ripple>
-              LEVERAGE MY DRIVE <ArrowRight class="w-3.5 h-3.5" />
+              LET'S TALK <ArrowRight class="w-3.5 h-3.5" />
             </router-link>
           </div>
         </div>
@@ -583,26 +583,26 @@ onBeforeUnmount(() => {
       </div>
     </section>
 
-    <!-- THE QUANTUM METHODOLOGY & PROBLEM-SOLUTION NARRATIVE -->
+    <!-- PROJECT METHODOLOGY & PROBLEM-SOLUTION NARRATIVE -->
     <section id="methodology" class="mt-24 md:mt-32 lg:mt-40 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
-        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">OPERATIONAL PROTOCOL</span>
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">PROJECT METHODOLOGY</span>
         <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
-          THE QUANTUM <span class="text-primary italic">PROTOCOL</span>
+          HOW WE <span class="text-primary italic">WORK TOGETHER</span>
         </h2>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
         <!-- Left Column: The 5-Step Methodology Steps -->
         <div class="lg:col-span-6 flex flex-col gap-6 text-left">
-          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// 5-STAGE PIPELINE</div>
+          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// THE 5-STEP PROCESS</div>
           
           <div v-for="(step, idx) in [
-            { num: '01', title: 'Deep Audit', desc: 'Bottleneck profiling, architectural sanity checking, and complete code dependencies security mapping.' },
-            { num: '02', title: 'AI Synthesis', desc: 'Feasibility engineering for integrating autonomous agent pipelines, vector databases, and custom LLM workflows.' },
-            { num: '03', title: 'Architectural Blueprint', desc: 'Designing low-latency caching schemas, high-throughput message queues, and API routing layouts.' },
-            { num: '04', title: 'Rigorous Execution', desc: 'Writing clean, test-driven code using Vue/React/Node.js/Python following strict Git revisioning standards.' },
-            { num: '05', title: 'Telemetry & Scale', desc: 'Continuous performance profiling, sub-second load optimizations, and secure Docker cloud deployment.' }
+            { num: '01', title: 'Code & Speed Audit', desc: 'Analyzing your current website or app code to find loading bottlenecks, memory leaks, and security bugs.' },
+            { num: '02', title: 'Automation Plan', desc: 'Finding opportunities to set up automated business processes, custom AI helpers, and integrations to save team labor.' },
+            { num: '03', title: 'Custom System Design', desc: 'Designing database models, server setups, and file caching rules to make sure your app loads instantly.' },
+            { num: '04', title: 'Development & Build', desc: 'Building your project with clean, readable code using Vue, React, Node.js, or Python, ensuring it is fully tested.' },
+            { num: '05', title: 'Launch & Optimization', desc: 'Optimizing final loading speeds, setting up performance monitoring, and securely deploying to your cloud servers.' }
           ]" :key="step.num"
             class="p-5 border border-primary/10 bg-surface-container-low/40 hover:bg-surface-container-low/80 backdrop-blur-md rounded-2xl group transition-all duration-300 hover:border-primary/40 cursor-default"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
@@ -619,12 +619,12 @@ onBeforeUnmount(() => {
 
         <!-- Right Column: Problem & Solution Accordion -->
         <div class="lg:col-span-6 flex flex-col gap-6 text-left">
-          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// PROBLEM RESOLUTION DIRECTIVE</div>
+          <div class="font-mono text-[9px] text-primary font-black tracking-widest uppercase mb-2">// HOW I RESOLVE YOUR PROBLEMS</div>
           
           <div v-for="(ps, idx) in [
-            { prob: 'Outgrowing legacy unscalable backends and database throttling.', sol: 'Developing low-latency Redis/Supabase caching and indexing strategies to handle millions of transactions.' },
-            { prob: 'Wasting developer and ops hours on repetitive manual tasks.', sol: 'Designing autonomous voice calling agent agents and custom n8n headless background automation workflows.' },
-            { prob: 'Laggy user interfaces driving customer churn.', sol: 'Optimizing asset bundle size, running CSS payloads updates, and scripting fluid custom GSAP animations.' }
+            { prob: 'Your site slows down or crashes when too many customers visit.', sol: 'We optimize database queries and set up fast server caching so your site handles thousands of simultaneous buyers.' },
+            { prob: 'Your team spends hours every week on repetitive data entry and manual tasks.', sol: 'We design automated workflows and custom AI tools to handle repetitive work instantly and error-free.' },
+            { prob: 'A slow, laggy website design that drives away potential customers.', sol: 'We tune image and file sizes, speed up visual rendering, and build smooth transitions to keep visitors engaged.' }
           ]" :key="idx"
             class="p-5 border border-primary/10 bg-surface-container-low/40 rounded-2xl transition-all duration-300"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
@@ -649,10 +649,10 @@ onBeforeUnmount(() => {
     <section id="services" ref="offeredServicesRef" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 mb-24 md:mb-32 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
         <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-[calc(-0.06em)] mb-4 md:mb-6 uppercase leading-none text-on-surface">
-          OFFERED <span class="text-primary italic">SERVICES</span>
+          WHAT I <span class="text-primary italic">DO FOR YOU</span>
         </h2>
         <p class="text-on-surface-variant max-w-xl mx-auto text-base md:text-lg leading-relaxed font-body font-medium px-4 opacity-80">
-          Deploying production-ready interactive configurations and automated backend workflows.
+          Custom web development, mobile apps, code tuning, and smart task automation designed to grow your business.
         </p>
       </div>
 
@@ -750,9 +750,9 @@ onBeforeUnmount(() => {
     <!-- OUTCOME-DRIVEN TESTIMONIALS -->
     <section id="testimonials" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
-        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">CLIENT DEBRIEFING</span>
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">CLIENT SUCCESS</span>
         <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
-          IMPACT <span class="text-primary italic">TESTIMONIALS</span>
+          WHAT CLIENTS <span class="text-primary italic">SAY</span>
         </h2>
       </div>
 
@@ -790,9 +790,9 @@ onBeforeUnmount(() => {
     <!-- HOMEPAGE FAQ SECTION -->
     <section id="homepage-faq" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 relative layer-base scroll-mt-32">
       <div class="mb-12 md:mb-20 text-center">
-        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">FREQUENT DEBRIEFS</span>
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">COMMON QUESTIONS</span>
         <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
-          SYSTEM <span class="text-primary italic">FAQ</span>
+          FREQUENTLY ASKED <span class="text-primary italic">QUESTIONS</span>
         </h2>
       </div>
 
@@ -806,7 +806,7 @@ onBeforeUnmount(() => {
           to="/faq" 
           class="font-mono text-xs font-black uppercase text-primary tracking-widest inline-flex items-center gap-2 hover:underline"
         >
-          VIEW COMPLETE FAQ REGISTRY
+          SEE ALL FREQUENT QUESTIONS
           <ArrowRight class="w-4 h-4" />
         </router-link>
       </div>
@@ -827,12 +827,12 @@ onBeforeUnmount(() => {
                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                </span>
-               <span>AVAILABILITY: Q3 2026 // ONLY 2 SLOTS LEFT</span>
+               <span>AVAILABILITY: CURRENT // ONLY 2 PROJECT SLOTS LEFT</span>
              </div>
 
              <h3 class="font-headline text-3xl md:text-5xl lg:text-6xl xl:text-8xl font-black mb-8 md:mb-12 tracking-tighter uppercase leading-[0.9] md:leading-[0.85] text-on-surface text-balance"
                :class="{ 'street-fx-glow text-surface': themeStore.currentStyle === 'street' }">
-               READY TO ARCHITECT<br/>YOUR <span class="text-primary italic underline decoration-wavy underline-offset-8" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">NEXT MILESTONE?</span>
+               READY TO BUILD<br/>YOUR <span class="text-primary italic underline decoration-wavy underline-offset-8" :class="{ 'text-secondary': themeStore.currentStyle === 'street' }">NEXT BIG PROJECT?</span>
              </h3>
              <router-link to="/contact" 
                class="px-10 md:px-20 py-5 md:py-8 font-black text-xs md:text-sm tracking-[0.25em] md:tracking-[0.3em] uppercase inline-flex items-center gap-4 md:gap-6 transition-all shadow-3xl active-spring"
@@ -841,7 +841,7 @@ onBeforeUnmount(() => {
                  themeStore.currentStyle === 'street' ? 'street-btn shadow-secondary text-sm md:text-base' : 
                  'bg-primary text-on-primary rounded-2xl md:rounded-[2rem] hover:scale-105 shadow-primary/30'
                ]" v-ripple>
-               INITIATE PROTOCOL
+               GET STARTED
                <Terminal class="w-6 h-6 md:w-8 md:h-8" />
              </router-link>
            </div>

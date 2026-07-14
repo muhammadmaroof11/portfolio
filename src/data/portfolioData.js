@@ -1,8 +1,8 @@
 export const portfolioData = {
   profile: {
     name: 'MUHAMMAD MAROOF',
-    title: 'Digital Architect',
-    role: 'Full Stack Developer at Byte Force',
+    title: 'Full Stack Developer',
+    role: 'Full Stack Developer & Automations Specialist',
     availability: 'Available for projects',
     location: 'Lahore, Pakistan (Remote)',
     email: 'mmaroof341@gmail.com',
@@ -204,10 +204,10 @@ export const portfolioData = {
   ],
 
   adventureNarratives: {
-    ai: "Orchestrating intelligent agents, custom LLM configurations, and automated n8n pipeline workflows to build future-proof AI systems.",
-    web: "Designing robust, high-throughput backend controllers and responsive client interfaces that scale seamlessly under heavy workloads.",
-    mobile: "Developing premium cross-platform mobile apps with Capacitor and Flutter that deliver smooth, native performance.",
-    default: "Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures."
+    ai: "I build smart automated systems and AI agents that handle repetitive tasks, saving your team hours of manual work every week.",
+    web: "I build fast, reliable websites and web software that load instantly, handle heavy user traffic, and help grow your business.",
+    mobile: "I build smooth, user-friendly mobile apps for both iPhone and Android, helping you reach customers on the go.",
+    default: "Full Stack Developer at Byte Force. Helping businesses build fast, reliable websites, apps, and automated workflows that scale."
   },
 
   testimonials: [
@@ -226,62 +226,62 @@ export const portfolioData = {
   ],
 
   services: [
-    { title: 'Full Stack Engineering', desc: 'Architecting robust web ecosystems using Vue.js, Node.js, and modern databases.', icon: 'Globe' },
-    { title: 'Mobile First Development', desc: 'High-performance cross-platform apps with Flutter and Ionic Capacitor.', icon: 'Smartphone' },
-    { title: 'AI & Data Integration', desc: 'Orchestrating agentic AI workflows and real-time data streaming solutions.', icon: 'Cpu' },
-    { title: 'Game Development', desc: 'Immersive multiplayer experiences built with Unity and high-fidelity rendering.', icon: 'Zap' }
+    { title: 'Web & Software Engineering', desc: 'Building fast, secure web platforms and tools tailored to your business needs.', icon: 'Globe' },
+    { title: 'Mobile App Development', desc: 'Creating high-performance apps for iOS and Android from a single codebase.', icon: 'Smartphone' },
+    { title: 'Business Automation & AI', desc: 'Setting up smart workflows and AI tools to automate manual tasks and save team time.', icon: 'Cpu' },
+    { title: 'Interactive Experiences', desc: 'Developing engaging 2D/3D visual experiences and interactive web features.', icon: 'Zap' }
   ],
 
   offeredServices: [
-    { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: 'Globe', image: '/services/web_dev.webp' },
-    { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: 'Gamepad2', image: '/services/game_dev.webp' },
-    { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: 'Code', image: '/services/code_audit.webp' },
-    { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: 'Cpu', image: '/services/optimization.webp' },
-    { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: 'Smartphone', image: '/services/automation.webp' }
+    { title: 'Custom Web Development', desc: 'Get a fast, secure website or web app designed to turn visitors into paying customers.', icon: 'Globe', image: '/services/web_dev.webp' },
+    { title: 'App Development', desc: 'Launch custom apps for iOS, Android, and web that work smoothly on every device.', icon: 'Gamepad2', image: '/services/game_dev.webp' },
+    { title: 'Code Audit & Speed Tuning', desc: 'I review your current software code to fix bugs, security issues, and speed up slow pages.', icon: 'Code', image: '/services/code_audit.webp' },
+    { title: 'Server & Cost Optimization', desc: 'Optimizing your database and server setups to slash your monthly cloud hosting bills.', icon: 'Cpu', image: '/services/optimization.webp' },
+    { title: 'Task Automation & AI Tools', desc: 'Automate repetitive data entry, invoicing, customer outreach, and manual workflows.', icon: 'Smartphone', image: '/services/automation.webp' }
   ],
 
   faqs: [
     {
-      q: "What technologies are in your core tech stack?",
-      a: "My architectural core is built on Vue 3 (Composition API, Pinia) and React for user interfaces, styled via utility grids or vanilla CSS tokens. On the server, I design backend microservices using Node.js and Python, handle persistence with Supabase/PostgreSQL/MongoDB, package runtimes in Docker, and orchestrate automated AI workflows with n8n.",
-      category: "technology",
+      q: "What services do you provide?",
+      a: "I help businesses build custom websites and web applications, launch mobile apps, speed up slow software to prevent customer loss, reduce server hosting bills, and set up automated workflows to eliminate manual work.",
+      category: "general",
       featured: true
     },
     {
-      q: "What does a 'Digital Architect' actually do?",
-      a: "Unlike a standard developer who solely writes user-facing client code, a Digital Architect bridges frontend interaction design, backend service reliability, and database indexing. I design system blueprints, profile and remove server/rendering bottlenecks, structure secure auth schemas, and guarantee high system availability under heavy loads.",
-      category: "methodology",
+      q: "How do you help businesses save money on hosting?",
+      a: "I audit your current servers and databases to find where resources are wasted. By cleaning up slow database queries, setting up efficient caching, and restructuring server usage, I regularly cut hosting bills by 30% or more.",
+      category: "cost",
       featured: true
     },
     {
-      q: "How do you approach Agentic AI integration?",
-      a: "We move past simple prompt engineering to build production-grade autonomous workflow engines. This includes setting up secure vector databases (RAG) using pgvector or Pinecone, orchestrating multi-agent decision systems in Python or n8n, deploying real-time voice agents, and automating corporate manual operations to save hours of human labor.",
-      category: "artificial intelligence",
+      q: "How does AI and workflow automation benefit my business?",
+      a: "Instead of having your team spend hours copying data, writing manual reports, or handling basic support queries, I build automated pipelines and secure AI assistants that do the work for you instantly and error-free.",
+      category: "automation",
       featured: true
     },
     {
-      q: "Can you audit or refactor an existing legacy codebase?",
-      a: "Yes. I perform thorough architectural audits: identifying database lock throttling, profiling memory leaks, auditing dependencies for vulnerabilities, and refactoring monolithic layouts into componentized structures. Every audit includes a prioritized technical debt ledger.",
-      category: "audit"
+      q: "Can you fix and improve my existing slow software?",
+      a: "Yes. If your current website or software is slow, crashing, or buggy, I can audit the code, find the bottlenecks causing the slowdowns, and optimize it to load instantly.",
+      category: "performance"
     },
     {
       q: "Do you build cross-platform mobile apps?",
-      a: "Yes, I develop premium mobile experiences using Capacitor and Flutter. This allows compiling to native iOS and Android binaries from a unified codebase, saving substantial startup resources while keeping rendering and hardware plugin integration native-grade.",
+      a: "Yes, I develop high-quality mobile apps using Capacitor and Flutter. This allows launching on both iOS (Apple) and Android devices from a single codebase, saving you development time and budget.",
       category: "mobile"
     },
     {
-      q: "How do you ensure data security and compliance?",
-      a: "Security is an architectural pillar, not an afterthought. I design schemas following Row-Level Security (RLS) policies on Supabase, configure proper CORS parameters, enforce HTTPS and token-based state authorization, and audit third-party dependency vulnerabilities regularly.",
+      q: "Is my business data safe with custom AI integrations?",
+      a: "Yes. All AI integrations are built securely, using private server keys and closed APIs that ensure your sensitive business data is never shared publicly or used to train public models.",
       category: "security"
     },
     {
-      q: "Do you work with startups or enterprise clients?",
-      a: "Both. I help startups design 0-to-1 MVP architectures that scale cleanly without massive cloud overhead, and I consult for enterprises to optimize database throttling, speed up slow user interfaces, and automate operations.",
+      q: "Do you work with small businesses, startups, or enterprises?",
+      a: "I work with all of them. I help startups launch fast prototype MVPs, small businesses automate manual office work, and larger companies optimize database load and server speed.",
       category: "clients"
     },
     {
-      q: "What is your contract availability and booking process?",
-      a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability.",
+      q: "How do we get started on a project?",
+      a: "Simply send me a message through the contact page or email. We will schedule a quick call to talk about your goals, scope the requirements, and set up a plan to deliver results for your business.",
       category: "availability",
       featured: true
     }
