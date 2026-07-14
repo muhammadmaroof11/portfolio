@@ -7,6 +7,10 @@ const props = defineProps({
   items: {
     type: Array,
     required: true
+  },
+  columns: {
+    type: Number,
+    default: 1
   }
 })
 
@@ -19,7 +23,13 @@ const toggleFaq = (idx) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 w-full">
+  <div 
+    :class="[
+      columns === 2 
+        ? 'grid grid-cols-1 lg:grid-cols-2 gap-5 w-full items-start' 
+        : 'flex flex-col gap-4 w-full'
+    ]"
+  >
     <div 
       v-for="(faq, idx) in items" 
       :key="faq.q"

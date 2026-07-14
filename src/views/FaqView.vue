@@ -100,7 +100,7 @@ onBeforeUnmount(() => {
     </header>
 
     <!-- SEARCH & CONTROLLERS -->
-    <div class="mb-10 max-w-4xl mx-auto gsap-reveal">
+    <div class="mb-10 w-full gsap-reveal">
       <div class="relative w-full">
         <input 
           v-model="searchQuery" 
@@ -115,8 +115,8 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- MAIN FAQ DECK CONTAINER -->
-    <div class="max-w-4xl mx-auto gsap-reveal">
-      <FaqAccordion :items="filteredFaqs" />
+    <div class="w-full gsap-reveal">
+      <FaqAccordion :items="filteredFaqs" :columns="2" />
 
       <!-- No results template -->
       <div v-if="filteredFaqs.length === 0" class="p-12 text-center border border-dashed border-primary/10 rounded-2xl font-mono text-xs opacity-50 uppercase tracking-widest">
@@ -125,7 +125,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- BOTTOM CALLOUT: STILL HAVE QUESTIONS -->
-    <div class="mt-16 md:mt-24 max-w-4xl mx-auto gsap-reveal">
+    <div class="mt-16 md:mt-24 max-w-3xl mx-auto gsap-reveal">
       <div 
         class="p-8 md:p-10 border border-primary/15 bg-surface-container-low/60 rounded-3xl text-center relative overflow-hidden flex flex-col items-center justify-center shadow-lg"
         :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
