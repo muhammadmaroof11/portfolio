@@ -201,5 +201,89 @@ export const portfolioData = {
       ],
       tags: ['Flask', 'Python', 'React.js', 'REST API', 'Algorithms']
     }
+  ],
+
+  adventureNarratives: {
+    ai: "Orchestrating intelligent agents, custom LLM configurations, and automated n8n pipeline workflows to build future-proof AI systems.",
+    web: "Designing robust, high-throughput backend controllers and responsive client interfaces that scale seamlessly under heavy workloads.",
+    mobile: "Developing premium cross-platform mobile apps with Capacitor and Flutter that deliver smooth, native performance.",
+    default: "Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures."
+  },
+
+  testimonials: [
+    {
+      metric: '30% Server Cost Reduction',
+      quote: 'Maroof audited our Node.js systems, refactored our caching layer, and optimized our database queries, reducing our hosting bill overnight.',
+      author: 'Alex Carter',
+      role: 'CTO, Bytely.ai'
+    },
+    {
+      metric: '0 to 10k Users in 3 Months',
+      quote: 'Thanks to the Capacitor-based mobile layout and Supabase real-time Dispatch core Maroof architected, our delivery app launched smoothly and scaled without hiccups.',
+      author: 'Sara Chen',
+      role: 'Founder, FoodLink'
+    }
+  ],
+
+  services: [
+    { title: 'Full Stack Engineering', desc: 'Architecting robust web ecosystems using Vue.js, Node.js, and modern databases.', icon: 'Globe' },
+    { title: 'Mobile First Development', desc: 'High-performance cross-platform apps with Flutter and Ionic Capacitor.', icon: 'Smartphone' },
+    { title: 'AI & Data Integration', desc: 'Orchestrating agentic AI workflows and real-time data streaming solutions.', icon: 'Cpu' },
+    { title: 'Game Development', desc: 'Immersive multiplayer experiences built with Unity and high-fidelity rendering.', icon: 'Zap' }
+  ],
+
+  offeredServices: [
+    { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: 'Globe', image: '/services/web_dev.webp' },
+    { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: 'Gamepad2', image: '/services/game_dev.webp' },
+    { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: 'Code', image: '/services/code_audit.webp' },
+    { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: 'Cpu', image: '/services/optimization.webp' },
+    { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: 'Smartphone', image: '/services/automation.webp' }
+  ],
+
+  faqs: [
+    {
+      q: "What technologies are in your core tech stack?",
+      a: "My architectural core is built on Vue 3 (Composition API, Pinia) and React for user interfaces, styled via utility grids or vanilla CSS tokens. On the server, I design backend microservices using Node.js and Python, handle persistence with Supabase/PostgreSQL/MongoDB, package runtimes in Docker, and orchestrate automated AI workflows with n8n.",
+      category: "technology",
+      featured: true
+    },
+    {
+      q: "What does a 'Digital Architect' actually do?",
+      a: "Unlike a standard developer who solely writes user-facing client code, a Digital Architect bridges frontend interaction design, backend service reliability, and database indexing. I design system blueprints, profile and remove server/rendering bottlenecks, structure secure auth schemas, and guarantee high system availability under heavy loads.",
+      category: "methodology",
+      featured: true
+    },
+    {
+      q: "How do you approach Agentic AI integration?",
+      a: "We move past simple prompt engineering to build production-grade autonomous workflow engines. This includes setting up secure vector databases (RAG) using pgvector or Pinecone, orchestrating multi-agent decision systems in Python or n8n, deploying real-time voice agents, and automating corporate manual operations to save hours of human labor.",
+      category: "artificial intelligence",
+      featured: true
+    },
+    {
+      q: "Can you audit or refactor an existing legacy codebase?",
+      a: "Yes. I perform thorough architectural audits: identifying database lock throttling, profiling memory leaks, auditing dependencies for vulnerabilities, and refactoring monolithic layouts into componentized structures. Every audit includes a prioritized technical debt ledger.",
+      category: "audit"
+    },
+    {
+      q: "Do you build cross-platform mobile apps?",
+      a: "Yes, I develop premium mobile experiences using Capacitor and Flutter. This allows compiling to native iOS and Android binaries from a unified codebase, saving substantial startup resources while keeping rendering and hardware plugin integration native-grade.",
+      category: "mobile"
+    },
+    {
+      q: "How do you ensure data security and compliance?",
+      a: "Security is an architectural pillar, not an afterthought. I design schemas following Row-Level Security (RLS) policies on Supabase, configure proper CORS parameters, enforce HTTPS and token-based state authorization, and audit third-party dependency vulnerabilities regularly.",
+      category: "security"
+    },
+    {
+      q: "Do you work with startups or enterprise clients?",
+      a: "Both. I help startups design 0-to-1 MVP architectures that scale cleanly without massive cloud overhead, and I consult for enterprises to optimize database throttling, speed up slow user interfaces, and automate operations.",
+      category: "clients"
+    },
+    {
+      q: "What is your contract availability and booking process?",
+      a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability.",
+      category: "availability",
+      featured: true
+    }
   ]
 };

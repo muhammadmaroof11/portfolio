@@ -13,6 +13,9 @@ const FuzzyText = defineAsyncComponent(() => import('../components/FuzzyText.vue
 import DecryptedText from '../components/DecryptedText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
 import SynapticProjectsList from '../components/SynapticProjectsList.vue'
+import FaqAccordion from '../components/FaqAccordion.vue'
+
+const iconMap = { Globe, Smartphone, Cpu, Zap, Gamepad2, Code, User, Target }
 import meImage from '../assets/me.webp'
 
 // ScrollTrigger is registered globally in main.js
@@ -39,16 +42,7 @@ const adventures = [
 ]
 const activeAdventure = ref('default')
 const getAdventureText = computed(() => {
-  switch (activeAdventure.value) {
-    case 'ai':
-      return "Orchestrating intelligent agents, custom LLM configurations, and automated n8n pipeline workflows to build future-proof AI systems."
-    case 'web':
-      return "Designing robust, high-throughput backend controllers and responsive client interfaces that scale seamlessly under heavy workloads."
-    case 'mobile':
-      return "Developing premium cross-platform mobile apps with Capacitor and Flutter that deliver smooth, native performance."
-    default:
-      return "Full Stack Developer at Byte Force. Bridging the gap between creative vision and technical precision with Scalable Architectures."
-  }
+  return portfolioData.adventureNarratives[activeAdventure.value] || portfolioData.adventureNarratives.default
 })
 
 // Metrics cycling state
@@ -75,41 +69,9 @@ const animateMetricNumber = (targetVal) => {
   })
 }
 
-// Testimonials data
-const testimonials = [
-  {
-    metric: '30% Server Cost Reduction',
-    quote: 'Maroof audited our Node.js systems, refactored our caching layer, and optimized our database queries, reducing our hosting bill overnight.',
-    author: 'Alex Carter',
-    role: 'CTO, Bytely.ai'
-  },
-  {
-    metric: '0 to 10k Users in 3 Months',
-    quote: 'Thanks to the Capacitor-based mobile layout and Supabase real-time Dispatch core Maroof architected, our delivery app launched smoothly and scaled without hiccups.',
-    author: 'Sara Chen',
-    role: 'Founder, FoodLink'
-  }
-]
-
-const homeActiveFaqIdx = ref(null)
-const homeFaqs = [
-  {
-    q: "What technologies are in your core tech stack?",
-    a: "My architectural core is built on Vue 3 (Composition API, Pinia) and React for user interfaces, styled via utility grids or vanilla CSS tokens. On the server, I design backend microservices using Node.js and Python, handle persistence with Supabase/PostgreSQL/MongoDB, package runtimes in Docker, and orchestrate automated AI workflows with n8n."
-  },
-  {
-    q: "What does a 'Digital Architect' actually do?",
-    a: "Unlike a standard developer who solely writes user-facing client code, a Digital Architect bridges frontend interaction design, backend service reliability, and database indexing. I design system blueprints, profile and remove server/rendering bottlenecks, structure secure auth schemas, and guarantee high system availability under heavy loads."
-  },
-  {
-    q: "How do you approach Agentic AI integration?",
-    a: "We move past simple prompt engineering to build production-grade autonomous workflow engines. This includes setting up secure vector databases (RAG) using pgvector or Pinecone, orchestrating multi-agent decision systems in Python or n8n, deploying real-time voice agents, and automating corporate manual operations to save hours of human labor."
-  },
-  {
-    q: "What is your contract availability and booking process?",
-    a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability."
-  }
-]
+const homepageFaqs = computed(() => {
+  return portfolioData.faqs.filter(f => f.featured)
+})
 
 onMounted(async () => {
   await nextTick()
@@ -254,20 +216,7 @@ onMounted(async () => {
   window.addEventListener('resize', resizeHandler)
 })
 
-const services = [
-  { title: 'Full Stack Engineering', desc: 'Architecting robust web ecosystems using Vue.js, Node.js, and modern databases.', icon: Globe },
-  { title: 'Mobile First Development', desc: 'High-performance cross-platform apps with Flutter and Ionic Capacitor.', icon: Smartphone },
-  { title: 'AI & Data Integration', desc: 'Orchestrating agentic AI workflows and real-time data streaming solutions.', icon: Cpu },
-  { title: 'Game Development', desc: 'Immersive multiplayer experiences built with Unity and high-fidelity rendering.', icon: Zap }
-]
-
-const offeredServices = [
-  { title: 'Custom Website Development', desc: 'Crafting bespoke, lightning-fast web applications optimized for speed, SEO, and flawless responsiveness.', icon: Globe, image: '/services/web_dev.webp' },
-  { title: 'Game Development', desc: 'Developing immersive, real-time interactive 2D/3D browser and native games using high-performance graphic engines.', icon: Gamepad2, image: '/services/game_dev.webp' },
-  { title: 'Code Audit & Review', desc: 'Deep codebase security profiling, architectural health assessments, and streamlining logic to eliminate technical debt.', icon: Code, image: '/services/code_audit.webp' },
-  { title: 'Optimization & Enhancements', desc: 'Fine-tuning memory allocation, script execution speeds, asset packaging, and database queries for peak efficiency.', icon: Cpu, image: '/services/optimization.webp' },
-  { title: 'Business Automation', desc: 'Designing custom agentic AI pipelines, data extraction routines, and headless process integrations to supercharge productivity.', icon: Smartphone, image: '/services/automation.webp' }
-]
+// Externalized to portfolioData
 
 onBeforeUnmount(() => {
   if (resizeHandler) {
@@ -444,7 +393,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-        <div v-for="service in services" :key="service.title"
+        <div v-for="service in portfolioData.services" :key="service.title"
           class="strategy-card w-full p-5 md:p-8 lg:p-10 rounded-[1.25rem] md:rounded-[2rem] transition-all duration-500 cursor-pointer active-spring hover:-translate-y-2 border border-primary/10 bg-surface-container-low/80 backdrop-blur-md relative group overflow-hidden gsap-reveal"
           v-ripple
           v-tilt="{ max: 15, scale: 1.03 }"
@@ -459,7 +408,7 @@ onBeforeUnmount(() => {
 
           <div class="w-10 h-10 md:w-14 md:h-14 bg-primary/10 flex items-center justify-center mb-4 md:mb-6 lg:mb-8 transition-transform group-hover:scale-110"
             :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 4)' }">
-            <component :is="service.icon" class="w-5 h-5 md:w-7 md:h-7 text-primary" />
+            <component :is="iconMap[service.icon]" class="w-5 h-5 md:w-7 md:h-7 text-primary" />
           </div>
           <h3 class="font-headline text-base md:text-xl font-black mb-2 md:mb-4 uppercase tracking-tight leading-none text-on-surface">{{ service.title }}</h3>
           <p class="text-on-surface-variant leading-relaxed text-xs md:text-sm lg:text-base opacity-75 font-medium">{{ service.desc }}</p>
@@ -708,7 +657,7 @@ onBeforeUnmount(() => {
 
       <!-- ponytail: w-full removed to let negative margins expand block width correctly on both sides -->
       <div class="overflow-visible py-4 gsap-reveal offered-carousel-reveal -mx-6 md:-mx-12 xl:-mx-20 px-6 md:px-12 xl:px-20">
-        <ThreeDCarousel :items="offeredServices" cardWidth="480px" v-slot="{ item: service, isActive }">
+        <ThreeDCarousel :items="portfolioData.offeredServices" cardWidth="480px" v-slot="{ item: service, isActive }">
           <div 
             class="w-full p-4 md:p-8 transition-all duration-700 cursor-pointer active-spring"
             v-ripple
@@ -731,7 +680,7 @@ onBeforeUnmount(() => {
             <div class="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
               <div class="w-8 h-8 md:w-10 md:h-10 bg-primary/10 flex items-center justify-center shrink-0"
                 :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0' : 'calc(var(--app-radius) / 5)' }">
-                <component :is="service.icon" class="w-4.5 h-4.5 md:w-5 md:h-5 text-primary" />
+                <component :is="iconMap[service.icon]" class="w-4.5 h-4.5 md:w-5 md:h-5 text-primary" />
               </div>
               <h3 class="font-headline text-sm sm:text-base md:text-xl font-black uppercase tracking-tight leading-tight text-on-surface">{{ service.title }}</h3>
             </div>
@@ -802,7 +751,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-        <div v-for="t in testimonials" :key="t.author"
+        <div v-for="t in portfolioData.testimonials" :key="t.author"
           class="p-8 border border-primary/10 bg-surface-container-low/40 rounded-3xl text-left flex flex-col justify-between"
           :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
           :class="themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : themeStore.currentStyle === 'street' ? 'street-card' : ''">
@@ -841,40 +790,8 @@ onBeforeUnmount(() => {
         </h2>
       </div>
 
-      <div class="max-w-4xl mx-auto flex flex-col gap-4 text-left">
-        <div 
-          v-for="(faq, idx) in homeFaqs" 
-          :key="faq.q"
-          class="p-5 border border-primary/10 bg-surface-container-low/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-md cursor-pointer select-none"
-          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
-          :class="[
-            themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
-            themeStore.currentStyle === 'street' ? 'street-card' : 'hover:border-primary/30',
-            homeActiveFaqIdx === idx ? 'border-primary/45 bg-surface-container-low/80 ring-1 ring-primary/10' : ''
-          ]"
-          @click="homeActiveFaqIdx = homeActiveFaqIdx === idx ? null : idx"
-        >
-          <div class="flex items-center justify-between gap-4">
-            <h3 class="font-headline font-black text-sm sm:text-base md:text-lg uppercase tracking-tight text-on-surface leading-tight">
-              {{ faq.q }}
-            </h3>
-            <ChevronDown 
-              class="w-5 h-5 text-on-surface-variant/60 transition-transform duration-300 shrink-0"
-              :class="{ 'rotate-180 text-primary': homeActiveFaqIdx === idx }"
-            />
-          </div>
-
-          <div 
-            class="transition-all duration-500 ease-in-out overflow-hidden"
-            :style="{ maxHeight: homeActiveFaqIdx === idx ? '200px' : '0px' }"
-          >
-            <div class="pt-4 mt-4 border-t border-on-surface/5">
-              <p class="text-on-surface-variant text-xs sm:text-sm font-body font-medium leading-relaxed opacity-90">
-                {{ faq.a }}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="max-w-4xl mx-auto">
+        <FaqAccordion :items="homepageFaqs" />
       </div>
 
       <!-- LINK TO FULL FAQ PAGE -->

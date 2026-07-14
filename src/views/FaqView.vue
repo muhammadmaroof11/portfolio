@@ -2,8 +2,9 @@
 import { ref, onMounted, onBeforeUnmount, nextTick, computed, defineAsyncComponent } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { HelpCircle, ChevronDown, MessageSquare, ArrowRight, Sparkles, Terminal } from 'lucide-vue-next'
+import { HelpCircle, ArrowRight, Sparkles, Terminal } from 'lucide-vue-next'
 const FuzzyText = defineAsyncComponent(() => import('../components/FuzzyText.vue'))
+import FaqAccordion from '../components/FaqAccordion.vue'
 import gsap from 'gsap'
 
 const themeStore = useThemeStore()
@@ -11,64 +12,16 @@ const { profile } = portfolioData
 const viewRoot = ref(null)
 
 const searchQuery = ref('')
-const activeFaqIdx = ref(null)
-
-const faqs = [
-  {
-    q: "What technologies are in your core tech stack?",
-    a: "My architectural core is built on Vue 3 (Composition API, Pinia) and React for user interfaces, styled via utility grids or vanilla CSS tokens. On the server, I design backend microservices using Node.js and Python, handle persistence with Supabase/PostgreSQL/MongoDB, package runtimes in Docker, and orchestrate automated AI workflows with n8n.",
-    category: "technology"
-  },
-  {
-    q: "What does a 'Digital Architect' actually do?",
-    a: "Unlike a standard developer who solely writes user-facing client code, a Digital Architect bridges frontend interaction design, backend service reliability, and database indexing. I design system blueprints, profile and remove server/rendering bottlenecks, structure secure auth schemas, and guarantee high system availability under heavy loads.",
-    category: "methodology"
-  },
-  {
-    q: "How do you approach Agentic AI integration?",
-    a: "We move past simple prompt engineering to build production-grade autonomous workflow engines. This includes setting up secure vector databases (RAG) using pgvector or Pinecone, orchestrating multi-agent decision systems in Python or n8n, deploying real-time voice agents, and automating corporate manual operations to save hours of human labor.",
-    category: "artificial intelligence"
-  },
-  {
-    q: "Can you audit or refactor an existing legacy codebase?",
-    a: "Yes. I perform thorough architectural audits: identifying database lock throttling, profiling memory leaks, auditing dependencies for vulnerabilities, and refactoring monolithic layouts into componentized structures. Every audit includes a prioritized technical debt ledger.",
-    category: "audit"
-  },
-  {
-    q: "Do you build cross-platform mobile apps?",
-    a: "Yes, I develop premium mobile experiences using Capacitor and Flutter. This allows compiling to native iOS and Android binaries from a unified codebase, saving substantial startup resources while keeping rendering and hardware plugin integration native-grade.",
-    category: "mobile"
-  },
-  {
-    q: "How do you ensure data security and compliance?",
-    a: "Security is an architectural pillar, not an afterthought. I design schemas following Row-Level Security (RLS) policies on Supabase, configure proper CORS parameters, enforce HTTPS and token-based state authorization, and audit third-party dependency vulnerabilities regularly.",
-    category: "security"
-  },
-  {
-    q: "Do you work with startups or enterprise clients?",
-    a: "Both. I help startups design 0-to-1 MVP architectures that scale cleanly without massive cloud overhead, and I consult for enterprises to optimize database throttling, speed up slow user interfaces, and automate operations.",
-    category: "clients"
-  },
-  {
-    q: "What is your contract availability and booking process?",
-    a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability.",
-    category: "availability"
-  }
-]
 
 const filteredFaqs = computed(() => {
-  if (!searchQuery.value) return faqs
+  if (!searchQuery.value) return portfolioData.faqs
   const query = searchQuery.value.toLowerCase()
-  return faqs.filter(f => 
+  return portfolioData.faqs.filter(f => 
     f.q.toLowerCase().includes(query) || 
     f.a.toLowerCase().includes(query) ||
     f.category.toLowerCase().includes(query)
   )
 })
-
-const toggleFaq = (idx) => {
-  activeFaqIdx.value = activeFaqIdx.value === idx ? null : idx
-}
 
 // JSON-LD dynamic schema injection for SEO optimizations
 let scriptTag = null
@@ -94,7 +47,7 @@ onMounted(async () => {
   const schemaData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": faqs.map(faq => ({
+    "mainEntity": portfolioData.faqs.map(faq => ({
       "@type": "Question",
       "name": faq.q,
       "acceptedAnswer": {
@@ -166,48 +119,7 @@ onBeforeUnmount(() => {
       
       <!-- LEFT COLUMN: ACCORDION LIST -->
       <div class="lg:col-span-8 flex flex-col gap-5 text-left">
-        <transition-group name="list" tag="div" class="flex flex-col gap-4">
-          <div 
-            v-for="(faq, idx) in filteredFaqs" 
-            :key="faq.q"
-            class="faq-card border border-primary/10 bg-surface-container-low/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-md cursor-pointer select-none"
-            :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
-            :class="[
-              themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
-              themeStore.currentStyle === 'street' ? 'street-card' : 'hover:border-primary/30',
-              activeFaqIdx === idx ? 'border-primary/45 bg-surface-container-low/80 ring-1 ring-primary/10' : ''
-            ]"
-            @click="toggleFaq(idx)"
-          >
-            <!-- Card Question Section -->
-            <div class="p-5 flex items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <span class="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 rounded bg-primary/10 text-primary font-black shrink-0">
-                  {{ faq.category }}
-                </span>
-                <h3 class="font-headline font-black text-sm sm:text-base md:text-lg uppercase tracking-tight text-on-surface leading-tight">
-                  {{ faq.q }}
-                </h3>
-              </div>
-              <ChevronDown 
-                class="w-5 h-5 text-on-surface-variant/60 transition-transform duration-300 shrink-0"
-                :class="{ 'rotate-180 text-primary': activeFaqIdx === idx }"
-              />
-            </div>
-
-            <!-- Card Answer Section (Collapsible) -->
-            <div 
-              class="transition-all duration-500 ease-in-out overflow-hidden"
-              :style="{ maxHeight: activeFaqIdx === idx ? '300px' : '0px' }"
-            >
-              <div class="px-5 pb-6 pt-1 border-t border-on-surface/5">
-                <p class="text-on-surface-variant text-xs sm:text-sm font-body font-medium leading-relaxed opacity-90 text-balance">
-                  {{ faq.a }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </transition-group>
+        <FaqAccordion :items="filteredFaqs" />
 
         <!-- No results template -->
         <div v-if="filteredFaqs.length === 0" class="p-12 text-center border border-dashed border-primary/10 rounded-2xl font-mono text-xs opacity-50 uppercase tracking-widest">
