@@ -839,11 +839,7 @@ onBeforeUnmount(() => {
               <img :src="project.image" :alt="project.title" class="relative z-10 max-h-[140px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" />
             </div>
 
-            <!-- HUD ref line -->
-            <div class="flex items-center text-[7px] font-mono text-on-surface/30 mb-1.5 z-10">
-              <span class="w-1 h-1 rounded-full bg-primary animate-pulse mr-1"></span>
-              [DECK_REF: #0{{ index + 1 }}/PORTFOLIO_NODE]
-            </div>
+
 
             <!-- Title -->
             <h3 class="text-base sm:text-lg font-headline font-black uppercase tracking-tight text-on-surface mb-0 leading-none z-10">{{ project.title }}</h3>
@@ -956,7 +952,6 @@ onBeforeUnmount(() => {
       <!-- Section Heading inside the pinned screen-locked container -->
       <div class="absolute top-6 md:top-24 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
         <div class="text-center">
-          <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-1 block">PORTFOLIO</span>
           <h2 class="font-headline text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black uppercase tracking-tight text-on-surface">
             FEATURED <span class="text-primary italic">PROJECTS</span>
           </h2>
@@ -1025,8 +1020,8 @@ onBeforeUnmount(() => {
                 : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10',
           // Card on right side (even index)
             index % 2 === 0
-              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-10 xl:pr-16 lg:pt-14 xl:pt-18'
-              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-10 xl:pl-16 lg:pt-14 xl:pt-18'
+              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-14 xl:pr-20 lg:pt-14 xl:pt-18'
+              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-24 xl:pl-36 lg:pt-14 xl:pt-18'
           ]"
         >
           <!-- Cinematic HUD styled Card Box (Glassmorphism look from sample.mp4) -->
@@ -1069,7 +1064,7 @@ onBeforeUnmount(() => {
 
             <!-- Image preview box -->
             <div 
-              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[120px] md:max-h-[145px] z-10"
+              class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 cursor-pointer max-h-[160px] md:max-h-[190px] xl:max-h-[220px] z-10"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
               <img 
@@ -1081,7 +1076,7 @@ onBeforeUnmount(() => {
               <img 
                 :src="project.image" 
                 :alt="project.title" 
-                class="relative z-10 max-h-[105px] md:max-h-[125px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
+                class="relative z-10 max-h-[140px] md:max-h-[170px] xl:max-h-[200px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
 
               <!-- HUD Target Reticle Overlay -->
@@ -1102,25 +1097,6 @@ onBeforeUnmount(() => {
             <!-- Content spec sheet -->
             <div class="mt-4 z-10 flex-1 flex flex-col justify-between">
               <div>
-                <!-- HUD System Headers -->
-                <div class="flex items-center justify-between text-[7px] md:text-[8px] font-mono text-on-surface/30 mb-2">
-                  <span class="flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-primary animate-pulse"></span>
-                    [DECK_REF: #0{{ index + 1 }}/PORTFOLIO_NODE]
-                  </span>
-                  <!-- Mini real-time pulsing waveform indicator -->
-                  <span v-if="themeStore.currentStyle !== 'brutal'" class="flex items-center gap-1.5">
-                    <span class="text-[7px]">SIGNAL_STRENGTH</span>
-                    <span class="flex gap-[1.5px] items-end h-2 shrink-0">
-                      <span class="w-[1.5px] h-[3px] bg-primary/40 animate-[hud-wave_0.8s_ease-in-out_infinite_alternate]"></span>
-                      <span class="w-[1.5px] h-[6px] bg-primary/60 animate-[hud-wave_1.1s_ease-in-out_infinite_alternate_0.2s]"></span>
-                      <span class="w-[1.5px] h-[4px] bg-primary/50 animate-[hud-wave_0.9s_ease-in-out_infinite_alternate_0.1s]"></span>
-                      <span class="w-[1.5px] h-[7px] bg-primary/70 animate-[hud-wave_1.3s_ease-in-out_infinite_alternate_0.3s]"></span>
-                    </span>
-                  </span>
-                  <span v-else>STATUS: OPERATIONAL</span>
-                </div>
-
                 <!-- Cinematic Scrambled Title -->
                 <h3 class="text-lg md:text-xl font-headline font-black uppercase tracking-tight text-on-surface mb-2 leading-none">
                   <span v-if="index === activeIndex">{{ activeTitle }}</span>
@@ -1128,7 +1104,7 @@ onBeforeUnmount(() => {
                 </h3>
 
                 <!-- Tech tags -->
-                <div class="flex flex-wrap gap-1.5 mb-2.5">
+                <div class="flex flex-wrap gap-1.5 mb-3">
                   <span 
                     v-for="tag in project.tech" 
                     :key="tag"
@@ -1139,43 +1115,10 @@ onBeforeUnmount(() => {
                   </span>
                 </div>
 
-                <!-- Description / Blueprint View Switcher -->
-                <div class="flex items-center gap-2.5 mb-2 border-b border-on-surface/5 pb-1.5 text-[9px] font-mono">
-                  <button 
-                    @click="activeProjectViews[project.id] = 'overview'" 
-                    class="uppercase tracking-widest font-black active-spring"
-                    :class="activeProjectViews[project.id] !== 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
-                  >Overview</button>
-                  <span class="text-on-surface/20">|</span>
-                  <button 
-                    @click="activeProjectViews[project.id] = 'blueprint'" 
-                    class="uppercase tracking-widest font-black flex items-center gap-1 active-spring"
-                    :class="activeProjectViews[project.id] === 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
-                  >
-                    Blueprint <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse inline-block"></span>
-                  </button>
-                </div>
-
                 <!-- Description -->
-                <p v-if="activeProjectViews[project.id] !== 'blueprint'" class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-90 max-w-sm">
+                <p class="text-on-surface-variant text-[11px] leading-relaxed font-body font-medium opacity-90 max-w-sm">
                   {{ project.description }}
                 </p>
-
-                <!-- Blueprint View -->
-                <div v-else class="flex flex-col gap-1.5 mb-2 text-left font-mono text-[8px] max-w-sm">
-                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
-                    <span class="text-primary font-black block">⚡ AI CORE:</span>
-                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ai }}</span>
-                  </div>
-                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
-                    <span class="text-primary font-black block">⚙️ SCALE LAYER:</span>
-                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.scalability }}</span>
-                  </div>
-                  <div class="p-1.5 border border-primary/10 rounded bg-surface-container-high/40 hover:bg-surface-container-high transition-colors">
-                    <span class="text-primary font-black block">👁️ UX INTERFACE:</span>
-                    <span class="text-on-surface-variant leading-tight block mt-0.5">{{ project.blueprint?.ux }}</span>
-                  </div>
-                </div>
               </div>
 
               <div>
