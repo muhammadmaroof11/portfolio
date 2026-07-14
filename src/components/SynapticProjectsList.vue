@@ -792,20 +792,6 @@ onBeforeUnmount(() => {
         </h2>
       </div>
 
-      <!-- Mobile Challenge Filter Pills -->
-      <div class="flex items-center justify-center gap-1.5 overflow-x-auto scrollbar-none py-2 mb-6 max-w-full">
-        <button 
-          v-for="ch in challenges" 
-          :key="ch"
-          @click="selectedChallenge = ch"
-          class="text-[8px] sm:text-[9px] font-black tracking-[0.12em] px-3 py-1.5 uppercase transition-all duration-300 whitespace-nowrap active-spring rounded-full border shrink-0"
-          :class="selectedChallenge === ch 
-            ? 'bg-primary text-on-primary border-primary shadow-md shadow-primary/10'
-            : 'bg-surface-container-high/30 text-on-surface/60 border-primary/5 hover:bg-surface-container-high/60'"
-        >
-          {{ ch }}
-        </button>
-      </div>
 
       <!-- Scrollable card grid (Merged Card + Archive layout for Mobile & Tablet) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 md:gap-6">
@@ -933,21 +919,7 @@ onBeforeUnmount(() => {
     <!-- Pinned viewport container with calc(100vh - 80px) to clear navbar -->
     <div ref="pinnedRef" class="hidden lg:flex pinned-container h-[calc(100vh-80px)] w-full relative items-center justify-center overflow-hidden" :style="{ background: 'var(--color-background)' }">
       
-      <!-- Desktop Challenge Filter Deck (High-Tech HUD sidebar/panel look) -->
-      <div class="absolute top-6 left-6 z-40 flex flex-col gap-2 pointer-events-auto bg-surface-container-low/80 backdrop-blur-md border border-primary/15 p-3 rounded-xl max-w-[170px] text-left">
-        <span class="text-[7px] font-mono text-primary font-black uppercase tracking-wider block mb-1">// CHALLENGE SELECTOR</span>
-        <div class="flex flex-col gap-1">
-          <button 
-            v-for="ch in challenges" 
-            :key="ch"
-            @click="selectedChallenge = ch"
-            class="text-left text-[8px] font-mono font-bold tracking-widest px-2.5 py-1.5 rounded transition-all uppercase leading-tight active-spring border border-transparent"
-            :class="selectedChallenge === ch ? 'bg-primary text-on-primary font-black' : 'text-on-surface/60 hover:bg-surface-container-high/40 hover:text-on-surface'"
-          >
-            {{ ch }}
-          </button>
-        </div>
-      </div>
+
 
       <!-- Section Heading inside the pinned screen-locked container -->
       <div class="absolute top-6 md:top-24 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
