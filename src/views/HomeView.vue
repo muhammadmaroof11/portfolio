@@ -14,6 +14,7 @@ import DecryptedText from '../components/DecryptedText.vue'
 import ProjectsTable from '../components/ProjectsTable.vue'
 import SynapticProjectsList from '../components/SynapticProjectsList.vue'
 import FaqAccordion from '../components/FaqAccordion.vue'
+import SystemsSimulator from '../components/SystemsSimulator.vue'
 
 const iconMap = { Globe, Smartphone, Cpu, Zap, Gamepad2, Code, User, Target }
 import meImage from '../assets/me.webp'
@@ -739,6 +740,11 @@ onBeforeUnmount(() => {
             </div>
          </div>
        </div>
+    </section>
+
+    <!-- SYSTEMS OPTIMIZATION SIMULATOR -->
+    <section id="simulator" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 max-w-5xl mx-auto relative layer-base scroll-mt-32 gsap-reveal">
+      <SystemsSimulator />
     </section>
 
     <!-- OUTCOME-DRIVEN TESTIMONIALS -->
