@@ -35,6 +35,21 @@ const faqs = [
     category: "audit"
   },
   {
+    q: "Do you build cross-platform mobile apps?",
+    a: "Yes, I develop premium mobile experiences using Capacitor and Flutter. This allows compiling to native iOS and Android binaries from a unified codebase, saving substantial startup resources while keeping rendering and hardware plugin integration native-grade.",
+    category: "mobile"
+  },
+  {
+    q: "How do you ensure data security and compliance?",
+    a: "Security is an architectural pillar, not an afterthought. I design schemas following Row-Level Security (RLS) policies on Supabase, configure proper CORS parameters, enforce HTTPS and token-based state authorization, and audit third-party dependency vulnerabilities regularly.",
+    category: "security"
+  },
+  {
+    q: "Do you work with startups or enterprise clients?",
+    a: "Both. I help startups design 0-to-1 MVP architectures that scale cleanly without massive cloud overhead, and I consult for enterprises to optimize database throttling, speed up slow user interfaces, and automate operations.",
+    category: "clients"
+  },
+  {
     q: "What is your contract availability and booking process?",
     a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability.",
     category: "availability"

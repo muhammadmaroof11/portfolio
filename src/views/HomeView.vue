@@ -2,7 +2,7 @@
 import { onMounted, ref, nextTick, onBeforeUnmount, computed } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
-import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code, User, Target } from 'lucide-vue-next'
+import { ArrowRight, Download, Terminal, Cpu, Smartphone, Globe, Zap, Gamepad2, Code, User, Target, ChevronDown } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { defineAsyncComponent } from 'vue'
@@ -88,6 +88,26 @@ const testimonials = [
     quote: 'Thanks to the Capacitor-based mobile layout and Supabase real-time Dispatch core Maroof architected, our delivery app launched smoothly and scaled without hiccups.',
     author: 'Sara Chen',
     role: 'Founder, FoodLink'
+  }
+]
+
+const homeActiveFaqIdx = ref(null)
+const homeFaqs = [
+  {
+    q: "What technologies are in your core tech stack?",
+    a: "My architectural core is built on Vue 3 (Composition API, Pinia) and React for user interfaces, styled via utility grids or vanilla CSS tokens. On the server, I design backend microservices using Node.js and Python, handle persistence with Supabase/PostgreSQL/MongoDB, package runtimes in Docker, and orchestrate automated AI workflows with n8n."
+  },
+  {
+    q: "What does a 'Digital Architect' actually do?",
+    a: "Unlike a standard developer who solely writes user-facing client code, a Digital Architect bridges frontend interaction design, backend service reliability, and database indexing. I design system blueprints, profile and remove server/rendering bottlenecks, structure secure auth schemas, and guarantee high system availability under heavy loads."
+  },
+  {
+    q: "How do you approach Agentic AI integration?",
+    a: "We move past simple prompt engineering to build production-grade autonomous workflow engines. This includes setting up secure vector databases (RAG) using pgvector or Pinecone, orchestrating multi-agent decision systems in Python or n8n, deploying real-time voice agents, and automating corporate manual operations to save hours of human labor."
+  },
+  {
+    q: "What is your contract availability and booking process?",
+    a: "I am currently based at Byte Force, but maintain capacity for selective startup consultation, systems audits, and architecture design workshops. Project slots are strictly limited to ensure engineering quality. Use the 'Initiate Protocol' CTA or direct signals (email/voice) to request availability."
   }
 ]
 
@@ -809,6 +829,63 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- HOMEPAGE FAQ SECTION -->
+    <section id="homepage-faq" class="mt-24 md:mt-32 lg:mt-40 xl:mt-48 relative layer-base scroll-mt-32">
+      <div class="mb-12 md:mb-20 text-center">
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-4 block">FREQUENT DEBRIEFS</span>
+        <h2 class="font-headline text-4xl md:text-5xl lg:text-6xl font-black tracking-tight uppercase text-on-surface">
+          SYSTEM <span class="text-primary italic">FAQ</span>
+        </h2>
+      </div>
+
+      <div class="max-w-4xl mx-auto flex flex-col gap-4 text-left">
+        <div 
+          v-for="(faq, idx) in homeFaqs" 
+          :key="faq.q"
+          class="p-5 border border-primary/10 bg-surface-container-low/40 rounded-2xl overflow-hidden transition-all duration-300 shadow-md cursor-pointer select-none"
+          :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
+          :class="[
+            themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : 
+            themeStore.currentStyle === 'street' ? 'street-card' : 'hover:border-primary/30',
+            homeActiveFaqIdx === idx ? 'border-primary/45 bg-surface-container-low/80 ring-1 ring-primary/10' : ''
+          ]"
+          @click="homeActiveFaqIdx = homeActiveFaqIdx === idx ? null : idx"
+        >
+          <div class="flex items-center justify-between gap-4">
+            <h3 class="font-headline font-black text-sm sm:text-base md:text-lg uppercase tracking-tight text-on-surface leading-tight">
+              {{ faq.q }}
+            </h3>
+            <ChevronDown 
+              class="w-5 h-5 text-on-surface-variant/60 transition-transform duration-300 shrink-0"
+              :class="{ 'rotate-180 text-primary': homeActiveFaqIdx === idx }"
+            />
+          </div>
+
+          <div 
+            class="transition-all duration-500 ease-in-out overflow-hidden"
+            :style="{ maxHeight: homeActiveFaqIdx === idx ? '200px' : '0px' }"
+          >
+            <div class="pt-4 mt-4 border-t border-on-surface/5">
+              <p class="text-on-surface-variant text-xs sm:text-sm font-body font-medium leading-relaxed opacity-90">
+                {{ faq.a }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINK TO FULL FAQ PAGE -->
+      <div class="text-center mt-10">
+        <router-link 
+          to="/faq" 
+          class="font-mono text-xs font-black uppercase text-primary tracking-widest inline-flex items-center gap-2 hover:underline"
+        >
+          VIEW COMPLETE FAQ REGISTRY
+          <ArrowRight class="w-4 h-4" />
+        </router-link>
       </div>
     </section>
 
