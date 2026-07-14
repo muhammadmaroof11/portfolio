@@ -144,7 +144,8 @@ const filteredProjects = computed(() => {
         v-for="project in filteredProjects"
         :key="project.id"
         class="group"
-            <!-- Collapsed row: always visible -->
+      >
+        <!-- Collapsed row: always visible -->
         <button
           class="w-full flex items-center gap-3 py-3.5 px-1 text-left transition-all duration-200"
           :class="expandedRows.has(project.id) ? 'text-primary' : ''"
