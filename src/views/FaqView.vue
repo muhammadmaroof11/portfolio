@@ -74,9 +74,9 @@ onBeforeUnmount(() => {
   <div ref="viewRoot" class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-16 md:pt-24 pb-16 overflow-visible relative">
     
     <!-- HEADER -->
-    <header class="mb-12 md:mb-16 gsap-reveal max-w-4xl mx-auto">
-      <div class="text-left">
-        <span class="app-badge mb-4 block inline-block" :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">COMMON QUESTIONS</span>
+    <header class="mb-12 md:mb-16 gsap-reveal">
+      <div class="max-w-3xl text-left">
+        <span class="app-badge mb-4 block inline-block" :style="{ borderRadius: 'calc(var(--app-radius) / 4)' }">SYSTEM DEBRIEFING</span>
         <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-[80px] font-headline font-black text-on-surface tracking-[calc(-0.06em)] leading-none mb-6 uppercase flex flex-wrap items-baseline gap-x-3">
           <span>FREQUENT</span>
           <FuzzyText 
@@ -90,11 +90,11 @@ onBeforeUnmount(() => {
             :fuzz-range="18"
             :enable-hover="true"
           >
-            QUESTIONS.
+            QUERIES.
           </FuzzyText>
         </h1>
         <p class="text-on-surface-variant text-base md:text-lg leading-relaxed font-body max-w-xl opacity-80 font-medium">
-          Clear answers about my services, custom workflow automation, app development, and how we can work together.
+          Detailed technical blueprints, stacks, philosophies, and availability queries decoded for direct client debriefing.
         </p>
       </div>
     </header>
