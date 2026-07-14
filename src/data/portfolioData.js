@@ -284,6 +284,36 @@ export const portfolioData = {
       a: "Simply send me a message through the contact page or email. We will schedule a quick call to talk about your goals, scope the requirements, and set up a plan to deliver results for your business.",
       category: "availability",
       featured: true
+    },
+    {
+      q: "What is your typical turnaround time for a project?",
+      a: "Turnaround times vary based on scope. A simple custom website can take 2 to 3 weeks, while a more complex web application or mobile app usually takes 6 to 12 weeks. I provide a detailed, milestone-based timeline before starting.",
+      category: "timeline"
+    },
+    {
+      q: "Do you offer post-launch support and maintenance?",
+      a: "Yes. I provide 30 days of free support to resolve any unexpected issues. After that, I offer flexible maintenance plans to keep your software secure, updated, and running smoothly.",
+      category: "support"
+    },
+    {
+      q: "Can you work with my existing in-house technical team?",
+      a: "Absolutely. I can step in as a contract developer or consultant to collaborate with your team, align on coding standards, write clean documentation, and accelerate feature deliveries.",
+      category: "collaboration"
+    },
+    {
+      q: "How do you handle project pricing?",
+      a: "I offer both fixed-price project contracts and monthly retainer models, depending on the scope and requirements. All pricing is upfront and transparent, with no hidden fees.",
+      category: "pricing"
+    },
+    {
+      q: "Can you help migrate our outdated systems to the cloud?",
+      a: "Yes. I have extensive experience migrating legacy on-premise applications and outdated databases to secure cloud environments like AWS, Google Cloud, or Vercel, ensuring zero downtime during the transition.",
+      category: "cloud"
+    },
+    {
+      q: "Will I own the source code of the project?",
+      a: "Yes, 100%. Once the project is completed and the final payment is cleared, full ownership and intellectual property rights of the source code are transferred to you.",
+      category: "ownership"
     }
   ]
 };
