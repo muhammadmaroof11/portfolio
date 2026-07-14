@@ -19,15 +19,12 @@ import meImage from '../assets/me.webp'
 
 const themeStore = useThemeStore()
 const { profile, projects } = portfolioData
-const featuredProjects = projects.filter(p => p.featured)
 const nameParts = profile.name.split(' ')
 const firstWord = nameParts[0].split('')
-const restOfName = nameParts.slice(1).join(' ').split('')
 
 const isDesktop = ref(window.innerWidth >= 1024)
 let resizeHandler = null
 
-const heroRef = ref(null)
 const servicesRef = ref(null)
 const offeredServicesRef = ref(null)
 const projectsRef = ref(null)
@@ -270,7 +267,7 @@ onBeforeUnmount(() => {
 
     <div class="max-w-[1800px] mx-auto px-6 md:px-12 xl:px-20 pt-6 md:pt-16 pb-16 overflow-visible">
     <!-- HERO SECTION -->
-    <header ref="heroRef" class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
+    <header class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
       <!-- 3D Canvas Background -->
       <PolymorphicCanvas />
 
