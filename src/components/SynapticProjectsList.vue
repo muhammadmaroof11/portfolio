@@ -5,7 +5,6 @@ import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Cpu, Shield, ChevronRight, Zap } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import TextPressure from './TextPressure.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -786,11 +785,11 @@ onBeforeUnmount(() => {
     <!-- ===== MOBILE / TABLET: Scrollable project cards (no heavy animation) ===== -->
     <div class="lg:hidden px-4 sm:px-6 md:px-10 pb-12">
       <!-- Section heading -->
-      <div class="text-center mb-4 mt-12 md:mt-16">
-        <h2 class="font-headline text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight text-on-surface">ENGINEERED <span class="text-primary italic">PROJECTS.</span></h2>
-        <div class="h-[1.5px] mt-3 rounded-full mx-auto animate-pulse"
-          :style="{ background: themeStore.currentStyle === 'street' ? '#00ffff' : '#22c55e', width: '60px' }"
-        />
+      <div class="text-center mb-6 mt-12 md:mt-16">
+        <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-2 block">PORTFOLIO</span>
+        <h2 class="font-headline text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-on-surface">
+          FEATURED <span class="text-primary italic">PROJECTS</span>
+        </h2>
       </div>
 
       <!-- Mobile Challenge Filter Pills -->
@@ -956,20 +955,11 @@ onBeforeUnmount(() => {
 
       <!-- Section Heading inside the pinned screen-locked container -->
       <div class="absolute top-6 md:top-24 lg:top-10 xl:top-12 left-0 right-0 z-40 flex flex-col items-center justify-center px-4 pointer-events-none">
-        <div class="relative h-[30px] md:h-[45px] lg:h-[50px] xl:h-[55px] w-full flex items-center justify-center max-w-[700px]">
-          <TextPressure
-            text="ENGINEERED PROJECTS."
-            fontFamily="Roboto Flex"
-            fontUrl="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wdth,wght@8..144,25..151,100..1000&display=swap"
-            :flex="true"
-            :alpha="false"
-            :stroke="false"
-            :width="true"
-            :weight="true"
-            :italic="true"
-            textColor="var(--color-on-surface)"
-            :minFontSize="20"
-          />
+        <div class="text-center">
+          <span class="text-primary font-black tracking-[0.4em] uppercase text-[9px] md:text-[10px] mb-1 block">PORTFOLIO</span>
+          <h2 class="font-headline text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-black uppercase tracking-tight text-on-surface">
+            FEATURED <span class="text-primary italic">PROJECTS</span>
+          </h2>
         </div>
         <div
           class="h-[1.5px] mt-2 rounded-full synaptic-heading-bar opacity-75 animate-pulse"
