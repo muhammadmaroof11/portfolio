@@ -1020,8 +1020,8 @@ onBeforeUnmount(() => {
                 : 'opacity-0 scale-95 translate-y-36 blur-[10px] pointer-events-none z-10',
           // Card on right side (even index)
             index % 2 === 0
-              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-14 xl:pr-20 lg:pt-14 xl:pt-18'
-              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-[15%] xl:pl-[18%] lg:pt-14 xl:pt-18'
+              ? 'items-center justify-center lg:items-center lg:justify-end px-6 lg:pb-0 lg:pr-[11%] xl:pr-[13%] lg:pt-14 xl:pt-18'
+              : 'items-center justify-center lg:items-center lg:justify-start px-6 lg:pb-0 lg:pl-[11%] xl:pl-[13%] lg:pt-14 xl:pt-18'
           ]"
         >
           <!-- Cinematic HUD styled Card Box (Glassmorphism look from sample.mp4) -->
