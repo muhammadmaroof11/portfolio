@@ -31,22 +31,45 @@ const showError = ref(false)
 const handleSubmit = async () => {
   if (!form.value.name || !form.value.email || !form.value.message) {
     showError.value = true
-    setTimeout(() => showError.value = false, 3000)
+    setTimeout(() => showError.value = false, 5000)
     return
   }
 
   isSubmitting.value = true
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 2000))
-  isSubmitting.value = false
-  submitted.value = true
+  showError.value = false
   
-  // Show toast for 5 seconds
-  setTimeout(() => {
-    submitted.value = false
-  }, 5000)
+  try {
+    const response = await fetch('https://formspree.io/f/mdaqebzy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: form.value.name,
+        email: form.value.email,
+        message: form.value.message
+      })
+    })
 
-  form.value = { name: '', email: '', message: '' }
+    if (response.ok) {
+      submitted.value = true
+      form.value = { name: '', email: '', message: '' }
+      
+      // Auto-clear success message after 5 seconds
+      setTimeout(() => {
+        submitted.value = false
+      }, 5000)
+    } else {
+      showError.value = true
+      setTimeout(() => showError.value = false, 5000)
+    }
+  } catch (error) {
+    showError.value = true
+    setTimeout(() => showError.value = false, 5000)
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 onMounted(async () => {
@@ -225,38 +248,54 @@ onBeforeUnmount(() => {
         <div class="absolute top-4 right-4 w-4 h-4 border-t border-r opacity-25 border-primary"></div>
         <div class="absolute bottom-4 left-4 w-4 h-4 border-b border-l opacity-25 border-primary"></div>
         <div class="absolute bottom-4 right-4 w-4 h-4 border-b border-r opacity-25 border-primary"></div>
+        <!-- Success overlay moved outside form, covering the whole card -->
+        <transition 
+          enter-active-class="transition-all duration-500 ease-out"
+          enter-from-class="opacity-0 -translate-y-10 scale-95"
+          enter-to-class="opacity-100 translate-y-0 scale-100"
+          leave-active-class="transition-all duration-300 ease-in"
+          leave-from-class="opacity-100 translate-y-0 scale-100"
+          leave-to-class="opacity-0 translate-y-10 scale-95"
+        >
+          <div v-if="submitted" class="absolute inset-0 z-50 flex items-center justify-center bg-surface-container-highest/85 backdrop-blur-md rounded-[2rem] md:rounded-[3rem]">
+            <div class="p-8 rounded-[1.5rem] bg-primary text-on-primary text-center shadow-2xl border-4 border-white/20">
+              <Send class="w-12 h-12 mx-auto mb-4 animate-bounce" />
+              <h3 class="text-xl font-black uppercase tracking-widest mb-2">Message Sent</h3>
+              <p class="opacity-80 uppercase text-[9px] tracking-widest">Thank you! I will get back to you shortly.</p>
+            </div>
+          </div>
+        </transition>
 
-        <h2 class="text-3xl md:text-4xl font-headline font-black mb-6 md:mb-8 tracking-tighter uppercase leading-[0.9] text-on-surface">Send a <br/> <span class="text-primary italic">Message</span></h2>
+        <h2 class="text-3xl md:text-4xl font-headline font-black mb-6 md:mb-8 tracking-tighter uppercase leading-[0.9] text-on-surface transition-all duration-500"
+          :class="{ 'opacity-0 invisible pointer-events-none': submitted }">Send a <br/> <span class="text-primary italic">Message</span></h2>
         
         <form @submit.prevent="handleSubmit" class="space-y-6 md:space-y-8 relative z-10">
-          <transition 
-            enter-active-class="transition-all duration-500 ease-out"
-            enter-from-class="opacity-0 -translate-y-10 scale-90"
-            enter-to-class="opacity-100 translate-y-0 scale-100"
-            leave-active-class="transition-all duration-300 ease-in"
-            leave-from-class="opacity-100 translate-y-0 scale-100"
-            leave-to-class="opacity-0 translate-y-10 scale-90"
-          >
-            <div v-if="submitted" class="absolute inset-0 z-50 flex items-center justify-center bg-surface-container-highest/80 backdrop-blur-md rounded-[2rem] md:rounded-[3rem]">
-              <div class="p-8 rounded-[1.5rem] bg-primary text-on-primary text-center shadow-2xl border-4 border-white/20">
-                <Send class="w-12 h-12 mx-auto mb-4 animate-bounce" />
-                <h3 class="text-xl font-black uppercase tracking-widest mb-2">Message Sent</h3>
-                <p class="opacity-80 uppercase text-[9px] tracking-widest">Thank you! I will get back to you shortly.</p>
+          <div class="space-y-6 md:space-y-8 transition-all duration-500"
+            :class="{ 'opacity-0 invisible pointer-events-none': submitted }">
+            <!-- Transmission Error Alert -->
+            <transition 
+              enter-active-class="transition-all duration-300 ease-out"
+              enter-from-class="opacity-0 -translate-y-4 scale-95"
+              enter-to-class="opacity-100 translate-y-0 scale-100"
+              leave-active-class="transition-all duration-200 ease-in"
+              leave-from-class="opacity-100 translate-y-0 scale-100"
+              leave-to-class="opacity-0 -translate-y-4 scale-95"
+            >
+              <div v-if="showError" class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 font-mono text-[10px] uppercase tracking-wider flex items-center gap-2">
+                <span>// ERROR: SIGNAL_TRANSMISSION_FAILED. PLEASE TRY AGAIN.</span>
               </div>
-            </div>
-          </transition>
+            </transition>
 
-          <div v-if="!submitted" class="space-y-6 md:space-y-8">
             <div class="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               <div class="space-y-3 relative group/input">
                 <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Name</label>
-                <input v-model="form.name" type="text" placeholder="Enter your name" required
+                <input v-model="form.name" name="name" type="text" placeholder="Enter your name" required
                   class="w-full px-5 py-3.5 rounded-xl bg-surface-container border-2 border-primary/5 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-body text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-inner dark:bg-black/20" />
                 <div class="absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500 origin-center"></div>
               </div>
               <div class="space-y-3 relative group/input">
                 <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">email</label>
-                <input v-model="form.email" type="email" placeholder="your.email@domain.com" required
+                <input v-model="form.email" name="email" type="email" placeholder="your.email@domain.com" required
                   class="w-full px-5 py-3.5 rounded-xl bg-surface-container border-2 border-primary/5 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-body text-base text-on-surface placeholder:text-on-surface-variant/40 shadow-inner dark:bg-black/20" />
                 <div class="absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500 origin-center"></div>
               </div>
@@ -264,7 +303,7 @@ onBeforeUnmount(() => {
             
             <div class="space-y-3 relative group/input">
               <label class="font-black text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-on-surface opacity-60 px-4">Your Message</label>
-              <textarea v-model="form.message" rows="3" placeholder="Write your message here..." required
+              <textarea v-model="form.message" name="message" rows="3" placeholder="Write your message here..." required
                 class="w-full px-5 py-3.5 bg-surface-container border-2 border-primary/5 focus:border-primary focus:ring-4 focus:ring-primary/10 outline-none transition-all font-body text-base text-on-surface placeholder:text-on-surface-variant/40 resize-none shadow-inner dark:bg-black/20"
                 :style="{ borderRadius: 'calc(var(--app-radius) / 1.5)' }"></textarea>
               <div class="absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-focus-within/input:scale-x-100 transition-transform duration-500 origin-center"></div>
