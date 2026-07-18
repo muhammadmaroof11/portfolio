@@ -6,7 +6,6 @@ import {
   Braces, Layers, Cpu, Database, Paintbrush, Smartphone,
   CheckCircle, ShieldAlert
 } from 'lucide-vue-next'
-import gsap from 'gsap'
 import FuzzyText from '../components/FuzzyText.vue'
 
 const themeStore = useThemeStore()
@@ -300,20 +299,24 @@ watch(filteredSkills, (newSkills) => {
 onMounted(async () => {
   await nextTick()
 
-  const root = viewRoot.value
-  if (!root) return
-  
-  // Hero reveal animation
-  gsap.fromTo(root.querySelectorAll('.skills-header > *'), 
-    { autoAlpha: 0, y: 30 },
-    { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out' }
-  )
+  setTimeout(async () => {
+    const root = viewRoot.value
+    if (!root) return
+    
+    const { default: g } = await import('gsap')
 
-  // Sub-console grids stagger entry
-  gsap.fromTo(root.querySelectorAll('.gsap-console-enter'),
-    { autoAlpha: 0, scale: 0.97 },
-    { autoAlpha: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' }
-  )
+    // Hero reveal animation
+    g.fromTo(root.querySelectorAll('.skills-header > *'), 
+      { autoAlpha: 0, y: 30 },
+      { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out' }
+    )
+
+    // Sub-console grids stagger entry
+    g.fromTo(root.querySelectorAll('.gsap-console-enter'),
+      { autoAlpha: 0, scale: 0.97 },
+      { autoAlpha: 1, scale: 1, duration: 0.8, stagger: 0.12, ease: 'power3.out' }
+    )
+  }, 100)
 })
 
 onBeforeUnmount(() => {
@@ -419,6 +422,8 @@ onBeforeUnmount(() => {
                     ></div>
                     <img v-else :src="skill.iconUrl || `https://skillicons.dev/icons?i=${skill.slug}`" 
                       :alt="skill.name" 
+                      width="40"
+                      height="40"
                       class="w-full h-full object-contain" />
                   </div>
 

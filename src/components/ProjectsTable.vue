@@ -66,7 +66,7 @@ const filteredProjects = computed(() => {
         </div>
         <!-- Search bar -->
         <div class="relative flex items-center bg-surface-container-high/40 border border-primary/10 rounded-xl px-4 py-2.5 min-w-[240px] backdrop-blur-md">
-          <Search class="w-4 h-4 text-on-surface/40 mr-3 shrink-0" />
+          <Search class="w-4 h-4 text-on-surface/65 mr-3 shrink-0" />
           <input 
             v-model="searchQuery" 
             type="text" 
@@ -78,7 +78,7 @@ const filteredProjects = computed(() => {
 
       <!-- Filter Mode Selector -->
       <div class="flex items-center gap-4 text-[10px] font-mono mb-2">
-        <span class="text-on-surface/40 uppercase tracking-wider font-bold">Filter By:</span>
+        <span class="text-on-surface/70 uppercase tracking-wider font-bold">Filter By:</span>
         <div class="flex gap-2">
           <button 
             @click="filterMode = 'challenge'" 
@@ -136,7 +136,7 @@ const filteredProjects = computed(() => {
     <!-- ===== MOBILE / TABLET: Accordion list layout (< lg) ===== -->
     <div class="lg:hidden divide-y divide-primary/10 border-t border-primary/10">
       <!-- Empty state -->
-      <div v-if="filteredProjects.length === 0" class="py-10 text-center text-on-surface/40 font-body font-semibold uppercase tracking-wider text-xs">
+      <div v-if="filteredProjects.length === 0" class="py-10 text-center text-on-surface/65 font-body font-semibold uppercase tracking-wider text-xs">
         No matching configurations found in archive database.
       </div>
 
@@ -152,7 +152,7 @@ const filteredProjects = computed(() => {
           @click="toggleRow(project.id)"
         >
           <!-- Year badge -->
-          <span class="font-mono text-[9px] font-bold tracking-wider text-on-surface/40 shrink-0 w-8"
+          <span class="font-mono text-[9px] font-bold tracking-wider text-on-surface/65 shrink-0 w-8"
             :class="expandedRows.has(project.id) ? 'text-primary' : ''"
           >{{ project.year }}</span>
 
@@ -182,6 +182,7 @@ const filteredProjects = computed(() => {
             v-if="project.link && project.link !== '#'"
             :href="project.link"
             target="_blank"
+            :aria-label="'Visit ' + project.title + ' website'"
             @click.stop
             class="inline-flex items-center justify-center w-6 h-6 rounded-full border border-primary/20 text-on-surface/60 hover:text-on-primary hover:bg-primary hover:border-primary transition-all duration-300 shrink-0"
           >
@@ -189,7 +190,7 @@ const filteredProjects = computed(() => {
           </a>
           <ChevronDown
             v-else
-            class="w-4 h-4 text-on-surface/30 shrink-0 transition-transform duration-300"
+            class="w-4 h-4 text-on-surface/65 shrink-0 transition-transform duration-300"
             :class="expandedRows.has(project.id) ? 'rotate-180 text-primary' : ''"
           />
         </button>
@@ -215,7 +216,7 @@ const filteredProjects = computed(() => {
           <!-- Lock label if no link -->
           <span
             v-if="!project.link || project.link === '#'"
-            class="inline-block mt-2 text-[7px] font-black uppercase tracking-wider text-on-surface/40 bg-surface-container-high px-2 py-1 rounded-md"
+            class="inline-block mt-2 text-[7px] font-black uppercase tracking-wider text-on-surface/65 bg-surface-container-high px-2 py-1 rounded-md"
           >{{ project.hoverText || 'PRIVATE' }}</span>
         </div>
       </div>
@@ -225,7 +226,7 @@ const filteredProjects = computed(() => {
     <div class="hidden lg:block w-full overflow-x-auto scrollbar-none border-t border-primary/10">
       <table class="w-full min-w-full text-left border-collapse">
         <thead>
-          <tr class="border-b border-primary/10 text-on-surface/40 uppercase font-black text-[9px] tracking-[0.3em]">
+          <tr class="border-b border-primary/10 text-on-surface/65 uppercase font-black text-[9px] tracking-[0.3em]">
             <th class="py-5 lg:py-6 px-6 w-[10%]">YEAR</th>
             <th class="py-5 lg:py-6 px-6 w-[25%]">PROJECT</th>
             <th class="py-5 lg:py-6 px-6 w-[35%]">ARCHITECTURE / DESCRIPTION</th>
@@ -287,12 +288,13 @@ const filteredProjects = computed(() => {
                 v-if="project.link && project.link !== '#'" 
                 :href="project.link" 
                 target="_blank"
+                :aria-label="'Visit ' + project.title + ' website'"
                 class="inline-flex items-center justify-center w-8 h-8 rounded-full border border-primary/20 text-on-surface/70 hover:text-on-primary hover:bg-primary hover:border-primary transition-all duration-300"
                 :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : '' }"
               >
                 <ArrowUpRight class="w-4 h-4" />
               </a>
-              <span v-else class="text-[8px] font-black uppercase tracking-wider text-on-surface/40 bg-surface-container-high px-2.5 py-1.5 rounded-md">
+              <span v-else class="text-[8px] font-black uppercase tracking-wider text-on-surface/65 bg-surface-container-high px-2.5 py-1.5 rounded-md">
                 {{ project.hoverText || 'LOCK' }}
               </span>
             </td>
@@ -300,7 +302,7 @@ const filteredProjects = computed(() => {
 
           <!-- Empty search result row -->
           <tr v-if="filteredProjects.length === 0">
-            <td colspan="5" class="py-12 text-center text-on-surface/40 font-body font-semibold uppercase tracking-wider text-xs">
+            <td colspan="5" class="py-12 text-center text-on-surface/65 font-body font-semibold uppercase tracking-wider text-xs">
               No matching configurations found in archive database.
             </td>
           </tr>

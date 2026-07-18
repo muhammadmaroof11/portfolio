@@ -11,10 +11,10 @@ import ThreeDCarousel from '../components/ThreeDCarousel.vue'
 import LivePortraitBackground from '../components/LivePortraitBackground.vue'
 const FuzzyText = defineAsyncComponent(() => import('../components/FuzzyText.vue'))
 import DecryptedText from '../components/DecryptedText.vue'
-import ProjectsTable from '../components/ProjectsTable.vue'
-import SynapticProjectsList from '../components/SynapticProjectsList.vue'
-import FaqAccordion from '../components/FaqAccordion.vue'
-import SystemsSimulator from '../components/SystemsSimulator.vue'
+const ProjectsTable = defineAsyncComponent(() => import('../components/ProjectsTable.vue'))
+const SynapticProjectsList = defineAsyncComponent(() => import('../components/SynapticProjectsList.vue'))
+const FaqAccordion = defineAsyncComponent(() => import('../components/FaqAccordion.vue'))
+const SystemsSimulator = defineAsyncComponent(() => import('../components/SystemsSimulator.vue'))
 
 const iconMap = { Globe, Smartphone, Cpu, Zap, Gamepad2, Code, User, Target }
 import meImage from '../assets/me.webp'
@@ -27,6 +27,7 @@ const nameParts = profile.name.split(' ')
 const firstWord = nameParts[0].split('')
 
 const isDesktop = ref(window.innerWidth >= 1024)
+const isCanvasLoaded = ref(false)
 let resizeHandler = null
 
 const servicesRef = ref(null)
@@ -77,144 +78,171 @@ const homepageFaqs = computed(() => {
 onMounted(async () => {
   await nextTick()
 
-  const root = viewRoot.value
-  if (!root) return
-  
-  // Set initial states — scoped to this view's root to avoid bleed onto other pages
-  gsap.set(root.querySelectorAll('.gsap-reveal, .about-reveal'), { autoAlpha: 0, y: 30 })
-
-  // 1. Hero Content & Split-Character Reveal
-  gsap.to(root.querySelectorAll('.hero-title-char'), {
-    y: 0,
-    duration: 1.0,
-    stagger: 0.025,
-    ease: 'power4.out'
-  })
-
-  gsap.to(root.querySelectorAll('.hero-content > *:not(h1)'), {
-    y: 0,
-    autoAlpha: 1,
-    duration: 0.8,
-    stagger: 0.12,
-    ease: 'power3.out'
-  })
-
-  // 2. Strategic Pillars Cards Reveal
-  gsap.to(root.querySelectorAll('.strategy-card'), {
-    scrollTrigger: {
-      trigger: servicesRef.value,
-      start: 'top 82%',
-    },
-    y: 0,
-    autoAlpha: 1,
-    duration: 0.8,
-    stagger: 0.15,
-    ease: 'power3.out',
-    onComplete: () => {
-      gsap.set(root.querySelectorAll('.strategy-card'), { clearProps: "all" })
+  // Lazy load 3D Canvas on user interaction or safety timeout
+  if (typeof window !== 'undefined') {
+    let loaded = false
+    const loadCanvas = () => {
+      if (loaded) return
+      loaded = true
+      isCanvasLoaded.value = true
+      // Clean up event listeners
+      window.removeEventListener('mousemove', loadCanvas)
+      window.removeEventListener('scroll', loadCanvas)
+      window.removeEventListener('touchstart', loadCanvas)
+      window.removeEventListener('click', loadCanvas)
+      clearTimeout(safetyTimeout)
     }
-  })
 
-  // 2a. About/Mentality Section Reveal
-  gsap.to(root.querySelectorAll('.about-reveal'), {
-    scrollTrigger: {
-      trigger: aboutRef.value,
-      start: 'top 82%',
-    },
-    y: 0,
-    autoAlpha: 1,
-    duration: 1.0,
-    stagger: 0.15,
-    ease: 'power3.out',
-    onComplete: () => {
-      gsap.set(root.querySelectorAll('.about-reveal'), { clearProps: "all" })
-    }
-  })
+    // Add interaction listeners
+    window.addEventListener('mousemove', loadCanvas, { passive: true })
+    window.addEventListener('scroll', loadCanvas, { passive: true })
+    window.addEventListener('touchstart', loadCanvas, { passive: true })
+    window.addEventListener('click', loadCanvas, { passive: true })
 
-  // 2b. Offered Services Carousel Reveal
-  gsap.to(root.querySelectorAll('.offered-carousel-reveal'), {
-    scrollTrigger: {
-      trigger: offeredServicesRef.value,
-      start: 'top 82%',
-    },
-    y: 0,
-    scale: 1,
-    autoAlpha: 1,
-    duration: 1.2,
-    ease: 'power4.out',
-    onComplete: () => {
-      gsap.set(root.querySelectorAll('.offered-carousel-reveal'), { clearProps: "all" })
-    }
-  })
+    // Safety fallback timeout
+    const safetyTimeout = setTimeout(loadCanvas, 6000)
+  }
 
-  // 3. Dynamic Skew-on-Scroll for Marquee
-  const marqueeSec = root.querySelector('.marquee-section')
-  if (marqueeSec) {
-    let proxy = { skew: 0 }
-    let skewSetter = gsap.quickSetter(marqueeSec, "skewY", "deg")
-    let clamp = gsap.utils.clamp(-6, 6)
+  // Delay GSAP initialization to prevent main thread blocking during page paint
+  setTimeout(() => {
+    const root = viewRoot.value
+    if (!root) return
 
-    ScrollTrigger.create({
-      onUpdate: (self) => {
-        let skew = clamp(self.getVelocity() / -400)
-        if (Math.abs(skew) > Math.abs(proxy.skew)) {
-          proxy.skew = skew
-          gsap.to(proxy, {
-            skew: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            overwrite: "auto",
-            onUpdate: () => skewSetter(proxy.skew)
-          })
-        }
+    // Set initial states — scoped to this view's root to avoid bleed onto other pages
+    gsap.set(root.querySelectorAll('.gsap-reveal, .about-reveal'), { autoAlpha: 0, y: 30 })
+
+    // 1. Hero Content & Split-Character Reveal
+    gsap.to(root.querySelectorAll('.hero-title-char'), {
+      y: 0,
+      duration: 1.0,
+      stagger: 0.025,
+      ease: 'power4.out'
+    })
+
+    gsap.to(root.querySelectorAll('.hero-content > *:not(h1)'), {
+      y: 0,
+      autoAlpha: 1,
+      duration: 0.8,
+      stagger: 0.12,
+      ease: 'power3.out'
+    })
+
+    // 2. Strategic Pillars Cards Reveal
+    gsap.to(root.querySelectorAll('.strategy-card'), {
+      scrollTrigger: {
+        trigger: servicesRef.value,
+        start: 'top 82%',
+      },
+      y: 0,
+      autoAlpha: 1,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(root.querySelectorAll('.strategy-card'), { clearProps: "all" })
       }
     })
-  }
 
+    // 2a. About/Mentality Section Reveal
+    gsap.to(root.querySelectorAll('.about-reveal'), {
+      scrollTrigger: {
+        trigger: aboutRef.value,
+        start: 'top 82%',
+      },
+      y: 0,
+      autoAlpha: 1,
+      duration: 1.0,
+      stagger: 0.15,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(root.querySelectorAll('.about-reveal'), { clearProps: "all" })
+      }
+    })
 
-  // 5. Core Philosophy Cards - Bounce slide-up entry
-  gsap.from(root.querySelectorAll('.philosophy-card'), {
-    scrollTrigger: {
-      trigger: root.querySelector('.philosophy-card'),
-      start: 'top 90%',
-    },
-    y: 60,
-    scale: 0.94,
-    autoAlpha: 0,
-    duration: 0.8,
-    stagger: 0.15,
-    ease: 'back.out(1.5)',
-    onComplete: () => {
-      gsap.set(root.querySelectorAll('.philosophy-card'), { clearProps: "all" })
+    // 2b. Offered Services Carousel Reveal
+    gsap.to(root.querySelectorAll('.offered-carousel-reveal'), {
+      scrollTrigger: {
+        trigger: offeredServicesRef.value,
+        start: 'top 82%',
+      },
+      y: 0,
+      scale: 1,
+      autoAlpha: 1,
+      duration: 1.2,
+      ease: 'power4.out',
+      onComplete: () => {
+        gsap.set(root.querySelectorAll('.offered-carousel-reveal'), { clearProps: "all" })
+      }
+    })
+
+    // 3. Dynamic Skew-on-Scroll for Marquee
+    const marqueeSec = root.querySelector('.marquee-section')
+    if (marqueeSec) {
+      let proxy = { skew: 0 }
+      let skewSetter = gsap.quickSetter(marqueeSec, "skewY", "deg")
+      let clamp = gsap.utils.clamp(-6, 6)
+
+      ScrollTrigger.create({
+        onUpdate: (self) => {
+          let skew = clamp(self.getVelocity() / -400)
+          if (Math.abs(skew) > Math.abs(proxy.skew)) {
+            proxy.skew = skew
+            gsap.to(proxy, {
+              skew: 0,
+              duration: 0.8,
+              ease: "power3.out",
+              overwrite: "auto",
+              onUpdate: () => skewSetter(proxy.skew)
+            })
+          }
+        }
+      })
     }
-  })
 
-  // 6. Call To Action Panel - Scale up and glow activation
-  gsap.from(root.querySelector('.cta-box'), {
-    scrollTrigger: {
-      trigger: root.querySelector('.cta-box'),
-      start: 'top 88%',
-    },
-    scale: 0.95,
-    y: 40,
-    autoAlpha: 0,
-    duration: 1.0,
-    ease: 'power3.out',
-    onComplete: () => {
-      gsap.set(root.querySelector('.cta-box'), { clearProps: "transform" })
-    }
-  })
+    // 5. Core Philosophy Cards - Bounce slide-up entry
+    gsap.from(root.querySelectorAll('.philosophy-card'), {
+      scrollTrigger: {
+        trigger: root.querySelector('.philosophy-card'),
+        start: 'top 90%',
+      },
+      y: 60,
+      scale: 0.94,
+      autoAlpha: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      ease: 'back.out(1.5)',
+      onComplete: () => {
+        gsap.set(root.querySelectorAll('.philosophy-card'), { clearProps: "all" })
+      }
+    })
 
-  animateMetricNumber(metrics[activeMetricIdx.value].value)
-  metricInterval = setInterval(() => {
-    activeMetricIdx.value = (activeMetricIdx.value + 1) % metrics.length
+    // 6. Call To Action Panel - Scale up and glow activation
+    gsap.from(root.querySelector('.cta-box'), {
+      scrollTrigger: {
+        trigger: root.querySelector('.cta-box'),
+        start: 'top 88%',
+      },
+      scale: 0.95,
+      y: 40,
+      autoAlpha: 0,
+      duration: 1.0,
+      ease: 'power3.out',
+      onComplete: () => {
+        gsap.set(root.querySelector('.cta-box'), { clearProps: "transform" })
+      }
+    })
+
     animateMetricNumber(metrics[activeMetricIdx.value].value)
-  }, 4500)
+    metricInterval = setInterval(() => {
+      activeMetricIdx.value = (activeMetricIdx.value + 1) % metrics.length
+      animateMetricNumber(metrics[activeMetricIdx.value].value)
+    }, 4500)
 
-  resizeHandler = () => {
-    isDesktop.value = window.innerWidth >= 1024
-  }
-  window.addEventListener('resize', resizeHandler)
+    resizeHandler = () => {
+      isDesktop.value = window.innerWidth >= 1024
+    }
+    window.addEventListener('resize', resizeHandler)
+  }, 100)
 })
 
 // Externalized to portfolioData
@@ -239,7 +267,9 @@ onBeforeUnmount(() => {
     <!-- HERO SECTION -->
     <header class="relative min-h-[calc(100vh-120px)] flex items-center mb-12 md:mb-24 layer-base overflow-visible">
       <!-- 3D Canvas Background -->
-      <PolymorphicCanvas />
+      <transition name="fade-canvas">
+        <PolymorphicCanvas v-if="isCanvasLoaded" />
+      </transition>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center w-full relative overflow-visible">
         <div class="order-2 lg:order-1 lg:col-span-7 hero-content layer-content relative z-10 overflow-visible">
@@ -288,7 +318,7 @@ onBeforeUnmount(() => {
               class="px-2.5 py-1.5 text-[8px] md:text-[9px] font-mono font-bold uppercase tracking-widest rounded-full border transition-all active-spring"
               :class="activeAdventure === adv.id 
                 ? 'bg-primary text-on-primary border-primary shadow-md shadow-primary/10' 
-                : 'bg-surface-container-high/30 text-on-surface/50 border-primary/5 hover:bg-surface-container-high/60 hover:text-on-surface'"
+                : 'bg-surface-container-high/30 text-on-surface/65 border-primary/5 hover:bg-surface-container-high/60 hover:text-on-surface'"
             >
               {{ adv.label }}
             </button>
@@ -426,8 +456,7 @@ onBeforeUnmount(() => {
         <div class="marquee-content animate-scroll-left flex gap-10 md:gap-16 py-2">
           <div v-for="i in 2" :key="i" class="flex gap-10 md:gap-16">
             <span v-for="skill in portfolioData.skills" :key="skill.name" 
-              class="font-headline font-black text-2xl md:text-4xl tracking-[calc(-0.04em)] transition-all cursor-default flex items-center gap-4 md:gap-6 hover:scale-105 whitespace-nowrap"
-              :style="{ color: skill.color }">
+              class="font-headline font-black text-2xl md:text-4xl tracking-[calc(-0.04em)] transition-all cursor-default flex items-center gap-4 md:gap-6 hover:scale-105 whitespace-nowrap text-on-surface">
               <div class="w-2 md:w-3 h-2 md:h-3 rounded-full shrink-0" :style="{ backgroundColor: skill.color }"></div>
               {{ skill.name.toUpperCase() }}
             </span>
@@ -472,6 +501,8 @@ onBeforeUnmount(() => {
               <img 
                 :src="meImage" 
                 alt="Muhammad Maroof" 
+                width="500" 
+                height="625"
                 class="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
               />
 
@@ -547,14 +578,14 @@ onBeforeUnmount(() => {
             :class="{ 'shadow-md': themeStore.currentStyle !== 'brutal' }"
           >
             <div>
-              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">WORK STYLE</span>
+              <span class="block font-mono text-[9px] text-on-surface/65 uppercase tracking-widest mb-1">WORK STYLE</span>
               <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
                 <Target class="w-4 h-4 text-primary shrink-0" />
                 RESULTS ORIENTED
               </span>
             </div>
             <div>
-              <span class="block font-mono text-[9px] text-on-surface/40 uppercase tracking-widest mb-1">LAUNCH TIME</span>
+              <span class="block font-mono text-[9px] text-on-surface/65 uppercase tracking-widest mb-1">LAUNCH TIME</span>
               <span class="font-headline font-black text-sm md:text-base text-on-surface uppercase flex items-center gap-1.5">
                 <Zap class="w-4 h-4 text-primary shrink-0" />
                 FAST & RELIABLE
@@ -631,13 +662,13 @@ onBeforeUnmount(() => {
             :class="themeStore.currentStyle === 'brutal' ? 'brutal-card bg-surface' : themeStore.currentStyle === 'street' ? 'street-card' : ''">
             <div class="flex flex-col gap-3">
               <div class="flex items-start gap-2">
-                <span class="font-mono font-black text-[9px] text-red-500 bg-red-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">PAIN POINT</span>
+                <span class="font-mono font-black text-[9px] text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">PAIN POINT</span>
                 <p class="text-xs font-body font-bold text-on-surface leading-snug">{{ ps.prob }}</p>
               </div>
               <div class="h-px bg-on-surface/5 my-1"></div>
               <div class="flex items-start gap-2">
-                <span class="font-mono font-black text-[9px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">RESOLUTION</span>
-                <p class="text-xs font-body font-medium text-emerald-500 leading-snug">{{ ps.sol }}</p>
+                <span class="font-mono font-black text-[9px] text-emerald-400 bg-emerald-400/10 px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">RESOLUTION</span>
+                <p class="text-xs font-body font-medium text-on-surface-variant leading-snug">{{ ps.sol }}</p>
               </div>
             </div>
           </div>
@@ -673,7 +704,7 @@ onBeforeUnmount(() => {
           >
             <!-- Futuristic Image Banner -->
             <div v-if="service.image" class="w-full aspect-[21/9] overflow-hidden mb-4 md:mb-6 relative rounded-xl border border-primary/10">
-              <img :src="service.image" :alt="service.title" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+              <img :src="service.image" :alt="service.title" width="480" height="205" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
               <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low/30 via-transparent to-transparent"></div>
             </div>
 
@@ -854,3 +885,14 @@ onBeforeUnmount(() => {
   </div>
   </div>
 </template>
+
+<style scoped>
+.fade-canvas-enter-active,
+.fade-canvas-leave-active {
+  transition: opacity 1.5s ease;
+}
+.fade-canvas-enter-from,
+.fade-canvas-leave-to {
+  opacity: 0;
+}
+</style>

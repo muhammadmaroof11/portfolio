@@ -91,7 +91,11 @@ const draw = (timestamp) => {
     return true
   })
 
-  animationId = requestAnimationFrame(draw)
+  if (sparks.value.length > 0) {
+    animationId = requestAnimationFrame(draw)
+  } else {
+    animationId = null
+  }
 }
 
 const handleClick = (e) => {
@@ -109,15 +113,19 @@ const handleClick = (e) => {
     startTime: now
   }))
 
+  const wasEmpty = sparks.value.length === 0
   sparks.value.push(...newSparks)
+
+  if (wasEmpty) {
+    if (animationId) cancelAnimationFrame(animationId)
+    animationId = requestAnimationFrame(draw)
+  }
 }
 
 onMounted(() => {
   window.addEventListener('resize', resizeCanvas)
   window.addEventListener('click', handleClick)
   resizeCanvas()
-
-  animationId = requestAnimationFrame(draw)
 })
 
 onUnmounted(() => {

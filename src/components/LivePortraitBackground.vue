@@ -8,6 +8,7 @@ const isDesktop = ref(window.innerWidth >= 1024)
 let resizeHandler = null
 
 const themeStore = useThemeStore()
+const isReadyToAnimate = ref(false)
 const containerRef = ref(null)
 const canvasRef = ref(null)
 const imageRef = ref(null)
@@ -252,20 +253,39 @@ const drawHUD = (c, w, h) => {
   c.restore()
 }
 
+let isLooping = false
+
+const startLoop = () => {
+  if (isLooping || !isDesktop.value || !isVisible || !isReadyToAnimate.value) return
+  isLooping = true
+  loop()
+}
+
+const stopLoop = () => {
+  isLooping = false
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = null
+  }
+}
+
 const loop = () => {
-  animationFrameId = requestAnimationFrame(loop)
+  if (!isLooping) return
+  
   if (!isDesktop.value) {
-    if (ctx && canvasRef.value) {
-      const w = canvasRef.value.width / (window.devicePixelRatio || 1)
-      const h = canvasRef.value.height / (window.devicePixelRatio || 1)
-      ctx.clearRect(0, 0, w, h)
-    }
+    stopLoop()
     if (imageRef.value) {
       imageRef.value.style.transform = `translate3d(0, 0, 0) scale(1)`
     }
     return
   }
-  if (!isVisible || !ctx || !canvasRef.value) return
+  
+  if (!isVisible || !ctx || !canvasRef.value) {
+    stopLoop()
+    return
+  }
+
+  animationFrameId = requestAnimationFrame(loop)
 
   const w = canvasRef.value.width / (window.devicePixelRatio || 1)
   const h = canvasRef.value.height / (window.devicePixelRatio || 1)
@@ -303,6 +323,7 @@ const loop = () => {
   // Draw HUD Graphics
   drawHUD(ctx, w, h)
 }
+
 onMounted(() => {
   ctx = canvasRef.value.getContext('2d')
   
@@ -318,6 +339,11 @@ onMounted(() => {
 
   resizeHandler = () => {
     isDesktop.value = window.innerWidth >= 1024
+    if (isDesktop.value && isVisible) {
+      startLoop()
+    } else {
+      stopLoop()
+    }
   }
   window.addEventListener('resize', resizeHandler)
 
@@ -325,6 +351,11 @@ onMounted(() => {
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       isVisible = entry.isIntersecting
+      if (isVisible && isDesktop.value) {
+        startLoop()
+      } else {
+        stopLoop()
+      }
     })
   }, { threshold: 0.1 })
   
@@ -332,7 +363,30 @@ onMounted(() => {
     observer.observe(containerRef.value)
   }
 
-  loop()
+  // Start particles render loop only on user interaction or safety timeout
+  if (typeof window !== 'undefined') {
+    let loopStarted = false
+    const startLoopOnInteraction = () => {
+      if (loopStarted) return
+      loopStarted = true
+      isReadyToAnimate.value = true
+      if (isDesktop.value && isVisible) {
+        startLoop()
+      }
+      window.removeEventListener('mousemove', startLoopOnInteraction)
+      window.removeEventListener('scroll', startLoopOnInteraction)
+      window.removeEventListener('touchstart', startLoopOnInteraction)
+      window.removeEventListener('click', startLoopOnInteraction)
+      clearTimeout(loopSafetyTimeout)
+    }
+
+    window.addEventListener('mousemove', startLoopOnInteraction, { passive: true })
+    window.addEventListener('scroll', startLoopOnInteraction, { passive: true })
+    window.addEventListener('touchstart', startLoopOnInteraction, { passive: true })
+    window.addEventListener('click', startLoopOnInteraction, { passive: true })
+
+    const loopSafetyTimeout = setTimeout(startLoopOnInteraction, 6000)
+  }
 })
 
 onUnmounted(() => {
@@ -408,6 +462,8 @@ watch(() => themeStore.currentStyle, () => {
         ref="imageRef"
         src="/1.webp" 
         alt="Muhammad Maroof" 
+        width="480" 
+        height="600"
         class="w-full h-auto object-cover transition-transform duration-300 ease-out z-10 drop-shadow-[0_15px_40px_rgba(0,0,0,0.35)] select-none pointer-events-none"
       />
       

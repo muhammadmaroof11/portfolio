@@ -82,6 +82,7 @@ const operationalBlueprint = computed(() => {
             min="200" 
             max="10000" 
             step="100"
+            aria-label="Monthly server and cloud cost slider"
             class="w-full accent-primary bg-on-surface/10 h-1.5 rounded-lg appearance-none cursor-pointer"
           />
         </div>
@@ -98,6 +99,7 @@ const operationalBlueprint = computed(() => {
             min="50" 
             max="1500" 
             step="25"
+            aria-label="Average website loading speed slider"
             class="w-full accent-primary bg-on-surface/10 h-1.5 rounded-lg appearance-none cursor-pointer"
           />
         </div>
@@ -114,6 +116,7 @@ const operationalBlueprint = computed(() => {
             min="2" 
             max="60" 
             step="1"
+            aria-label="Manual work hours spent per week slider"
             class="w-full accent-primary bg-on-surface/10 h-1.5 rounded-lg appearance-none cursor-pointer"
           />
         </div>

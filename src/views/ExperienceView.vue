@@ -3,11 +3,9 @@ import { onMounted, ref, nextTick, onBeforeUnmount } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { GraduationCap, Briefcase, Calendar, MapPin, School, Terminal, ChevronDown } from 'lucide-vue-next'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FuzzyText from '../components/FuzzyText.vue'
 
-// ScrollTrigger is registered globally in main.js
+let scrollTriggerInstance = null
 
 const themeStore = useThemeStore()
 const { experience, profile, education } = portfolioData
@@ -24,61 +22,69 @@ const toggleCard = (index) => {
 onMounted(async () => {
   await nextTick()
 
-  const root = viewRoot.value
-  if (!root) return
-  
-  // Header animation
-  gsap.fromTo(root.querySelectorAll('.exp-header > *'), 
-    { autoAlpha: 0, y: 30 },
-    {
-      y: 0,
-      autoAlpha: 1,
-      duration: 1,
-      stagger: 0.15,
-      ease: 'power4.out'
-    }
-  )
+  setTimeout(async () => {
+    const root = viewRoot.value
+    if (!root) return
+    
+    const { default: g } = await import('gsap')
+    const { ScrollTrigger: st } = await import('gsap/ScrollTrigger')
+    g.registerPlugin(st)
+    scrollTriggerInstance = st
 
-  // Experience timeline nodes entering from left as you scroll
-  root.querySelectorAll('.exp-item').forEach((item) => {
-    gsap.fromTo(item, 
-      { autoAlpha: 0, x: -50 },
+    // Header animation
+    g.fromTo(root.querySelectorAll('.exp-header > *'), 
+      { autoAlpha: 0, y: 30 },
       {
+        y: 0,
         autoAlpha: 1,
-        x: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: item,
-          start: 'top 85%',
-          toggleActions: 'play none none none'
-        }
+        duration: 1,
+        stagger: 0.15,
+        ease: 'power4.out'
       }
     )
-  })
 
-  // Sidebar cards entering from right as you scroll
-  root.querySelectorAll('.sidebar-card').forEach((card) => {
-    gsap.fromTo(card,
-      { autoAlpha: 0, x: 50 },
-      {
-        autoAlpha: 1,
-        x: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: card,
-          start: 'top 85%',
-          toggleActions: 'play none none none'
+    // Experience timeline nodes entering from left as you scroll
+    root.querySelectorAll('.exp-item').forEach((item) => {
+      g.fromTo(item, 
+        { autoAlpha: 0, x: -50 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: item,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
         }
-      }
-    )
-  })
+      )
+    })
+
+    // Sidebar cards entering from right as you scroll
+    root.querySelectorAll('.sidebar-card').forEach((card) => {
+      g.fromTo(card,
+        { autoAlpha: 0, x: 50 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    })
+  }, 100)
 })
 
 onBeforeUnmount(() => {
-  // Safe to kill all: no other page's triggers are alive when leaving this view.
-  ScrollTrigger.getAll().forEach(t => t.kill())
+  if (scrollTriggerInstance) {
+    scrollTriggerInstance.getAll().forEach(t => t.kill())
+  }
 })
 </script>
 
@@ -170,7 +176,7 @@ onBeforeUnmount(() => {
                     <h3 class="text-xl md:text-2xl font-headline font-black text-on-surface leading-tight mb-1.5 uppercase tracking-tighter break-words">{{ job.role }}</h3>
                     <div class="flex flex-wrap items-center gap-2">
                       <span class="text-primary font-black text-base md:text-lg italic tracking-tight break-words">{{ job.company }}</span>
-                      <span v-if="job.location" class="text-on-surface/40 font-body text-xs">| {{ job.location }}</span>
+                      <span v-if="job.location" class="text-on-surface/65 font-body text-xs">| {{ job.location }}</span>
                       <span class="w-1.5 h-1.5 rounded-full bg-primary/20 hidden md:inline-block"></span>
                       <span class="text-on-surface-variant font-mono text-[8px] tracking-wider uppercase opacity-55">{{ job.period }}</span>
                     </div>

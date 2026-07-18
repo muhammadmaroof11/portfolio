@@ -140,7 +140,7 @@ onUnmounted(() => {
         <div class="text-2xl font-black text-on-surface font-headline uppercase tracking-tighter">
           MAROOF<span class="text-primary italic">.DEV</span>
         </div>
-        <p class="font-label text-[10px] tracking-[0.4em] uppercase text-on-surface/40 text-center md:text-left max-w-xs leading-loose">
+        <p class="font-label text-[10px] tracking-[0.4em] uppercase text-on-surface/65 text-center md:text-left max-w-xs leading-loose">
           Architecting elite digital experiences. Engineered with precision.
         </p>
       </div>
@@ -152,15 +152,12 @@ onUnmounted(() => {
           <a href="https://www.instagram.com/anonymous.mars.here/" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">INSTAGRAM</a>
           <a href="https://wa.me/923051526463" target="_blank" class="text-on-surface hover:text-primary transition-all hover:-translate-y-1">WHATSAPP</a>
         </div>
-        <p class="font-inter text-[9px] tracking-widest uppercase text-on-surface/30">
+        <p class="font-inter text-[9px] tracking-widest uppercase text-on-surface/60">
           © 2026 THE DIGITAL ARCHITECT. BEYOND COMPROMISE.
         </p>
       </div>
 
-      <!-- Decorative Background Text -->
-      <div class="absolute -bottom-10 right-0 font-headline font-black text-[12vw] text-on-surface/[0.03] uppercase pointer-events-none select-none whitespace-nowrap">
-        LEGACY_V4
-      </div>
+      <div aria-hidden="true" class="absolute -bottom-10 right-0 font-headline font-black text-[12vw] text-on-surface/[0.03] uppercase pointer-events-none select-none whitespace-nowrap after:content-['LEGACY_V4']"></div>
     </footer>
   </div>
 </template>

@@ -71,13 +71,19 @@ const initThree = () => {
   observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       isVisible = entry.isIntersecting
+      if (isVisible) {
+        startLoop()
+      } else {
+        stopLoop()
+      }
     })
   }, { threshold: 0.1 })
   
   observer.observe(canvasContainer.value)
 
-  // Start loop
-  animate()
+  if (isVisible) {
+    startLoop()
+  }
 }
 
 const createMinimalScene = () => {
@@ -375,10 +381,31 @@ const handleMouseMove = (e) => {
   mouse.targetY = (e.clientY / window.innerHeight - 0.5) * -4
 }
 
-const animate = () => {
-  animationFrameId = requestAnimationFrame(animate)
+let isLooping = false
 
-  if (!isVisible || !renderer || !scene) return
+const startLoop = () => {
+  if (isLooping || !isVisible || !renderer || !scene) return
+  isLooping = true
+  animate()
+}
+
+const stopLoop = () => {
+  isLooping = false
+  if (animationFrameId) {
+    cancelAnimationFrame(animationFrameId)
+    animationFrameId = null
+  }
+}
+
+const animate = () => {
+  if (!isLooping) return
+
+  if (!isVisible || !renderer || !scene) {
+    stopLoop()
+    return
+  }
+
+  animationFrameId = requestAnimationFrame(animate)
 
   // Smooth mouse inertia
   mouse.x += (mouse.targetX - mouse.x) * 0.05

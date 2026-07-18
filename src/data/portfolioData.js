@@ -40,7 +40,7 @@ export const portfolioData = {
         scalability: 'Low-latency caching rules and indexed database schemas to sustain peak traffic.',
         ux: 'Unified cross-platform interfaces packaged via Capacitor, maintaining high-fps map tracking.'
       },
-      image: '/projects/foodlink.png',
+      image: '/projects/foodlink.webp',
       link: 'https://foodlinkglobal.netlify.app/',
       featured: true,
       year: '2026'
@@ -73,7 +73,7 @@ export const portfolioData = {
         scalability: 'Zustand state synchronization layer coordinating multi-agent feedback streams.',
         ux: 'High-fidelity cinematic transitions using custom GSAP timelines and responsive CSS grid architectures.'
       },
-      image: '/projects/bytely.png',
+      image: '/projects/bytely.webp',
       link: 'https://bytely.ai/',
       featured: true,
       year: '2026'
@@ -89,7 +89,7 @@ export const portfolioData = {
         scalability: 'Express API query throttle handlers ensuring data synchronization and rate-limit safety.',
         ux: 'Highly responsive trading widgets rendering real-time asset performance diagrams.'
       },
-      image: '/projects/crypto.png',
+      image: '/projects/crypto.webp',
       link: 'https://crypto-analyze-proj.netlify.app/',
       featured: true,
       year: '2025'
@@ -105,7 +105,7 @@ export const portfolioData = {
         scalability: 'Agora low-latency video gateways integrated with secure Firestore security rules.',
         ux: 'Polished client/physician messaging app built natively with Flutter widgets.'
       },
-      image: '/projects/mentairo.jpeg',
+      image: '/projects/mentairo.webp',
       link: '#',
       hoverText: 'Coming Soon',
       featured: true,
@@ -122,7 +122,7 @@ export const portfolioData = {
         scalability: 'Node.js/Express server-side response caching to minimize CPU load and page response times.',
         ux: 'Optimized static-like rendering achieving perfect Lighthouse performance scores.'
       },
-      image: '/projects/ezi.png',
+      image: '/projects/ezi.webp',
       featured: false,
       year: '2025'
     }

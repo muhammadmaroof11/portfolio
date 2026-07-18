@@ -32,7 +32,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
       <!-- LOGO -->
       <router-link to="/" class="flex items-center gap-3 group active-spring" v-ripple>
         <div class="w-10 h-10 rounded-xl overflow-hidden shadow-lg transition-transform group-hover:rotate-6 group-hover:scale-110 bg-white flex items-center justify-center p-0.5">
-          <img src="/logo.png" alt="Maroof.dev Logo" class="w-full h-full object-contain rounded-lg" />
+          <img src="/logo.png" alt="Maroof.dev Logo" width="40" height="40" class="w-full h-full object-contain rounded-lg" />
         </div>
         <span class="font-headline font-black text-xl tracking-[calc(-0.04em)] uppercase text-on-surface">
           Maroof<span class="text-primary">.dev</span>
@@ -67,7 +67,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
 
       <!-- MOBILE TOGGLE -->
       <div class="flex items-center gap-4 lg:hidden">
-        <button @click="toggleMenu" class="p-2 text-on-surface">
+        <button @click="toggleMenu" class="p-2 text-on-surface" aria-label="Toggle Navigation Menu">
           <Menu v-if="!isMenuOpen" class="w-6 h-6" />
           <X v-else class="w-6 h-6" />
         </button>
@@ -85,7 +85,7 @@ const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value
 
         <!-- MOBILE STYLE SWITCHER -->
         <div class="flex flex-col gap-3 pt-4 border-t border-surface-container-high">
-          <span class="text-[9px] font-black tracking-[0.25em] uppercase text-on-surface/40">THEME STYLE</span>
+          <span class="text-[9px] font-black tracking-[0.25em] uppercase text-on-surface/65">THEME STYLE</span>
           <div class="grid grid-cols-3 gap-2 bg-surface-container-high/65 p-1 rounded-xl border border-surface-container-high/80">
             <button
               v-for="s in styles"

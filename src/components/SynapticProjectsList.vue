@@ -3,10 +3,6 @@ import { ref, onMounted, onBeforeUnmount, nextTick, computed, watch } from 'vue'
 import { portfolioData } from '../data/portfolioData'
 import { useThemeStore } from '../stores/themeStore'
 import { ArrowRight, Cpu, Shield, ChevronRight, Zap } from 'lucide-vue-next'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const themeStore = useThemeStore()
 const selectedChallenge = ref('ALL')
@@ -422,8 +418,30 @@ function project3D(n, W, H, fov) {
   return { x: cxVal + rx * s + mouseX, y: H / 2 + 45 + ry2 * s + mouseY, z: rz2, s }
 }
 
+let isVisible = true
+let observer = null
+let isLooping = false
+
+const startLoop = () => {
+  if (isLooping || isMobileOrTablet.value || !isVisible) return
+  isLooping = true
+  drawMesh()
+}
+
+const stopLoop = () => {
+  isLooping = false
+  if (animationId) {
+    cancelAnimationFrame(animationId)
+    animationId = null
+  }
+}
+
 const drawMesh = () => {
-  if (!canvasRef.value) return
+  if (!isLooping) return
+  if (!canvasRef.value || isMobileOrTablet.value || !isVisible) {
+    stopLoop()
+    return
+  }
   const canvas = canvasRef.value
   const ctx2 = canvas.getContext('2d')
   const W = canvas.width, H = canvas.height
@@ -706,30 +724,53 @@ onMounted(async () => {
   window.addEventListener('resize', updateDimensions)
   window.addEventListener('mousemove', handleMouseMove)
 
-  // Only run heavy 3D animation and scroll-pin on desktop
-  if (!isMobileOrTablet.value) {
-    // Re-measure after font loads so heading width is accurate for DNA radius
-    setTimeout(() => {
-      updateDimensions()
-      ScrollTrigger.refresh()
-    }, 150)
-    
-    scrollTriggerInstance = ScrollTrigger.create({
-      trigger: pinnedRef.value,
-      // Pin immediately when the top of the container reaches the navbar bottom (80px)
-      start: 'top 80px',
-      end: `+=${projects.value.length * 150}%`,
-      pin: pinnedRef.value,
-      pinSpacing: true,
-      scrub: true,
-      invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        scrollProgress.value = self.progress
+  // Delay GSAP setup slightly to prevent main thread locking during initial page paint
+  setTimeout(async () => {
+    // Only run heavy 3D animation and scroll-pin on desktop
+    if (!isMobileOrTablet.value) {
+      const { default: g } = await import('gsap')
+      const { ScrollTrigger: st } = await import('gsap/ScrollTrigger')
+      g.registerPlugin(st)
+
+      // Re-measure after font loads so heading width is accurate for DNA radius
+      setTimeout(() => {
+        updateDimensions()
+        st.refresh()
+      }, 150)
+      
+      scrollTriggerInstance = st.create({
+        trigger: pinnedRef.value,
+        // Pin immediately when the top of the container reaches the navbar bottom (80px)
+        start: 'top 80px',
+        end: `+=${projects.value.length * 150}%`,
+        pin: pinnedRef.value,
+        pinSpacing: true,
+        scrub: true,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          scrollProgress.value = self.progress
+        }
+      })
+      
+      // Intersection Observer
+      observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isVisible = entry.isIntersecting
+          if (isVisible) {
+            startLoop()
+          } else {
+            stopLoop()
+          }
+        })
+      }, { threshold: 0.05 })
+      
+      if (containerRef.value) {
+        observer.observe(containerRef.value)
       }
-    })
-    
-    drawMesh()
-  }
+
+      startLoop()
+    }
+  }, 100)
 })
 
 onBeforeUnmount(() => {
@@ -738,7 +779,10 @@ onBeforeUnmount(() => {
   if (scrollTriggerInstance) {
     scrollTriggerInstance.kill()
   }
-  cancelAnimationFrame(animationId)
+  stopLoop()
+  if (observer) {
+    observer.disconnect()
+  }
   if (scramblerInterval.value) clearInterval(scramblerInterval.value)
 })
 
@@ -821,8 +865,8 @@ onBeforeUnmount(() => {
               class="relative overflow-hidden flex items-center justify-center bg-black/15 dark:bg-black/50 border border-primary/5 max-h-[180px] z-10 mb-3"
               :style="{ borderRadius: themeStore.currentStyle === 'brutal' ? '0px' : 'calc(var(--app-radius) * 0.7)' }"
             >
-              <img :src="project.image" alt="" class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" />
-              <img :src="project.image" :alt="project.title" class="relative z-10 max-h-[140px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" />
+              <img :src="project.image" alt="" width="400" height="220" class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" />
+              <img :src="project.image" :alt="project.title" width="400" height="220" class="relative z-10 max-h-[140px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" />
             </div>
 
 
@@ -855,13 +899,13 @@ onBeforeUnmount(() => {
               <button 
                 @click="activeProjectViews[project.id] = 'overview'" 
                 class="uppercase tracking-widest font-black active-spring"
-                :class="activeProjectViews[project.id] !== 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+                :class="activeProjectViews[project.id] !== 'blueprint' ? 'text-primary' : 'text-on-surface/65'"
               >Overview</button>
               <span class="text-on-surface/20">|</span>
               <button 
                 @click="activeProjectViews[project.id] = 'blueprint'" 
                 class="uppercase tracking-widest font-black flex items-center gap-1 active-spring"
-                :class="activeProjectViews[project.id] === 'blueprint' ? 'text-primary' : 'text-on-surface/40'"
+                :class="activeProjectViews[project.id] === 'blueprint' ? 'text-primary' : 'text-on-surface/65'"
               >
                 Blueprint <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse inline-block"></span>
               </button>
@@ -891,7 +935,7 @@ onBeforeUnmount(() => {
             <!-- Year + CTA -->
             <div class="flex items-center justify-between mt-auto">
               <div class="flex flex-col">
-                <span class="font-mono text-[7px] font-bold text-on-surface/30 uppercase tracking-wider">COMPILED YEAR</span>
+                <span class="font-mono text-[7px] font-bold text-on-surface/65 uppercase tracking-wider">COMPILED YEAR</span>
                 <span class="font-headline font-black text-xs text-primary tracking-widest">{{ project.year || '2026' }}</span>
               </div>
               <a
@@ -906,7 +950,7 @@ onBeforeUnmount(() => {
               </a>
               <span
                 v-else-if="project.hoverText"
-                class="px-3 py-2 bg-surface-container-high text-on-surface/40 font-black text-[10px] tracking-[0.15em] uppercase rounded-md"
+                class="px-3 py-2 bg-surface-container-high text-on-surface/65 font-black text-[10px] tracking-[0.15em] uppercase rounded-md"
               >{{ project.hoverText }}</span>
             </div>
           </div>
@@ -972,7 +1016,7 @@ onBeforeUnmount(() => {
           </h3>
         </div>
         <div class="flex items-center gap-3">
-          <span class="text-[8px] font-mono text-on-surface/30 uppercase tracking-widest">{{ telemetryCoordX }} // {{ telemetryCoordY }}</span>
+          <span class="text-[8px] font-mono text-on-surface/65 uppercase tracking-widest">{{ telemetryCoordX }} // {{ telemetryCoordY }}</span>
           <Cpu class="w-5 h-5 text-primary animate-pulse shrink-0" />
         </div>
       </div>
@@ -1042,12 +1086,16 @@ onBeforeUnmount(() => {
               <img 
                 :src="project.image" 
                 alt="" 
+                width="400" 
+                height="220"
                 class="absolute inset-0 w-full h-full object-cover opacity-20 filter blur-xl scale-110 pointer-events-none" 
               />
               
               <img 
                 :src="project.image" 
                 :alt="project.title" 
+                width="400" 
+                height="220"
                 class="relative z-10 max-h-[140px] md:max-h-[170px] xl:max-h-[200px] w-auto h-auto object-contain rounded-lg p-2 transition-transform duration-700 group-hover:scale-[1.03]" 
               />
 
@@ -1098,7 +1146,7 @@ onBeforeUnmount(() => {
                 <!-- Footer with explore actions -->
                 <div class="flex items-center justify-between border-t border-on-surface/5">
                   <div class="flex flex-col">
-                    <span class="font-mono text-[8px] font-bold text-on-surface/30 uppercase tracking-wider">
+                    <span class="font-mono text-[8px] font-bold text-on-surface/65 uppercase tracking-wider">
                       COMPILED YEAR
                     </span>
                     <span class="font-headline font-black text-xs text-primary tracking-widest">
@@ -1120,7 +1168,7 @@ onBeforeUnmount(() => {
                   </a>
                   <div 
                     v-else-if="project.hoverText"
-                    class="px-3.5 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/40 font-black text-[10px] md:text-xs tracking-[0.15em] uppercase rounded-md"
+                    class="px-3.5 py-2 bg-surface-container-high border border-surface-container-high text-on-surface/65 font-black text-[10px] md:text-xs tracking-[0.15em] uppercase rounded-md"
                   >
                     {{ project.hoverText }}
                   </div>
